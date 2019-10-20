@@ -1,0 +1,2 @@
+rootProject.name='TV Tracker'
+include ':app'
