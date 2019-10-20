@@ -22,6 +22,13 @@ android {
     dataBinding {
         enabled = true
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -41,4 +48,10 @@ dependencies {
 
     //Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$version_lifecycle"
+
+    //Material Components
+    implementation "com.google.android.material:material:$version_material"
+
+    //Preferences
+    implementation "androidx.preference:preference-ktx:$version_preference"
 }

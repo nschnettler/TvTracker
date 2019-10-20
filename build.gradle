@@ -8,6 +8,8 @@ buildscript {
         version_constraint ="1.1.3"
         version_core = "1.1.0"
         version_lifecycle = "2.1.0"
+        version_material = "1.1.0-beta01"
+        version_preference = "1.1.0"
     }
     repositories {
         google()
