@@ -7,15 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import de.schnettler.tvtracker.R
-import de.schnettler.tvtracker.databinding.MainFragmentBinding
+import de.schnettler.tvtracker.databinding.AccountFragmentBinding
 
-class MainFragment : Fragment() {
+class AccountFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        val binding = MainFragmentBinding.inflate(inflater)
+        val binding = AccountFragmentBinding.inflate(inflater)
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         return binding.root
     }
