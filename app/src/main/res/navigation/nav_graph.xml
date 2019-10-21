@@ -5,14 +5,14 @@
 
     <fragment
         android:id="@+id/watch"
-        android:name="de.schnettler.tvtracker.ui.main.WatchFragment"
+        android:name="de.schnettler.tvtracker.ui.watch.WatchFragment"
         android:label="WatchFragment" />
     <fragment
         android:id="@+id/discover"
-        android:name="de.schnettler.tvtracker.ui.main.DiscoverFragment"
+        android:name="de.schnettler.tvtracker.ui.discover.DiscoverFragment"
         android:label="DiscoverFragment" />
     <fragment
         android:id="@+id/account"
-        android:name="de.schnettler.tvtracker.ui.main.AccountFragment"
+        android:name="de.schnettler.tvtracker.ui.account.AccountFragment"
         android:label="AccountFragment" />
 </navigation>
