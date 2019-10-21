@@ -16,6 +16,8 @@ class DiscoverFragment : Fragment() {
                               savedInstanceState: Bundle?): View {
         val binding = DiscoverFragmentBinding.inflate(inflater)
         viewModel = ViewModelProviders.of(this).get(DiscoverViewModel::class.java)
+        binding.lifecycleOwner = this
+        binding.viewmodel = viewModel
         return binding.root
     }
 }
