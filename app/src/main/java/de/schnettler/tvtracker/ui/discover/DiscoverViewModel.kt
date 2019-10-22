@@ -1,5 +1,6 @@
 package de.schnettler.tvtracker.ui.discover
 
+import android.util.Log
 import androidx.lifecycle.*
 import de.schnettler.tvtracker.data.Repository
 import de.schnettler.tvtracker.data.model.Show
@@ -19,9 +20,6 @@ class DiscoverViewModel : ViewModel() {
     private val _trendingShows = MutableLiveData<List<Show>>()
     val trendingShows: LiveData<List<Show>>
         get() = _trendingShows
-    val resultString = Transformations.map(_trendingShows) { show ->
-        show.joinToString("\n") { "${it.title} - ${it.year} - ${it.watchers} Watchers" }
-    }
 
     init {
         getTrendingShows()
@@ -34,6 +32,7 @@ class DiscoverViewModel : ViewModel() {
             if (response.isSuccessful) {
                 response.body().let {
                     _trendingShows.value = it?.asShowModel()
+                    Timber.i("Loaded ${it?.size} Items")
                 }
             } else {
                 Timber.e("Error loading Trending Shows: ${response.code()}")
