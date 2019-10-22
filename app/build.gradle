@@ -67,4 +67,8 @@ dependencies {
 
     //Timber
     implementation "com.jakewharton.timber:timber:$version_timber"
+
+    //Insetter
+    implementation "dev.chrisbanes:insetter-dbx:0.1.1"
+    implementation "dev.chrisbanes:insetter-ktx:0.1.1"
 }
