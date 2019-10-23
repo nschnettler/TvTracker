@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import de.schnettler.tvtracker.databinding.DiscoverFragmentBinding
+import dev.chrisbanes.insetter.Insetter
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import timber.log.Timber
 
@@ -27,13 +28,12 @@ class DiscoverFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
         binding.trendingRecycler.adapter = ShowListAdapter()
-        binding.trendingRecycler.doOnApplyWindowInsets { view, insets, initialPadding ->
-            // padding contains the original padding values after inflation
+        binding.discoverScroll.doOnApplyWindowInsets { view, insets, initialState ->
             view.updatePadding(
-                top = insets.systemWindowInsetTop
+                top = initialState.paddings.top + insets.systemWindowInsetTop
             )
         }
-        binding.trendingRecycler.clipToPadding = false
+        binding.discoverScroll.clipToPadding = false
 
         return binding.root
     }

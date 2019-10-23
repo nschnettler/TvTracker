@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TV Tracker</string>
+
+    <string name="trending_now">Trending now</string>
 </resources>
