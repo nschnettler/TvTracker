@@ -1,9 +1,6 @@
 package de.schnettler.tvtracker.data.model
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import timber.log.Timber
 
 //Trending Show
@@ -34,7 +31,14 @@ data class ShowDB(
     @PrimaryKey val id: Long,
     val title: String,
     var posterUrl: String
-)
+) {
+    @Ignore var tmdbId: String = ""
+
+    constructor(id: Long, title: String,  posterUrl: String, tmdbId: String): this(id, title, posterUrl) {
+        this.tmdbId = tmdbId
+    }
+}
+
 
 
 class ShowTrendingDB(@Embedded val trending: TrendingDB, @Embedded val show: ShowDB)

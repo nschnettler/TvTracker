@@ -8,7 +8,6 @@ import de.schnettler.tvtracker.data.remote.RetrofitClient
 import de.schnettler.tvtracker.util.TMDB_API_KEY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class Repository(private val trendingDao: TrendingShowsDAO) {
     private val traktClient = RetrofitClient.tractService
@@ -32,14 +31,9 @@ class Repository(private val trendingDao: TrendingShowsDAO) {
                 showsDataBase.let {
                     // Update Cached Trending Shows
                     trendingDao.updateTrendingShows(showsDataBase!!)
-                    for ((index, showTrending) in showsDataBase.withIndex()) {
-                        val image = getPoster(showsRemote[index].show.ids.tmdb.toString())
-                        if (image.isSuccessful) {
-                            showTrending.show.posterUrl = image.body()!!.poster_path
-                            //Update Cache with new Image
-                            trendingDao.updateShow(showTrending.show)
-                        }
-                    }
+                    refreshPosters(showsDataBase.map {
+                        it.show
+                    })
                 }
 
             }
@@ -58,14 +52,9 @@ class Repository(private val trendingDao: TrendingShowsDAO) {
                 val showsDataBase = showsRemote?.asShowPopularDB()
                 showsDataBase.let {
                     trendingDao.updatePopularShows(showsDataBase!!)
-                    for ((index, showPopular) in showsDataBase.withIndex()) {
-                        val image = getPoster(showsRemote[index].ids.tmdb.toString())
-                        if (image.isSuccessful) {
-                            showPopular.show.posterUrl = image.body()!!.poster_path
-                            //Update Cache with new Image
-                            trendingDao.updateShow(showPopular.show)
-                        }
-                    }
+                    refreshPosters(showsDataBase.map {
+                        it.show
+                    })
                 }
             }
         } catch (t: Throwable) {
@@ -79,5 +68,15 @@ class Repository(private val trendingDao: TrendingShowsDAO) {
 
     fun getPopularShows(): LiveData<List<Show>> = Transformations.map(trendingDao.getPopular()) {
         it.asPopularShow()
+    }
+
+    private suspend fun refreshPosters(showsDB: List<ShowDB>) {
+        for (showDB in showsDB) {
+            val image = getPoster(showDB.tmdbId)
+            if (image.isSuccessful) {
+                showDB.posterUrl = image.body()!!.poster_path
+                trendingDao.updateShow(showDB)
+            }
+        }
     }
 }
