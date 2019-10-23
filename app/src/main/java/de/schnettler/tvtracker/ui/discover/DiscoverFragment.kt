@@ -27,7 +27,8 @@ class DiscoverFragment : Fragment() {
         //viewModel = ViewModelProviders.of(this).get(DiscoverViewModel::class.java)
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
-        binding.trendingRecycler.adapter = ShowListAdapter()
+        binding.trendingShowsHolder.trendingRecycler.adapter = ShowListAdapter()
+        binding.popular.trendingRecycler.adapter = ShowListAdapter()
         binding.discoverScroll.doOnApplyWindowInsets { view, insets, initialState ->
             view.updatePadding(
                 top = initialState.paddings.top + insets.systemWindowInsetTop

@@ -9,43 +9,30 @@
             type="de.schnettler.tvtracker.ui.discover.DiscoverViewModel" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/discover_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/trending_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.discover.DiscoverFragment"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp">
-
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
             <include
-                android:id="@+id/trending_header"
-                layout="@layout/recycler_header"
+                android:id="@+id/trending_shows_holder"
+                layout="@layout/show_recyler_with_header"
+                app:shows="@{viewmodel.trendingShows}"
                 app:title="@{@string/trending_now}"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/trending_recycler"
-                listShowData="@{viewmodel.trendingShows}"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:clipToPadding="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            <include
+                android:id="@+id/popular"
+                layout="@layout/show_recyler_with_header"
+                app:shows="@{viewmodel.trendingShows}"
+                app:title="@{@string/popular}"/>
         </LinearLayout>
 
 
 
-    </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
