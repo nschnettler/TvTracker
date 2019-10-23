@@ -69,6 +69,14 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$version_timber"
 
     //Insetter
-    implementation "dev.chrisbanes:insetter-dbx:0.1.1"
-    implementation "dev.chrisbanes:insetter-ktx:0.1.1"
+    implementation "dev.chrisbanes:insetter-dbx:$version_insetter"
+    implementation "dev.chrisbanes:insetter-ktx:$version_insetter"
+
+    //Coil
+    implementation "io.coil-kt:coil:$version_coil"
+
+    //Room
+    implementation "androidx.room:room-runtime:$version_room"
+    implementation "androidx.room:room-ktx:$version_room"
+    kapt "androidx.room:room-compiler:$version_room"
 }
