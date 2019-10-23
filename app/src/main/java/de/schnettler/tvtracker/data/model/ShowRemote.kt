@@ -39,7 +39,12 @@ data class ShowIdRemote(
         val tmdb: Long
 )
 
-fun List<TrendingShowRemote>.asShowModel(): List<Show> {
+data class ShowImagesRemote(
+        val poster_path: String,
+        val backdrop_path: String
+)
+
+fun List<TrendingShowRemote>.asShowModel(): List<Show>? {
         return map {
                 Show (
                         title = it.show.title,
@@ -47,6 +52,19 @@ fun List<TrendingShowRemote>.asShowModel(): List<Show> {
                         traktId = it.show.ids.trakt,
                         year = it.show.year,
                         watchers = it.watchers
+                )
+        }
+}
+
+fun List<TrendingShowRemote>.asShowDatabase(): List<ShowDatabase>? {
+        return map {
+                ShowDatabase(
+                        title = it.show.title,
+                        tmdbId = it.show.ids.tmdb,
+                        traktId = it.show.ids.trakt,
+                        year = it.show.year,
+                        watchers = it.watchers,
+                        posterUrl = ""
                 )
         }
 }

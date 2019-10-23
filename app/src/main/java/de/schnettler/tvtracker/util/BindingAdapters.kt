@@ -23,14 +23,28 @@ import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
+import de.schnettler.tvtracker.R
 import de.schnettler.tvtracker.data.model.Show
 import de.schnettler.tvtracker.ui.discover.ShowListAdapter
 import timber.log.Timber
 
+
+const val TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w185"
 
 @BindingAdapter("listShowData")
 fun bindRecyclerView(recyclerView: RecyclerView, data: List<Show>?) {
     Timber.i("Added ${data?.size} Shows")
     val adapter = recyclerView.adapter as ShowListAdapter
     adapter.submitList(data)
+}
+
+@BindingAdapter("imageUrl")
+fun bindImage(imgView: ImageView, imgUrl: String?) {
+    imgUrl?.let {
+        Timber.i(TMDB_IMAGE_BASE_URL + imgUrl)
+        imgView.load(TMDB_IMAGE_BASE_URL + imgUrl) {
+            placeholder(R.drawable.loading_animation)
+        }
+    }
 }

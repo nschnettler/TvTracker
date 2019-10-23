@@ -17,29 +17,20 @@
 
 package de.schnettler.tvtracker.data.remote
 
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.schnettler.tvtracker.data.model.ShowRemote
-import de.schnettler.tvtracker.data.model.TrendingShowRemote
-import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import retrofit2.Call
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import retrofit2.create
-import retrofit2.http.GET
-import retrofit2.http.Query
 
-private const val BASE_URL = "https://api.trakt.tv/"
+private const val TRAKT_BASE_URL = "https://api.trakt.tv/"
+private const val TMD_BASE_URL = "https://api.themoviedb.org/"
 
 private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
-private val okHttpClient = OkHttpClient.Builder()
+private val traktHttpClient = OkHttpClient.Builder()
     .addInterceptor {
         val request = it.request().newBuilder()
             .addHeader("Content-type", "application/json")
@@ -49,22 +40,35 @@ private val okHttpClient = OkHttpClient.Builder()
         it.proceed(request)
     }.build()
 
-
-interface TraktApiService {
-    @GET("shows/trending")
-    suspend fun getTrendingShows(): Response<List<TrendingShowRemote>>
-}
+private val tmdbHttpClient = OkHttpClient.Builder()
+    .addInterceptor {
+        val request = it.request().newBuilder()
+            .addHeader("api_key", "***TMDB_API_KEY***")
+            .build()
+        it.proceed(request)
+    }.build()
 
 
 object RetrofitClient {
-    private val retrofit = Retrofit.Builder()
+    private val traktRetrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addConverterFactory(ScalarsConverterFactory.create())
-        .baseUrl(BASE_URL)
-        .client(okHttpClient)
+        .baseUrl(TRAKT_BASE_URL)
+        .client(traktHttpClient)
+        .build()
+
+    private val tmdbRetrofit = Retrofit.Builder()
+        .addConverterFactory(MoshiConverterFactory.create(moshi))
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .baseUrl(TMD_BASE_URL)
+        .client(tmdbHttpClient)
         .build()
 
     val tractService: TraktApiService by lazy {
-        retrofit.create(TraktApiService::class.java)
+        traktRetrofit.create(TraktApiService::class.java)
+    }
+
+    val tmdbService: TmdbApiService by lazy {
+        tmdbRetrofit.create(TmdbApiService::class.java)
     }
 }

@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import de.schnettler.tvtracker.databinding.DiscoverFragmentBinding
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
+import timber.log.Timber
 
 class DiscoverFragment : Fragment() {
 
@@ -17,7 +19,10 @@ class DiscoverFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         val binding = DiscoverFragmentBinding.inflate(inflater)
-        viewModel = ViewModelProviders.of(this).get(DiscoverViewModel::class.java)
+        val application = requireNotNull(this.activity).application
+        viewModel = ViewModelProviders.of(this, DiscoverViewModel.Factory(application))
+            .get(DiscoverViewModel::class.java)
+        //viewModel = ViewModelProviders.of(this).get(DiscoverViewModel::class.java)
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
         binding.trendingRecycler.adapter = ShowListAdapter()
