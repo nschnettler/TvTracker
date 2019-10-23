@@ -15,14 +15,12 @@ class DiscoverViewModel(application: Application) : ViewModel() {
 
     //Trending Shows
     var trendingShows = repo.getTrendingShows()
-    /*
-    private val _trendingShows = MutableLiveData<List<Show>>()
-    val trendingShows: LiveData<List<Show>>
-        get() = _trendingShows */
+    var popularShows = repo.getPopularShows()
 
     init {
         viewModelScope.launch {
             repo.refreshTrendingShows()
+            repo.refreshPopularShows()
         }
     }
 

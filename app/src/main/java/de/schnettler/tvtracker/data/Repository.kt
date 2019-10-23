@@ -8,6 +8,7 @@ import de.schnettler.tvtracker.data.remote.RetrofitClient
 import de.schnettler.tvtracker.util.TMDB_API_KEY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class Repository(private val trendingDao: TrendingShowsDAO) {
     private val traktClient = RetrofitClient.tractService
@@ -27,7 +28,7 @@ class Repository(private val trendingDao: TrendingShowsDAO) {
             //Save Data in Database
             if (trendingShows.isSuccessful) {
                 val showsRemote = trendingShows.body()
-                val showsDataBase = showsRemote?.asShowDB()
+                val showsDataBase = showsRemote?.asShowTrendingDB()
                 showsDataBase.let {
                     // Update Cached Trending Shows
                     trendingDao.updateTrendingShows(showsDataBase!!)
@@ -47,7 +48,36 @@ class Repository(private val trendingDao: TrendingShowsDAO) {
         }
     }
 
+    suspend fun refreshPopularShows() = withContext(Dispatchers.IO) {
+        try {
+            //Load Data From Network
+            val popularShows = traktClient.getPopularShows()
+            //Save In DB
+            if (popularShows.isSuccessful) {
+                val showsRemote = popularShows.body()
+                val showsDataBase = showsRemote?.asShowPopularDB()
+                showsDataBase.let {
+                    trendingDao.updatePopularShows(showsDataBase!!)
+                    for ((index, showPopular) in showsDataBase.withIndex()) {
+                        val image = getPoster(showsRemote[index].ids.tmdb.toString())
+                        if (image.isSuccessful) {
+                            showPopular.show.posterUrl = image.body()!!.poster_path
+                            //Update Cache with new Image
+                            trendingDao.updateShow(showPopular.show)
+                        }
+                    }
+                }
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
+    }
+
     fun getTrendingShows(): LiveData<List<Show>> = Transformations.map(trendingDao.getTrending()) {
-            it.asShow()
+        it.asTrendingShow()
+    }
+
+    fun getPopularShows(): LiveData<List<Show>> = Transformations.map(trendingDao.getPopular()) {
+        it.asPopularShow()
     }
 }

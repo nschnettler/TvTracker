@@ -27,7 +27,7 @@
             <include
                 android:id="@+id/popular"
                 layout="@layout/show_recyler_with_header"
-                app:shows="@{viewmodel.trendingShows}"
+                app:shows="@{viewmodel.popularShows}"
                 app:title="@{@string/popular}"/>
         </LinearLayout>
 

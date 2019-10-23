@@ -33,7 +33,7 @@ fun List<TrendingShowRemote>.asShow(): List<Show>? {
 }
 
 
-fun List<TrendingShowRemote>.asShowDB(): List<ShowTrendingDB>? {
+fun List<TrendingShowRemote>.asShowTrendingDB(): List<ShowTrendingDB>? {
         return map {
                 ShowTrendingDB(
                         TrendingDB(
@@ -43,6 +43,22 @@ fun List<TrendingShowRemote>.asShowDB(): List<ShowTrendingDB>? {
                         ShowDB(
                                 id = it.show.ids.trakt,
                                 title = it.show.title,
+                                posterUrl = ""
+                        )
+                )
+        }
+}
+
+fun List<ShowRemote>.asShowPopularDB(): List<ShowPopularDB>? {
+        return mapIndexed {index, it ->
+                ShowPopularDB(
+                        PopularDB(
+                                showId = it.ids.trakt,
+                                index = index
+                        ),
+                        ShowDB(
+                                id = it.ids.trakt,
+                                title = it.title,
                                 posterUrl = ""
                         )
                 )

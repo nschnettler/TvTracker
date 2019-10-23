@@ -9,6 +9,6 @@ interface TraktApiService {
     @GET("shows/trending")
     suspend fun getTrendingShows(): Response<List<TrendingShowRemote>>
 
-    @GET("shows/poupular")
+    @GET("shows/popular")
     suspend fun getPopularShows(): Response<List<ShowRemote>>
 }

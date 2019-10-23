@@ -2,9 +2,7 @@ package de.schnettler.tvtracker.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import de.schnettler.tvtracker.data.model.ShowDB
-import de.schnettler.tvtracker.data.model.ShowTrendingDB
-import de.schnettler.tvtracker.data.model.TrendingDB
+import de.schnettler.tvtracker.data.model.*
 
 @Dao
 interface TrendingShowsDAO{
@@ -13,6 +11,9 @@ interface TrendingShowsDAO{
      */
     @Query("SELECT * FROM table_trending INNER JOIN table_show ON id = showId ORDER BY watcher DESC")
     fun getTrending(): LiveData<List<ShowTrendingDB>>
+
+    @Query("SELECT * FROM table_popular INNER JOIN table_show ON id = showId ORDER BY `index` ASC")
+    fun getPopular(): LiveData<List<ShowPopularDB>>
 
     /**
      * Insert a new Shows in table_shows
@@ -29,11 +30,17 @@ interface TrendingShowsDAO{
     @Insert(entity = TrendingDB::class)
     fun insertTrending(trending: List<TrendingDB>)
 
+    @Insert(entity = PopularDB::class)
+    fun insertPopular(popular: List<PopularDB>)
+
     /**
      * Delete all Trending objects
      */
     @Query("DELETE FROM table_trending")
     suspend fun deleteTrendingShows()
+
+    @Query("DELETE FROM table_popular")
+    suspend fun deletePopularShows()
 
     /**
      * Update Trending Shows
@@ -49,6 +56,20 @@ interface TrendingShowsDAO{
         //Insert new Trendings in table_trending
         insertTrending(shows.map {
             it.trending
+        })
+    }
+
+    @Transaction
+    suspend fun updatePopularShows(shows: List<ShowPopularDB>) {
+        //Reset Trending Shows
+        deletePopularShows()
+        //Insert new Shows in table_show
+        insertShows(shows.map {
+            it.show
+        })
+        //Insert new popular in table_trending
+        insertPopular(shows.map {
+            it.popular
         })
     }
 }
