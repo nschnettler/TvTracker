@@ -2,24 +2,20 @@ package de.schnettler.tvtracker.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import de.schnettler.tvtracker.data.local.ShowDao
-import de.schnettler.tvtracker.data.model.Show
-import de.schnettler.tvtracker.data.model.asDomainModel
-import de.schnettler.tvtracker.data.model.asShowDatabase
+import de.schnettler.tvtracker.data.local.TrendingShowsDAO
+import de.schnettler.tvtracker.data.model.*
 import de.schnettler.tvtracker.data.remote.RetrofitClient
+import de.schnettler.tvtracker.util.TMDB_API_KEY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
-const val TMDB_API_KEY = "***TMDB_API_KEY***"
-
-class Repository(private val showDao: ShowDao) {
-    private var traktClient = RetrofitClient.tractService
-    private var tmdbClient = RetrofitClient.tmdbService
+class Repository(private val trendingDao: TrendingShowsDAO) {
+    private val traktClient = RetrofitClient.tractService
+    private val tmdbClient = RetrofitClient.tmdbService
 
 
-    suspend fun getPoster(showId: String) = withContext(Dispatchers.IO) {
-        RetrofitClient.tmdbService.getShowPoster(showId, TMDB_API_KEY)
+    private suspend fun getPoster(showId: String) = withContext(Dispatchers.IO) {
+        tmdbClient.getShowPoster(showId, TMDB_API_KEY)
     }
 
 
@@ -27,30 +23,31 @@ class Repository(private val showDao: ShowDao) {
         try {
             //Load Data From Network
             val trendingShows = traktClient.getTrendingShows()
-            Timber.i("Loaded ${trendingShows.body()?.size} Shows from Trakt.Tv")
+
             //Save Data in Database
             if (trendingShows.isSuccessful) {
-                val showsDataBase = trendingShows.body()?.asShowDatabase()
+                val showsRemote = trendingShows.body()
+                val showsDataBase = showsRemote?.asShowDB()
                 showsDataBase.let {
-                    showDao.updateTrendingShows(showsDataBase!!)
-                    for (show in showsDataBase) {
-                        val image = getPoster(show.tmdbId.toString())
+                    // Update Cached Trending Shows
+                    trendingDao.updateTrendingShows(showsDataBase!!)
+                    for ((index, showTrending) in showsDataBase.withIndex()) {
+                        val image = getPoster(showsRemote[index].show.ids.tmdb.toString())
                         if (image.isSuccessful) {
-                            show.posterUrl = image.body()!!.poster_path
-                            showDao.updateShow(show)
+                            showTrending.show.posterUrl = image.body()!!.poster_path
+                            //Update Cache with new Image
+                            trendingDao.updateShow(showTrending.show)
                         }
                     }
                 }
 
             }
-
         } catch (t: Throwable) {
             t.printStackTrace()
         }
-
     }
 
-    fun getTrendingShows(): LiveData<List<Show>> = Transformations.map(showDao.getTrendingShows()) {
-            it.asDomainModel()
+    fun getTrendingShows(): LiveData<List<Show>> = Transformations.map(trendingDao.getTrending()) {
+            it.asShow()
     }
 }

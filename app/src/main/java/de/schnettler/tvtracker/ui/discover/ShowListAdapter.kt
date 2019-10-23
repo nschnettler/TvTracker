@@ -1,6 +1,5 @@
 package de.schnettler.tvtracker.ui.discover
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,7 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import de.schnettler.tvtracker.data.model.Show
 import de.schnettler.tvtracker.databinding.ShowViewItemBinding
-import timber.log.Timber
 
 class ShowListAdapter: ListAdapter<Show, ShowListAdapter.ShowViewHolder>(DiffCallBack) {
     class ShowViewHolder(private var binding: ShowViewItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -20,8 +18,7 @@ class ShowListAdapter: ListAdapter<Show, ShowListAdapter.ShowViewHolder>(DiffCal
 
     object DiffCallBack: DiffUtil.ItemCallback<Show>() {
         override fun areItemsTheSame(oldItem: Show, newItem: Show): Boolean {
-            Timber.i("${oldItem.posterUrl} -  ${newItem.posterUrl}")
-            return oldItem.traktId == newItem.traktId
+            return oldItem.id == newItem.id
         }
         override fun areContentsTheSame(oldItem: Show, newItem: Show): Boolean = oldItem == newItem
     }

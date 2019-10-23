@@ -1,17 +1,17 @@
 package de.schnettler.tvtracker.ui.discover
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import de.schnettler.tvtracker.data.Repository
 import de.schnettler.tvtracker.data.local.getDatabase
-import de.schnettler.tvtracker.data.model.Show
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class DiscoverViewModel(application: Application) : ViewModel() {
     private val dataBase = getDatabase(application)
     //Repository
-    private val repo = Repository(dataBase.showDao)
+    private val repo = Repository(dataBase.trendingShowsDao)
 
     //Trending Shows
     var trendingShows = repo.getTrendingShows()
@@ -23,38 +23,6 @@ class DiscoverViewModel(application: Application) : ViewModel() {
     init {
         viewModelScope.launch {
             repo.refreshTrendingShows()
-
-            val test = repo.getTrendingShows()
-            Timber.i("Loaded ${test.value?.size} over the network")
-        }
-    }
-
-    private fun getTrendingShows() {
-        viewModelScope.launch {
-            //_trendingShows = repo.getTrendingShows()
-            /*
-            val response = repo.getTrendingShows()
-            if (response.isSuccessful) {
-                response.body().let {
-                    val showsLocal = it?.asShowModel()
-                    _trendingShows.value = showsLocal
-                    val newShowsLocal = ArrayList<Show>()
-                    //Load Images
-                    showsLocal.let {
-                        for (item in showsLocal!!) {
-                            val image = repo.getPoster(item.tmdbId.toString())
-                            item.posterUrl = image.body()?.poster_path ?: ""
-                            newShowsLocal.add(item)
-                            Timber.i("LOADED IMAGE")
-                        }
-                    }
-                    _trendingShows.value = showsLocal
-
-
-                }
-            } else {
-                Timber.e("Error loading Trending Shows: ${response.code()}")
-            } */
         }
     }
 

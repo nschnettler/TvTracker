@@ -1,27 +1,38 @@
 package de.schnettler.tvtracker.data.model
 
+import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import timber.log.Timber
 
-@Entity(tableName = "table_shows_trending")
-data class ShowDatabase(
+//Trending Show
+@Entity(tableName = "table_trending", foreignKeys = [ForeignKey(
+    entity = ShowDB::class,
+    parentColumns = arrayOf("id"),
+    childColumns = arrayOf("showId"))]
+)
+data class TrendingDB(
+    @PrimaryKey val showId: Long,
+    val watcher: Long
+)
+
+//Show (Short)
+@Entity(tableName = "table_show")
+data class ShowDB(
+    @PrimaryKey val id: Long,
     val title: String,
-    @PrimaryKey val traktId: Long,
-    val tmdbId: Long,
-    val year: Long,
-    val watchers: Long,
     var posterUrl: String
 )
 
-fun List<ShowDatabase>.asDomainModel(): List<Show> {
+class ShowTrendingDB(@Embedded val trending: TrendingDB, @Embedded val show: ShowDB)
+
+fun List<ShowTrendingDB>.asShow(): List<Show> {
     return map {
         Show (
-            title = it.title,
-            tmdbId = it.tmdbId,
-            traktId = it.traktId,
-            year = it.year,
-            watchers = it.watchers,
-            posterUrl = it.posterUrl
+            id = it.show.id,
+            title = it.show.title,
+            posterUrl = it.show.posterUrl
         )
     }
 }
