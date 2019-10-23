@@ -9,7 +9,7 @@ interface TrendingShowsDAO{
     /**
      * Get all Trending Shows. Creates Inner Join of Trending and Shows Table
      */
-    @Query("SELECT * FROM table_trending INNER JOIN table_show ON id = showId ORDER BY watcher DESC")
+    @Query("SELECT * FROM table_trending ORDER BY watcher DESC")
     fun getTrending(): LiveData<List<ShowTrendingDB>>
 
     @Query("SELECT * FROM table_popular INNER JOIN table_show ON id = showId ORDER BY `index` ASC")

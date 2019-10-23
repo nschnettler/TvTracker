@@ -4,22 +4,14 @@ import androidx.room.*
 import timber.log.Timber
 
 //Trending Show
-@Entity(tableName = "table_trending", foreignKeys = [ForeignKey(
-    entity = ShowDB::class,
-    parentColumns = arrayOf("id"),
-    childColumns = arrayOf("showId"))]
-)
+@Entity(tableName = "table_trending")
 data class TrendingDB(
     @PrimaryKey val showId: Long,
     val watcher: Long
 )
 
 //Popular Show
-@Entity(tableName = "table_popular", foreignKeys = [ForeignKey(
-    entity = ShowDB::class,
-    parentColumns = arrayOf("id"),
-    childColumns = arrayOf("showId"))]
-)
+@Entity(tableName = "table_popular")
 data class PopularDB(
     @PrimaryKey val showId: Long,
     val index: Int
@@ -38,11 +30,6 @@ data class ShowDB(
         this.tmdbId = tmdbId
     }
 }
-
-
-
-class ShowTrendingDB(@Embedded val trending: TrendingDB, @Embedded val show: ShowDB)
-class ShowPopularDB(@Embedded val popular: PopularDB, @Embedded val show: ShowDB)
 
 
 fun List<ShowTrendingDB>.asTrendingShow(): List<Show> {
