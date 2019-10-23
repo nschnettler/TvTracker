@@ -42,7 +42,7 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<Show>?) {
 @BindingAdapter("imageUrl")
 fun bindImage(imgView: ImageView, imgUrl: String?) {
     imgUrl?.let {
-        Timber.i(TMDB_IMAGE_BASE_URL + imgUrl)
+        imgView.clipToOutline = true
         imgView.load(TMDB_IMAGE_BASE_URL + imgUrl) {
             placeholder(R.drawable.loading_animation)
         }

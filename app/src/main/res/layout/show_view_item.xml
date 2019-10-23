@@ -48,18 +48,18 @@
 
         <ImageView
             android:id="@+id/imageView"
+            imageUrl="@{show.posterUrl}"
             android:layout_width="72dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:background="#0d000000"
+            android:background="@drawable/round_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="h,12:18"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars"
-            imageUrl="@{show.posterUrl}"/>
+            tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/year"
