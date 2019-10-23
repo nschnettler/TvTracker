@@ -5,4 +5,5 @@
     <color name="colorAccent">#7E8ACD</color>
     <color name="colorBackground">#FFF</color>
     <color name="colorBackgroundElevated">@color/colorBackground</color>
+    <color name="colorBackgroundTransparent">#CCFFFFFF</color>
 </resources>

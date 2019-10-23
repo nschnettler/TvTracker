@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -32,6 +33,7 @@ class DiscoverFragment : Fragment() {
                 top = insets.systemWindowInsetTop
             )
         }
+        binding.trendingRecycler.clipToPadding = false
 
         return binding.root
     }
