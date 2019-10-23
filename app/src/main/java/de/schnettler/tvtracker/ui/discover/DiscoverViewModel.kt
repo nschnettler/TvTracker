@@ -1,9 +1,7 @@
 package de.schnettler.tvtracker.ui.discover
 
 import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import de.schnettler.tvtracker.data.Repository
 import de.schnettler.tvtracker.data.local.getDatabase
 import kotlinx.coroutines.launch
@@ -17,11 +15,12 @@ class DiscoverViewModel(application: Application) : ViewModel() {
     var trendingShows = repo.getTrendingShows()
     var popularShows = repo.getPopularShows()
 
+    private val _isRefreshing = MutableLiveData<Boolean>()
+    val isRefreshing: LiveData<Boolean>
+        get() = _isRefreshing
+
     init {
-        viewModelScope.launch {
-            repo.refreshTrendingShows()
-            repo.refreshPopularShows()
-        }
+        onRefresh()
     }
 
     /**
@@ -35,5 +34,14 @@ class DiscoverViewModel(application: Application) : ViewModel() {
             }
             throw IllegalArgumentException("Unable to construct viewmodel")
         }
+    }
+
+     fun onRefresh() {
+         _isRefreshing.value = true
+         viewModelScope.launch {
+             repo.refreshTrendingShows()
+             repo.refreshPopularShows()
+         }
+         _isRefreshing.value = false
     }
 }
