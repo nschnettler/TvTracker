@@ -7,7 +7,7 @@ import de.schnettler.tvtracker.data.model.ShowDatabase
 
 @Dao
 interface ShowDao {
-    @Query("SELECT * FROM table_shows_trending")
+    @Query("SELECT * FROM table_shows_trending ORDER BY watchers DESC")
     fun getTrendingShows(): LiveData<List<ShowDatabase>>
 
     @Query("DELETE FROM table_shows_trending ")
