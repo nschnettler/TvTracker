@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.*
 import de.schnettler.tvtracker.data.Repository
 import de.schnettler.tvtracker.data.local.getDatabase
+import de.schnettler.tvtracker.data.model.Show
 import kotlinx.coroutines.launch
 
 class DiscoverViewModel(application: Application) : ViewModel() {
@@ -43,5 +44,12 @@ class DiscoverViewModel(application: Application) : ViewModel() {
              repo.refreshPopularShows()
          }
          _isRefreshing.value = false
+    }
+
+    fun onShowClicked(show: Show) {
+        viewModelScope.launch {
+            repo.refreshShowSummary(show.id)
+        }
+
     }
 }

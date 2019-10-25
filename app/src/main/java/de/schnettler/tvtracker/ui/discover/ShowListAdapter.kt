@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import de.schnettler.tvtracker.data.model.Show
 import de.schnettler.tvtracker.databinding.ShowViewItemBinding
+import timber.log.Timber
 
-class ShowListAdapter: ListAdapter<Show, ShowListAdapter.ShowViewHolder>(DiffCallBack) {
+class ShowListAdapter(private val onClickListener: OnClickListener): ListAdapter<Show, ShowListAdapter.ShowViewHolder>(DiffCallBack) {
     class ShowViewHolder(private var binding: ShowViewItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind (show: Show) {
             binding.show = show
@@ -29,6 +30,14 @@ class ShowListAdapter: ListAdapter<Show, ShowListAdapter.ShowViewHolder>(DiffCal
 
     override fun onBindViewHolder(holder: ShowViewHolder, position: Int) {
         val show = getItem(position)
+        holder.itemView.setOnClickListener {
+            Timber.i("Item Clicked")
+            onClickListener.onClick(show)
+        }
         holder.bind(show)
+    }
+
+    class OnClickListener(val clickListener: (show: Show) -> Unit) {
+        fun onClick(show: Show) = clickListener(show)
     }
 }
