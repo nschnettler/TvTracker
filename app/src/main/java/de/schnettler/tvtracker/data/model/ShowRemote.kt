@@ -1,5 +1,7 @@
 package de.schnettler.tvtracker.data.model
 
+import com.squareup.moshi.Json
+
 data class TrendingShowRemote(
         val watchers: Long,
         val show: ShowRemote
@@ -22,6 +24,29 @@ data class ShowImagesRemote(
         val poster_path: String,
         val backdrop_path: String
 )
+
+data class ShowDetails(
+    val title: String,
+    val year: Long,
+    val ids: ShowIdRemote,
+    val overview : String,
+    @Json(name = "first_aired") val firstAired : String,
+    val airs: ShowAirInformationRemote,
+    val runtime: String,
+    val network: String,
+    val trailer: String,
+    val status: String,
+    val rating: String,
+    val genres: List<String>)
+
+class ShowAirInformationRemote(
+        val day: String,
+        val time: String,
+        val timezone: String
+)
+
+object Adapter {
+}
 
 fun List<TrendingShowRemote>.asShow(): List<Show>? {
         return map {

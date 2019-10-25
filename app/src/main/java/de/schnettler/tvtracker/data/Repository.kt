@@ -8,6 +8,7 @@ import de.schnettler.tvtracker.data.remote.RetrofitClient
 import de.schnettler.tvtracker.util.TMDB_API_KEY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class Repository(private val trendingDao: TrendingShowsDAO) {
     private val traktClient = RetrofitClient.tractService
@@ -60,6 +61,11 @@ class Repository(private val trendingDao: TrendingShowsDAO) {
         } catch (t: Throwable) {
             t.printStackTrace()
         }
+    }
+
+    suspend fun refreshShowSummary(show_id: Long) = withContext(Dispatchers.IO) {
+        val result = traktClient.getShowSummary(show_id)
+        Timber.i(result.toString())
     }
 
     fun getTrendingShows(): LiveData<List<Show>> = Transformations.map(trendingDao.getTrending()) {
