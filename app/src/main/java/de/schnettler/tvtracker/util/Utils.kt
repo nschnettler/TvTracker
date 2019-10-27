@@ -10,7 +10,14 @@ import kotlin.math.abs
 
 
 const val TMDB_API_KEY = "***TMDB_API_KEY***"
-const val TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w185"
+const val TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/"
+
+enum class ImageQuality(val quality: String) {
+    LOW("w185"),
+    MEDIUM("w300"),
+    HIGH("w1280"),
+    ORIGINAL("original")
+}
 
 enum class StatusCodes(val code: Int) {
     SUCCESS(200),

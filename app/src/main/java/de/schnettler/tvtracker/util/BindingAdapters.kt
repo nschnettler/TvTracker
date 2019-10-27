@@ -14,11 +14,11 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<Show>?) {
     adapter.submitList(data)
 }
 
-@BindingAdapter("imageUrl")
-fun bindImage(imgView: ImageView, imgUrl: String?) {
-    imgUrl?.let {
+@BindingAdapter(value = ["imageUrl", "imageQuality"], requireAll = true)
+fun bindImage(imgView: ImageView, imageUrl: String?, imageQuality: ImageQuality) {
+    imageUrl?.let {
         imgView.clipToOutline = true
-        imgView.load(TMDB_IMAGE_BASE_URL + imgUrl) {
+        imgView.load(TMDB_IMAGE_BASE_URL + imageQuality.quality +  imageUrl) {
             placeholder(R.drawable.loading_animation)
         }
     }
