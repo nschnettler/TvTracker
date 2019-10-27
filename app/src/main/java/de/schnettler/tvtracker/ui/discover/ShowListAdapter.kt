@@ -1,7 +1,10 @@
 package de.schnettler.tvtracker.ui.discover
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -9,11 +12,15 @@ import de.schnettler.tvtracker.data.model.Show
 import de.schnettler.tvtracker.databinding.ShowViewItemBinding
 import timber.log.Timber
 
-class ShowListAdapter(private val onClickListener: OnClickListener): ListAdapter<Show, ShowListAdapter.ShowViewHolder>(DiffCallBack) {
+class ShowListAdapter(private val onClickListener: OnClickListener, val type: String): ListAdapter<Show, ShowListAdapter.ShowViewHolder>(DiffCallBack) {
     class ShowViewHolder(private var binding: ShowViewItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind (show: Show) {
+        fun bind (show: Show, onClickListener: OnClickListener, type: String) {
+            ViewCompat.setTransitionName(binding.showPoster, "$type-${show.id}")
             binding.show = show
             binding.executePendingBindings()
+            binding.showPoster.setOnClickListener {
+                onClickListener.onClick(show, it)
+            }
         }
     }
 
@@ -29,15 +36,10 @@ class ShowListAdapter(private val onClickListener: OnClickListener): ListAdapter
     }
 
     override fun onBindViewHolder(holder: ShowViewHolder, position: Int) {
-        val show = getItem(position)
-        holder.itemView.setOnClickListener {
-            Timber.i("Item Clicked")
-            onClickListener.onClick(show)
-        }
-        holder.bind(show)
+        holder.bind(getItem(position), onClickListener, type)
     }
 
-    class OnClickListener(val clickListener: (show: Show) -> Unit) {
-        fun onClick(show: Show) = clickListener(show)
+    class OnClickListener(val clickListener: (show: Show, view: View) -> Unit) {
+        fun onClick(show: Show, view: View) = clickListener(show, view)
     }
 }

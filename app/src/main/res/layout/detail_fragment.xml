@@ -49,10 +49,10 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        </androidx.core.widget.NestedScrollView>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"></androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -65,13 +65,11 @@
             app:layout_anchorGravity="bottom|right|end" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/showPoster"
             android:layout_width="96dp"
             android:layout_height="144dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="2dp"
             android:background="@drawable/round_background"
-            android:backgroundTint="#F00"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="h,12:18"
             app:layout_constraintEnd_toEndOf="parent"
@@ -81,6 +79,5 @@
             app:layout_anchor="@+id/appbar"
             app:layout_anchorGravity="bottom|left|start"
             imageUrl="@{viewModel.show.posterUrl}"/>
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

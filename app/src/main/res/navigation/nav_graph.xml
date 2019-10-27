@@ -32,5 +32,8 @@
         <argument
             android:name="show"
             app:argType="de.schnettler.tvtracker.data.model.Show" />
+        <argument
+            android:name="transitionName"
+            app:argType="string" />
     </fragment>
 </navigation>
