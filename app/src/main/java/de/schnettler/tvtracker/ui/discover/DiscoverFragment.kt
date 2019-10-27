@@ -9,6 +9,8 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
+import de.schnettler.tvtracker.R
 import de.schnettler.tvtracker.databinding.DiscoverFragmentBinding
 import dev.chrisbanes.insetter.Insetter
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
@@ -28,7 +30,7 @@ class DiscoverFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
         binding.trendingShowsHolder.trendingRecycler.adapter = ShowListAdapter(ShowListAdapter.OnClickListener{
-            viewModel.onShowClicked(it)
+            this.findNavController().navigate(DiscoverFragmentDirections.actionDiscoverToDetailFragment(it))
         })
         binding.popular.trendingRecycler.adapter = ShowListAdapter(ShowListAdapter.OnClickListener{
             viewModel.onShowClicked(it)

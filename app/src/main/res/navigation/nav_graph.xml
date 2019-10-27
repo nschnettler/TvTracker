@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
     app:startDestination="@id/watch">
 
     <fragment
         android:id="@+id/watch"
         android:name="de.schnettler.tvtracker.ui.watch.WatchFragment"
-        android:label="WatchFragment" />
+        android:label="WatchFragment"
+        tools:layout="@layout/watch_fragment"/>
     <fragment
         android:id="@+id/discover"
         android:name="de.schnettler.tvtracker.ui.discover.DiscoverFragment"
-        android:label="DiscoverFragment" />
+        android:label="DiscoverFragment"
+        tools:layout="@layout/discover_fragment">
+        <action
+            android:id="@+id/action_discover_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/account"
         android:name="de.schnettler.tvtracker.ui.account.AccountFragment"
-        android:label="AccountFragment" />
+        android:label="AccountFragment"
+        tools:layout="@layout/account_fragment"/>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="de.schnettler.tvtracker.ui.detail.DetailFragment"
+        android:label="detail_fragment"
+        tools:layout="@layout/detail_fragment" >
+        <argument
+            android:name="show"
+            app:argType="de.schnettler.tvtracker.data.model.Show" />
+    </fragment>
 </navigation>

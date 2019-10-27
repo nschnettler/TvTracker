@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="de.schnettler.tvtracker.ui.detail.DetailViewModel" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/coord">
+
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:clipToPadding="false"
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="250dp">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/collapsing_toolbar"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleMarginStart="128dp"
+                app:expandedTitleTextAppearance="@style/TextAppearance.CollapsedToolbar"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_collapseMode="parallax"
+                    app:layout_collapseParallaxMultiplier="0.5"
+                    android:scaleType="centerCrop"
+                    android:background="#2a2a3b" />
+
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    android:id="@+id/toolbar"
+                    app:title="@{viewModel.show.title}"/>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:src="@drawable/ic_heart"
+            app:fabSize="normal"
+            app:layout_anchor="@+id/appbar"
+            app:layout_anchorGravity="bottom|right|end" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="96dp"
+            android:layout_height="144dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="2dp"
+            android:background="@drawable/round_background"
+            android:backgroundTint="#F00"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="h,12:18"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars"
+            app:layout_anchor="@+id/appbar"
+            app:layout_anchorGravity="bottom|left|start"
+            imageUrl="@{viewModel.show.posterUrl}"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
