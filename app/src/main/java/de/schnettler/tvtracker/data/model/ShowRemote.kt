@@ -69,7 +69,8 @@ fun List<TrendingShowRemote>.asShowTrendingDB(): List<ShowTrendingDB>? {
                                 id = it.show.ids.trakt,
                                 title = it.show.title,
                                 tmdbId = it.show.ids.tmdb.toString(),
-                                posterUrl = ""
+                                posterUrl = "",
+                                backdropUrl = ""
                         )
                 )
         }
@@ -86,7 +87,8 @@ fun List<ShowRemote>.asShowPopularDB(): List<ShowPopularDB>? {
                                 id = it.ids.trakt,
                                 title = it.title,
                                 tmdbId = it.ids.tmdb.toString(),
-                                posterUrl = ""
+                                posterUrl = "",
+                                backdropUrl = ""
                         )
                 )
         }

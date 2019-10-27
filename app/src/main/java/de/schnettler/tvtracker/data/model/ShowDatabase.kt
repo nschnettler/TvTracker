@@ -22,11 +22,12 @@ data class PopularDB(
 data class ShowDB(
     @PrimaryKey val id: Long,
     val title: String,
-    var posterUrl: String
+    var posterUrl: String,
+    var backdropUrl: String
 ) {
     @Ignore var tmdbId: String = ""
 
-    constructor(id: Long, title: String,  posterUrl: String, tmdbId: String): this(id, title, posterUrl) {
+    constructor(id: Long, title: String,  posterUrl: String, backdropUrl: String, tmdbId: String): this(id, title, posterUrl, backdropUrl) {
         this.tmdbId = tmdbId
     }
 }
@@ -37,7 +38,8 @@ fun List<ShowTrendingDB>.asTrendingShow(): List<Show> {
         Show (
             id = it.show.id,
             title = it.show.title,
-            posterUrl = it.show.posterUrl
+            posterUrl = it.show.posterUrl,
+            backdropUrl = it.show.backdropUrl
         )
     }
 }
@@ -47,7 +49,8 @@ fun List<ShowPopularDB>.asPopularShow(): List<Show> {
         Show(
             id = it.show.id,
             title = it.show.title,
-            posterUrl = it.show.posterUrl
+            posterUrl = it.show.posterUrl,
+            backdropUrl = it.show.backdropUrl
         )
     }
 }

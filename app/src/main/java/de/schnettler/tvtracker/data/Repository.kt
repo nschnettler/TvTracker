@@ -81,6 +81,7 @@ class Repository(private val trendingDao: TrendingShowsDAO) {
             val image = getPoster(showDB.tmdbId)
             if (image.isSuccessful) {
                 showDB.posterUrl = image.body()!!.poster_path
+                showDB.backdropUrl = image.body()!!.backdrop_path
                 trendingDao.updateShow(showDB)
             }
         }
