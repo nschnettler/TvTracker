@@ -7,6 +7,7 @@
         <variable
             name="show"
             type="de.schnettler.tvtracker.data.model.Show" />
+        <import type="de.schnettler.tvtracker.util.ImageQuality"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,6 +21,7 @@
         <ImageView
             android:id="@+id/showPoster"
             imageUrl="@{show.posterUrl}"
+            imageQuality="@{ImageQuality.LOW}"
             android:layout_width="96dp"
             android:layout_height="0dp"
             android:layout_marginStart="2dp"

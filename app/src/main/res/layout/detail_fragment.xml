@@ -7,7 +7,7 @@
         <variable
             name="viewModel"
             type="de.schnettler.tvtracker.ui.detail.DetailViewModel" />
-
+        <import type="de.schnettler.tvtracker.util.ImageQuality"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -37,7 +37,9 @@
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.5"
                     android:scaleType="centerCrop"
-                    android:background="#2a2a3b" />
+                    android:background="#2a2a3b"
+                    imageUrl="@{viewModel.show.backdropUrl}"
+                    imageQuality="@{ImageQuality.HIGH}"/>
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
@@ -52,7 +54,11 @@
             android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"></androidx.core.widget.NestedScrollView>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="2000dp"/>
+        </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
@@ -78,6 +84,7 @@
             tools:srcCompat="@tools:sample/avatars"
             app:layout_anchor="@+id/appbar"
             app:layout_anchorGravity="bottom|left|start"
-            imageUrl="@{viewModel.show.posterUrl}"/>
+            imageUrl="@{viewModel.show.posterUrl}"
+            imageQuality="@{ImageQuality.LOW}"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
