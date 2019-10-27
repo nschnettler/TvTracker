@@ -9,6 +9,7 @@ import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -21,6 +22,14 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.main_activity)
 
         binding.root.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        NavigationUI.setupWithNavController(binding.bottomNavigation, this.findNavController(R.id.nav_host_fragment))
+        val navController = this.findNavController(R.id.nav_host_fragment)
+        NavigationUI.setupWithNavController(binding.bottomNavigation, navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            binding.bottomNavigation.visibility = when(destination.id) {
+                R.id.detailFragment -> View.GONE
+                else -> View.VISIBLE
+            }
+        }
     }
 }
