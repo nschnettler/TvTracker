@@ -1,8 +1,9 @@
 package de.schnettler.tvtracker.data
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import de.schnettler.tvtracker.data.local.TrendingShowsDAO
+import de.schnettler.tvtracker.data.local.getDatabase
 import de.schnettler.tvtracker.data.model.*
 import de.schnettler.tvtracker.data.remote.RetrofitClient
 import de.schnettler.tvtracker.util.TMDB_API_KEY
@@ -10,31 +11,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class Repository(private val trendingDao: TrendingShowsDAO) {
-    private val traktClient = RetrofitClient.tractService
-    private val tmdbClient = RetrofitClient.tmdbService
+class Repository(private val context: Application) {
+    private val showsNetwork = RetrofitClient.showsNetworkService
+    private val imagesNetwork = RetrofitClient.imagesNetworkService
+    private val showsDatabase = getDatabase(context).trendingShowsDao
 
 
     private suspend fun getPoster(showId: String) = withContext(Dispatchers.IO) {
-        tmdbClient.getShowPoster(showId, TMDB_API_KEY)
+        imagesNetwork.getShowPoster(showId, TMDB_API_KEY)
     }
 
 
     suspend fun refreshTrendingShows() = withContext(Dispatchers.IO) {
         try {
             //Load Data From Network
-            val trendingShows = traktClient.getTrendingShows()
+            val trendingShows = showsNetwork.getTrendingShows()
 
             //Save Data in Database
             if (trendingShows.isSuccessful) {
-                val showsRemote = trendingShows.body()
-                val showsDataBase = showsRemote?.asShowTrendingDB()
-                showsDataBase.let {
+                val showsRM = trendingShows.body()
+                val showsDB = showsRM?.asShowTrendingDB()
+                showsDB?.let {
                     // Update Cached Trending Shows
-                    trendingDao.updateTrendingShows(showsDataBase!!)
-                    refreshPosters(showsDataBase.map {
-                        it.show
-                    })
+                    showsDatabase.updateTrendingShows(showsDB)
+                    refreshPosters(showsDB.map { it.show })
                 }
 
             }
@@ -46,16 +46,14 @@ class Repository(private val trendingDao: TrendingShowsDAO) {
     suspend fun refreshPopularShows() = withContext(Dispatchers.IO) {
         try {
             //Load Data From Network
-            val popularShows = traktClient.getPopularShows()
+            val popularShows = showsNetwork.getPopularShows()
             //Save In DB
             if (popularShows.isSuccessful) {
                 val showsRemote = popularShows.body()
                 val showsDataBase = showsRemote?.asShowPopularDB()
-                showsDataBase.let {
-                    trendingDao.updatePopularShows(showsDataBase!!)
-                    refreshPosters(showsDataBase.map {
-                        it.show
-                    })
+                showsDataBase?.let {
+                    showsDatabase.updatePopularShows(showsDataBase)
+                    refreshPosters(showsDataBase.map { it.show })
                 }
             }
         } catch (t: Throwable) {
@@ -64,15 +62,15 @@ class Repository(private val trendingDao: TrendingShowsDAO) {
     }
 
     suspend fun refreshShowSummary(show_id: Long) = withContext(Dispatchers.IO) {
-        val result = traktClient.getShowSummary(show_id)
+        val result = showsNetwork.getShowSummary(show_id)
         Timber.i(result.toString())
     }
 
-    fun getTrendingShows(): LiveData<List<Show>> = Transformations.map(trendingDao.getTrending()) {
+    fun getTrendingShows(): LiveData<List<Show>> = Transformations.map(showsDatabase.getTrending()) {
         it.asTrendingShow()
     }
 
-    fun getPopularShows(): LiveData<List<Show>> = Transformations.map(trendingDao.getPopular()) {
+    fun getPopularShows(): LiveData<List<Show>> = Transformations.map(showsDatabase.getPopular()) {
         it.asPopularShow()
     }
 
@@ -82,7 +80,7 @@ class Repository(private val trendingDao: TrendingShowsDAO) {
             if (image.isSuccessful) {
                 showDB.posterUrl = image.body()!!.poster_path
                 showDB.backdropUrl = image.body()!!.backdrop_path
-                trendingDao.updateShow(showDB)
+                showsDatabase.updateShow(showDB)
             }
         }
     }

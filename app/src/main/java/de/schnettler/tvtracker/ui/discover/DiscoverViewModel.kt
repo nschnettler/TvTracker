@@ -7,10 +7,8 @@ import de.schnettler.tvtracker.data.local.getDatabase
 import de.schnettler.tvtracker.data.model.Show
 import kotlinx.coroutines.launch
 
-class DiscoverViewModel(application: Application) : ViewModel() {
-    private val dataBase = getDatabase(application)
-    //Repository
-    private val repo = Repository(dataBase.trendingShowsDao)
+class DiscoverViewModel(context: Application) : AndroidViewModel(context) {
+    private val repo = Repository(context)
 
     //Trending Shows
     var trendingShows = repo.getTrendingShows()

@@ -64,11 +64,11 @@ object RetrofitClient {
         .client(tmdbHttpClient)
         .build()
 
-    val tractService: TraktApiService by lazy {
+    val showsNetworkService: TraktApiService by lazy {
         traktRetrofit.create(TraktApiService::class.java)
     }
 
-    val tmdbService: TmdbApiService by lazy {
+    val imagesNetworkService: TmdbApiService by lazy {
         tmdbRetrofit.create(TmdbApiService::class.java)
     }
 }
