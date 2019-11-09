@@ -49,6 +49,7 @@ dependencies {
 
     //Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$version_lifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$version_lifecycle"
 
     //Material Components
     implementation "com.google.android.material:material:$version_material"
@@ -79,15 +80,20 @@ dependencies {
     //Room
     implementation "androidx.room:room-runtime:$version_room"
     implementation "androidx.room:room-ktx:$version_room"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0'
     kapt "androidx.room:room-compiler:$version_room"
 
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    //Swipe Refresh
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$version_swiperefresh"
 
+    //Paging
     implementation "androidx.paging:paging-runtime-ktx:$version_paging"
 
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
-    implementation "androidx.browser:browser:1.0.0"
+    //DataBase Debug
+    debugImplementation "com.amitshekhar.android:debug-db:$version_databasedebug"
+
+    //Custom Tabs
+    implementation "androidx.browser:browser:$version_browser"
+
+    //Transition
+    implementation "androidx.transition:transition:$version_transition"
 }
