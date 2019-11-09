@@ -6,7 +6,7 @@
     <data>
         <variable
             name="shows"
-            type="androidx.lifecycle.LiveData&lt;java.util.List&lt;de.schnettler.tvtracker.data.model.Show>>" />
+            type="androidx.lifecycle.LiveData&lt;androidx.paging.PagedList&lt;de.schnettler.tvtracker.data.model.Show>>" />
 
         <variable
             name="title"

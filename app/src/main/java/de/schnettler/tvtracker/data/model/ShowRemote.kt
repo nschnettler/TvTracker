@@ -1,6 +1,7 @@
 package de.schnettler.tvtracker.data.model
 
 import com.squareup.moshi.Json
+import timber.log.Timber
 
 data class TrendingShowRemote(
         val watchers: Long,
@@ -16,8 +17,8 @@ data class ShowIdRemote(
         val trakt: Long,
         val slug: String,
         val tvdb: Long,
-        val imdb: String,
-        val tmdb: Long
+        val imdb: String?,
+        val tmdb: Long?
 )
 
 data class ShowImagesRemote(
@@ -45,50 +46,38 @@ class ShowAirInformationRemote(
         val timezone: String
 )
 
-object Adapter {
-}
-
-fun List<TrendingShowRemote>.asShow(): List<Show>? {
-        return map {
-                Show (
-                        id = it.show.ids.trakt,
-                        title = it.show.title
+fun List<TrendingShowRemote>.asShowTrendingDB(page: Int): List<ShowTrendingDB>? {
+        return mapIndexed {localIndex, it ->
+            ShowTrendingDB(
+                TrendingDB(
+                    index = localIndex + 10 * page,
+                    showId = it.show.ids.trakt,
+                    watcher = it.watchers
+                ),
+                ShowDB(
+                    id = it.show.ids.trakt,
+                    title = it.show.title,
+                    tmdbId = it.show.ids.tmdb.toString(),
+                    posterUrl = "",
+                    backdropUrl = ""
                 )
+            )
         }
 }
 
-
-fun List<TrendingShowRemote>.asShowTrendingDB(): List<ShowTrendingDB>? {
-        return map {
-                ShowTrendingDB(
-                        TrendingDB(
-                                showId = it.show.ids.trakt,
-                                watcher = it.watchers
-                        ),
-                        ShowDB(
-                                id = it.show.ids.trakt,
-                                title = it.show.title,
-                                tmdbId = it.show.ids.tmdb.toString(),
-                                posterUrl = "",
-                                backdropUrl = ""
-                        )
-                )
-        }
-}
-
-fun List<ShowRemote>.asShowPopularDB(): List<ShowPopularDB>? {
-        return mapIndexed {index, it ->
+fun List<ShowRemote>.asShowPopularDB(page: Int): List<ShowPopularDB>? {
+        return mapIndexed {localIndex, it ->
                 ShowPopularDB(
                         PopularDB(
-                                showId = it.ids.trakt,
-                                index = index
+                            showId = it.ids.trakt,
+                            index = localIndex + 10 * page
                         ),
                         ShowDB(
-                                id = it.ids.trakt,
-                                title = it.title,
-                                tmdbId = it.ids.tmdb.toString(),
-                                posterUrl = "",
-                                backdropUrl = ""
+                            id = it.ids.trakt,
+                            title = it.title,
+                            tmdbId = it.ids.tmdb.toString(),
+                            posterUrl = "",
+                            backdropUrl = ""
                         )
                 )
         }

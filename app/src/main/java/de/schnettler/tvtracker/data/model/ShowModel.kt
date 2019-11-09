@@ -8,5 +8,6 @@ data class Show(
     val id: Long,
     val title: String,
     var posterUrl: String = "",
-    var backdropUrl: String = ""
+    var backdropUrl: String = "",
+    val index: Int
 ): Parcelable

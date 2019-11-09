@@ -2,6 +2,7 @@ package de.schnettler.tvtracker.util
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import de.schnettler.tvtracker.R
@@ -9,7 +10,7 @@ import de.schnettler.tvtracker.data.model.Show
 import de.schnettler.tvtracker.ui.discover.ShowListAdapter
 
 @BindingAdapter("listShowData")
-fun bindRecyclerView(recyclerView: RecyclerView, data: List<Show>?) {
+fun bindRecyclerView(recyclerView: RecyclerView, data: PagedList<Show>?) {
     val adapter = recyclerView.adapter as ShowListAdapter
     adapter.submitList(data)
 }

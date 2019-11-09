@@ -11,6 +11,8 @@ import kotlin.math.abs
 
 const val TMDB_API_KEY = "***TMDB_API_KEY***"
 const val TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/"
+const val SHOW_LIST_PAGE_SIZE = 10
+const val SHOW_LIST_PAGE_MAX = 5
 
 enum class ImageQuality(val quality: String) {
     LOW("w185"),
@@ -22,6 +24,11 @@ enum class ImageQuality(val quality: String) {
 enum class StatusCodes(val code: Int) {
     SUCCESS(200),
     SUCCESS_NEW_SOURCE(201)
+}
+
+enum class ShowListType() {
+    TRENDING,
+    POPULAR
 }
 
 fun Context.makeToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

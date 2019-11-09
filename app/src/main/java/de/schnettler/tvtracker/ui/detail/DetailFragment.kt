@@ -16,6 +16,7 @@ import androidx.transition.TransitionInflater
 import coil.api.load
 import coil.decode.DataSource
 import coil.request.Request
+import com.google.android.material.appbar.AppBarLayout
 
 import de.schnettler.tvtracker.R
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
@@ -45,6 +46,10 @@ class DetailFragment : Fragment() {
                 top = initialState.paddings.top + insets.systemWindowInsetTop
             )
         }
+        binding.appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            val range = (-appBarLayout.totalScrollRange).toFloat()
+            binding.showPoster.setImageAlpha((255 * (1.0f - verticalOffset.toFloat() / range)).toInt())
+        });
         val args = DetailFragmentArgs.fromBundle(arguments!!)
 
         ViewCompat.setTransitionName(binding.showPoster, args.transitionName)
