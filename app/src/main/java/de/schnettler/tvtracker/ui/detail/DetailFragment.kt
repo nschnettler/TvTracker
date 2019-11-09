@@ -46,14 +46,7 @@ class DetailFragment : Fragment() {
                 top = initialState.paddings.top + insets.systemWindowInsetTop
             )
         }
-        binding.appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            val range = (-appBarLayout.totalScrollRange).toFloat()
-            binding.showPoster.setImageAlpha((255 * (1.0f - verticalOffset.toFloat() / range)).toInt())
-        });
         val args = DetailFragmentArgs.fromBundle(arguments!!)
-
-        ViewCompat.setTransitionName(binding.showPoster, args.transitionName)
-        Timber.i("Transition End ${binding.showPoster.transitionName}")
 
         val show = args.show
         viewModel = ViewModelProviders.of(this, DetailViewModel.Factory(show)).get(DetailViewModel::class.java)

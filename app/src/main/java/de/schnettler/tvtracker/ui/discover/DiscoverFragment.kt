@@ -29,7 +29,7 @@ class DiscoverFragment : Fragment() {
         binding.trendingShowsHolder.trendingRecycler.adapter = ShowListAdapter(ShowListAdapter.OnClickListener{ show, view ->
             Timber.i("Transition Start ${view.transitionName}")
             val extras = FragmentNavigatorExtras(
-                 view to view.transitionName
+                 view to "showPoster"
             )
             findNavController().navigate(DiscoverFragmentDirections.actionDiscoverToDetailFragment(show, view.transitionName), extras)
         }, "trending")
@@ -37,7 +37,7 @@ class DiscoverFragment : Fragment() {
         binding.popular.trendingRecycler.adapter = ShowListAdapter(ShowListAdapter.OnClickListener{show, view ->
             Timber.i("Transition Start ${view.transitionName}")
             val extras = FragmentNavigatorExtras(
-                view to view.transitionName
+                view to "showPoster"
             )
             findNavController().navigate(DiscoverFragmentDirections.actionDiscoverToDetailFragment(show, view.transitionName), extras)
         }, "popular")
