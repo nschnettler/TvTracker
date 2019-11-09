@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import de.schnettler.tvtracker.databinding.DiscoverFragmentBinding
+import de.schnettler.tvtracker.util.ViewModelFactory
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import timber.log.Timber
 
@@ -21,7 +22,7 @@ class DiscoverFragment : Fragment() {
                               savedInstanceState: Bundle?): View {
         val binding = DiscoverFragmentBinding.inflate(inflater)
         val application = requireNotNull(this.activity).application
-        viewModel = ViewModelProviders.of(this, DiscoverViewModel.Factory(application))
+        viewModel = ViewModelProviders.of(this, ViewModelFactory(application))
             .get(DiscoverViewModel::class.java)
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel

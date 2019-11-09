@@ -19,13 +19,12 @@ package de.schnettler.tvtracker.data.remote
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import de.schnettler.tvtracker.util.TMD_BASE_URL
+import de.schnettler.tvtracker.util.TRAKT_API_BASE_URL
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-
-private const val TRAKT_BASE_URL = "https://api.trakt.tv/"
-private const val TMD_BASE_URL = "https://api.themoviedb.org/"
 
 private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -53,7 +52,7 @@ object RetrofitClient {
     private val traktRetrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addConverterFactory(ScalarsConverterFactory.create())
-        .baseUrl(TRAKT_BASE_URL)
+        .baseUrl(TRAKT_API_BASE_URL)
         .client(traktHttpClient)
         .build()
 

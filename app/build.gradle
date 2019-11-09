@@ -89,4 +89,5 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:$version_paging"
 
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+    implementation "androidx.browser:browser:1.0.0"
 }

@@ -1,16 +1,11 @@
 package de.schnettler.tvtracker.data
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import de.schnettler.tvtracker.data.local.getDatabase
 import de.schnettler.tvtracker.data.model.*
 import de.schnettler.tvtracker.data.remote.RetrofitClient
-import de.schnettler.tvtracker.util.SHOW_LIST_PAGE_SIZE
-import de.schnettler.tvtracker.util.ShowListType
-import de.schnettler.tvtracker.util.TMDB_API_KEY
+import de.schnettler.tvtracker.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -84,5 +79,9 @@ class Repository(private val context: Application, private val scope: CoroutineS
                 showsDao.updateShow(showDB)
             }
         }
+    }
+
+    suspend fun retrieveAccessToken(code: String) = withContext(Dispatchers.IO) {
+        showsService.getToken(code = code, clientId = TRAKT_CLIENT_ID, uri = TRAKT_REDIRECT_URI, type = "authorization_code", secret = "***TRAKT_CLIENT_SECRET***")
     }
 }
