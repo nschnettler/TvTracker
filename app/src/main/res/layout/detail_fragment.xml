@@ -27,7 +27,6 @@
                 android:layout_height="match_parent"
                 android:id="@+id/collapsing_toolbar"
                 app:contentScrim="?attr/colorPrimary"
-                app:expandedTitleMarginStart="128dp"
                 app:expandedTitleTextAppearance="@style/TextAppearance.CollapsedToolbar"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
@@ -46,6 +45,7 @@
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin"
                     android:id="@+id/toolbar"
+                    android:elevation="4dp"
                     app:title="@{viewModel.show.title}"/>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
@@ -55,9 +55,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="2000dp"/>
+                android:layout_height="2000dp">
+
+                <ImageView
+                    android:id="@+id/showPoster"
+                    imageQuality="@{ImageQuality.LOW}"
+                    imageUrl="@{viewModel.show.posterUrl}"
+                    android:layout_width="96dp"
+                    android:layout_height="144dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/round_background_invisible"
+                    android:transitionName="showPoster"
+                    app:layout_constraintDimensionRatio="h,12:18"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@tools:sample/avatars" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -70,21 +86,6 @@
             app:layout_anchor="@+id/appbar"
             app:layout_anchorGravity="bottom|right|end" />
 
-        <ImageView
-            android:id="@+id/showPoster"
-            android:layout_width="96dp"
-            android:layout_height="144dp"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/round_background"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="h,12:18"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars"
-            app:layout_anchor="@+id/appbar"
-            app:layout_anchorGravity="bottom|left|start"
-            imageUrl="@{viewModel.show.posterUrl}"
-            imageQuality="@{ImageQuality.LOW}"/>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
