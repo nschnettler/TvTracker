@@ -17,6 +17,7 @@ buildscript {
         version_room = "2.2.0"
         version_insetter = "0.1.1"
         version_coil = "0.8.0"
+        version_paging = "2.1.0"
     }
     repositories {
         google()

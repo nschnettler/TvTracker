@@ -17,6 +17,20 @@
         android:clickable="true"
         android:focusable="true">
 
+        <TextView
+            android:id="@+id/showTitle"
+            android:layout_width="96dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@{show.title}"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="h,12:18"
+            app:layout_constraintEnd_toEndOf="@+id/showPoster"
+            app:layout_constraintStart_toStartOf="@+id/showPoster"
+            app:layout_constraintTop_toTopOf="@+id/showPoster"
+            tools:text="Show Title" />
 
         <ImageView
             android:id="@+id/showPoster"
@@ -34,7 +48,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"/>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
