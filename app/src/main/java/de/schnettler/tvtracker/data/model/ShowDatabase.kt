@@ -51,7 +51,7 @@ data class ShowDetailsDB(
     //val airs: ShowAirInformationRemote,
     val runtime: String,
     val network: String,
-    val trailer: String,
+    val trailer: String?,
     val status: String,
     val rating: String/*,
     val genres: List<String> */
