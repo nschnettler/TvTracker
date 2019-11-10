@@ -151,3 +151,23 @@ abstract class AppBarStateChangedListener : AppBarLayout.OnOffsetChangedListener
 }
 
 fun isDarkTheme(res: Resources) = ((res.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)
+
+fun getEmoji(genre: String): String = when (genre) {
+    "drama" -> "\uD83D\uDE28"
+    "fantasy" -> "\uD83E\uDDD9"
+    "science-fiction" -> "\uD83D\uDE80️"
+    "action" -> "\uD83E\uDD20"
+    "adventure" -> "\uD83C\uDFDE️"
+    "crime" -> "\uD83D\uDC6E"
+    "thriller" -> "\uD83D\uDDE1️"
+    "comedy" -> "\uD83E\uDD23"
+    "horror" -> "\uD83E\uDDDF"
+    "mystery" -> "\uD83D\uDD75️"
+    "war" -> "\uD83D\uDCA3"
+    "romance" -> "\uD83D\uDC96"
+    "soap" -> "\uD83D\uDE0A"
+    "superhero" -> "\uD83E\uDDB8"
+    "suspense" -> "\uD83D\uDE1F"
+    "western" -> "\uD83E\uDD20"
+    else -> ""
+}

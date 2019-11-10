@@ -63,7 +63,7 @@ fun bindChips(group: ChipGroup, content: List<String>?, strokeWidth: Float, stro
         content?.let {
             for (tag in it) {
                 val chip = Chip(group.context)
-                chip.text= tag
+                chip.text= "${getEmoji(tag)} $tag"
                 chip.chipStrokeWidth = strokeWidth
                 chip.chipStrokeColor = ColorStateList.valueOf(strokeColor)
                 chip.chipBackgroundColor = ColorStateList.valueOf(backgroundColor)
