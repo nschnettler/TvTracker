@@ -6,4 +6,5 @@
     <color name="colorBackground">#FFF</color>
     <color name="colorBackgroundElevated">@color/colorBackground</color>
     <color name="colorBackgroundTransparent">#CCFFFFFF</color>
+    <color name="colorBackgroundTransparent40">#66FFFFFF</color>
 </resources>

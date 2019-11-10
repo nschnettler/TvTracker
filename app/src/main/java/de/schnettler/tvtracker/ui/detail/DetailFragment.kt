@@ -1,31 +1,22 @@
 package de.schnettler.tvtracker.ui.detail
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.view.ViewCompat
-import androidx.core.view.updatePadding
-import androidx.navigation.fragment.findNavController
-import androidx.transition.ChangeBounds
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.transition.TransitionInflater
-import coil.api.load
-import coil.decode.DataSource
-import coil.request.Request
-import com.google.android.material.appbar.AppBarLayout
-
-import de.schnettler.tvtracker.R
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
-import de.schnettler.tvtracker.databinding.DiscoverFragmentBinding
-import de.schnettler.tvtracker.util.TMDB_IMAGE_BASE_URL
-import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import kotlinx.android.synthetic.main.detail_fragment.view.*
-import kotlinx.android.synthetic.main.show_view_item.*
+import de.schnettler.tvtracker.util.AppBarStateChangedListener
+import android.R.attr.name
+import com.google.android.material.appbar.AppBarLayout
+import de.schnettler.tvtracker.util.clearLightStatusBar
+import de.schnettler.tvtracker.util.isDarkTheme
+import de.schnettler.tvtracker.util.setLightStatusBar
 import timber.log.Timber
+
 
 class DetailFragment : Fragment() {
 
@@ -41,11 +32,21 @@ class DetailFragment : Fragment() {
 
         binding = DetailFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = this
-        binding.appbar.doOnApplyWindowInsets { view, insets, initialState ->
-            view.updatePadding(
-                top = initialState.paddings.top + insets.systemWindowInsetTop
-            )
-        }
+
+        //StatusBar Icon Color
+        binding.appbar.addOnOffsetChangedListener(object : AppBarStateChangedListener() {
+            override fun onStateChanged(state: AppBarStateChangedListener.State) {
+                when(state) {
+                    State.COLLAPSED -> {
+                        if (!isDarkTheme(resources)) {
+                            setLightStatusBar(activity!!.window.decorView)
+                        }
+                    }
+                    State.EXPANDED -> clearLightStatusBar(activity!!.window.decorView)
+                }
+            }
+        })
+
         val args = DetailFragmentArgs.fromBundle(arguments!!)
 
         val show = args.show

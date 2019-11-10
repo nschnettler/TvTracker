@@ -1,17 +1,21 @@
 package de.schnettler.tvtracker
 
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import de.schnettler.tvtracker.databinding.MainActivityBinding
 import android.view.View
-import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+import android.view.View.*
+import android.view.Window
+import android.view.WindowManager
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import de.schnettler.tvtracker.util.ViewModelFactory
+import de.schnettler.tvtracker.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,14 +28,24 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.main_activity)
         viewModel = ViewModelProviders.of(this, ViewModelFactory(application))
             .get(MainViewModel::class.java)
-        binding.root.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        binding.root.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or SYSTEM_UI_FLAG_LAYOUT_STABLE
         navController = this.findNavController(R.id.nav_host_fragment)
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            binding.bottomNavigation.visibility = when(destination.id) {
-                R.id.detailFragment -> View.GONE
-                else -> View.VISIBLE
+            when(destination.id) {
+                R.id.detailFragment -> {
+                    binding.bottomNavigation.visibility = View.GONE
+                    clearLightStatusBar(window.decorView)
+                    setStatusBarColor(resources, android.R.color.transparent, window, theme)
+                }
+                else -> {
+                    binding.bottomNavigation.visibility = View.VISIBLE
+                    if (!isDarkTheme(resources)) {
+                        setLightStatusBar(window.decorView)
+                    }
+                    setStatusBarColor(resources, R.color.colorBackgroundTransparent, window, theme)
+                }
             }
         }
     }

@@ -2,20 +2,20 @@ package de.schnettler.tvtracker.util
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.os.Build
 import android.util.AttributeSet
-import android.widget.Toast
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewConfiguration
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
+import android.widget.Toast
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
+import com.google.android.material.appbar.AppBarLayout
 import de.schnettler.tvtracker.MainViewModel
 import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
 import kotlin.math.abs
@@ -105,3 +105,49 @@ class MaxLinesToggleClickListener(private val collapsedLines: Int) : View.OnClic
         textView.maxLines = if (textView.maxLines > collapsedLines) collapsedLines else Int.MAX_VALUE
     }
 }
+
+fun clearLightStatusBar(view: View) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        var flags = view.systemUiVisibility
+        flags = flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+        view.systemUiVisibility = flags
+    }
+}
+
+fun setLightStatusBar(view: View) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        var flags = view.systemUiVisibility
+        flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        view.systemUiVisibility = flags
+    }
+}
+
+fun setStatusBarColor(resources: Resources, color: Int, window: Window, theme: Resources.Theme) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        window.statusBarColor = resources.getColor(color, theme)
+    }
+}
+
+
+abstract class AppBarStateChangedListener : AppBarLayout.OnOffsetChangedListener {
+    private var mCurrentState = State.EXPANDED
+    enum class State {EXPANDED, COLLAPSED}
+
+    override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
+        when (verticalOffset) {
+            0 -> setCurrentStateAndNotify(State.EXPANDED)
+            else -> setCurrentStateAndNotify(State.COLLAPSED)
+        }
+    }
+
+    private fun setCurrentStateAndNotify(state: State) {
+        if (mCurrentState != state) {
+            onStateChanged(state)
+        }
+        mCurrentState = state
+    }
+
+    abstract fun onStateChanged(state: State)
+}
+
+fun isDarkTheme(res: Resources) = ((res.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)
