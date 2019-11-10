@@ -1,14 +1,23 @@
 package de.schnettler.tvtracker.util
 
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isEmpty
 import androidx.databinding.BindingAdapter
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import de.schnettler.tvtracker.R
 import de.schnettler.tvtracker.data.model.Show
 import de.schnettler.tvtracker.ui.discover.ShowListAdapter
+import timber.log.Timber
+import androidx.appcompat.view.ContextThemeWrapper
+
 
 @BindingAdapter("listShowData")
 fun bindRecyclerView(recyclerView: RecyclerView, data: PagedList<Show>?) {
@@ -45,5 +54,21 @@ fun maxLinesClickListener(view: TextView, oldCollapsedMaxLines: Int, newCollapse
         view.maxLines = newCollapsedMaxLines
         // Now set click listener
         view.setOnClickListener(MaxLinesToggleClickListener(newCollapsedMaxLines))
+    }
+}
+
+@BindingAdapter(value = ["chips", "strokeWidth", "strokeColor", "backgroundColor"], requireAll = false)
+fun bindChips(group: ChipGroup, content: List<String>?, strokeWidth: Float, strokeColor: Int, backgroundColor: Int) {
+    if (group.isEmpty()) {
+        content?.let {
+            for (tag in it) {
+                val chip = Chip(group.context)
+                chip.text= tag
+                chip.chipStrokeWidth = strokeWidth
+                chip.chipStrokeColor = ColorStateList.valueOf(strokeColor)
+                chip.chipBackgroundColor = ColorStateList.valueOf(backgroundColor)
+                group.addView(chip)
+            }
+        }
     }
 }

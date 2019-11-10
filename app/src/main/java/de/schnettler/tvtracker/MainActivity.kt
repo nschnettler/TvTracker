@@ -15,12 +15,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupActionBarWithNavController
 import de.schnettler.tvtracker.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: MainActivityBinding
-    private lateinit var navController: NavController
+    lateinit var navController: NavController
     private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {

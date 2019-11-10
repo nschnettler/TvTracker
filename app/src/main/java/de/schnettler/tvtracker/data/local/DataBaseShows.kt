@@ -4,14 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import de.schnettler.tvtracker.data.model.PopularDB
 import de.schnettler.tvtracker.data.model.ShowDB
 import de.schnettler.tvtracker.data.model.ShowDetailsDB
 import de.schnettler.tvtracker.data.model.TrendingDB
+import de.schnettler.tvtracker.util.TypeConverter
 
 class DataBaseShows {
 
-
+    @TypeConverters(TypeConverter::class)
     @Database(entities = [TrendingDB::class, PopularDB::class,ShowDB::class, ShowDetailsDB::class], version = 2)
     abstract class ShowsDatabase : RoomDatabase() {
         //abstract val showDao: ShowDao

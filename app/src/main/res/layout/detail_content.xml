@@ -104,5 +104,27 @@
             app:layout_constraintTop_toBottomOf="@+id/textView2"
             tools:text="Runtime" />
 
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:padding="16dp"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="@+id/materialCardView"
+            app:layout_constraintStart_toStartOf="@+id/materialCardView"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView"
+            android:clipChildren="false">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chips"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:chips="@{showDetails.genres}"
+                app:strokeWidth="@{@dimen/chipStroke}"
+                app:strokeColor="@{@color/colorStroke}"
+                app:backgroundColor="@{@color/colorBackground}"
+                tools:layout_height="32dp" />
+        </HorizontalScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

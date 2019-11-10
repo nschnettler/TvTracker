@@ -22,6 +22,6 @@ data class ShowDetails(
     val network: String,
     val trailer: String?,
     val status: String,
-    val rating: String/*,
-    val genres: List<String>*/
+    val rating: String,
+    val genres: List<String>
 )

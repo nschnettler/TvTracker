@@ -1,7 +1,8 @@
 package de.schnettler.tvtracker.data.model
 
-import androidx.room.*
-import timber.log.Timber
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 
 //Trending Show
 @Entity(tableName = "table_trending")
@@ -53,8 +54,8 @@ data class ShowDetailsDB(
     val network: String,
     val trailer: String?,
     val status: String,
-    val rating: String/*,
-    val genres: List<String> */
+    val rating: String,
+    val genres: List<String>
 ) {
     fun asShowDetails(): ShowDetails {
         return ShowDetails(
@@ -65,8 +66,8 @@ data class ShowDetailsDB(
             network = network,
             trailer = trailer,
             status = status,
-            rating = rating/*,
-            genres = genres*/
+            rating = rating,
+            genres = genres
         )
     }
 }

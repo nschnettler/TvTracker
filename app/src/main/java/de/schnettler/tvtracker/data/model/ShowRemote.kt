@@ -49,8 +49,8 @@ data class ShowDetailsRemote(
         network = network,
         trailer = trailer,
         status = status,
-        rating = rating.toFloat().times(10).roundToInt().toString()/*,
-        genres = genres */
+        rating = rating.toFloat().times(10).roundToInt().toString(),
+        genres = genres
     )
 }
 

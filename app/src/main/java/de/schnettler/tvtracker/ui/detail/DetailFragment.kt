@@ -11,7 +11,10 @@ import androidx.transition.TransitionInflater
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
 import de.schnettler.tvtracker.util.AppBarStateChangedListener
 import android.R.attr.name
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.appbar.AppBarLayout
+import de.schnettler.tvtracker.MainActivity
 import de.schnettler.tvtracker.util.clearLightStatusBar
 import de.schnettler.tvtracker.util.isDarkTheme
 import de.schnettler.tvtracker.util.setLightStatusBar
@@ -53,8 +56,10 @@ class DetailFragment : Fragment() {
         viewModel = ViewModelProviders.of(this, DetailViewModel.Factory(show, this.activity!!.application)).get(DetailViewModel::class.java)
         binding.viewModel = viewModel
 
-        if(activity is AppCompatActivity){
-            (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        if(activity is MainActivity){
+            val ac = activity as MainActivity
+            ac.setSupportActionBar(binding.toolbar)
+            ac.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
         return binding.root
     }

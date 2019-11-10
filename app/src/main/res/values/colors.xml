@@ -7,4 +7,5 @@
     <color name="colorBackgroundElevated">@color/colorBackground</color>
     <color name="colorBackgroundTransparent">#CCFFFFFF</color>
     <color name="colorBackgroundTransparent40">#66FFFFFF</color>
+    <color name="colorStroke">#0d000000</color>
 </resources>
