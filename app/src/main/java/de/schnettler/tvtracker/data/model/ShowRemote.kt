@@ -55,9 +55,9 @@ data class ShowDetailsRemote(
 }
 
 class ShowAirInformationRemote(
-        val day: String,
-        val time: String,
-        val timezone: String
+        val day: String?,
+        val time: String?,
+        val timezone: String?
 )
 
 fun List<TrendingShowRemote>.asShowTrendingDB(page: Int): List<ShowTrendingDB>? {
