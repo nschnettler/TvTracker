@@ -24,7 +24,6 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            app:cardBackgroundColor="@color/colorBackground"
             app:cardCornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,6 +39,8 @@
                 android:lineSpacingMultiplier="1.1"
                 android:padding="16dp"
                 android:text="@{showDetails.overview}"
+                app:maxLinesToggle="@{4}"
+                android:ellipsize="end"
                 tools:text="Description" />
         </com.google.android.material.card.MaterialCardView>
 
@@ -64,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:fontFamily="@font/roboto_mono_medium"
-            android:text="@{showDetails.status}"
+            app:status="@{showDetails.status}"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
             app:layout_constraintStart_toEndOf="@+id/showPoster"
             app:layout_constraintTop_toTopOf="@+id/showPoster"
