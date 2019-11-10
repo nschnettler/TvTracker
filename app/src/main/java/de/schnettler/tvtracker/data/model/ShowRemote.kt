@@ -2,6 +2,7 @@ package de.schnettler.tvtracker.data.model
 
 import com.squareup.moshi.Json
 import timber.log.Timber
+import kotlin.math.roundToInt
 
 data class TrendingShowRemote(
         val watchers: Long,
@@ -48,7 +49,7 @@ data class ShowDetailsRemote(
         network = network,
         trailer = trailer,
         status = status,
-        rating = rating/*,
+        rating = rating.toFloat().times(10).roundToInt().toString()/*,
         genres = genres */
     )
 }
