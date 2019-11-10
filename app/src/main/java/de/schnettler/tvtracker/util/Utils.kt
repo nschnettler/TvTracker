@@ -5,10 +5,17 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.Toast
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewConfiguration
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.transition.ChangeBounds
+import androidx.transition.TransitionManager
 import de.schnettler.tvtracker.MainViewModel
 import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
 import kotlin.math.abs
@@ -83,5 +90,18 @@ class ViewModelFactory(val app: Application) : ViewModelProvider.Factory {
             return MainViewModel(app) as T
         }
         throw IllegalArgumentException("Unable to construct viewmodel")
+    }
+}
+
+class MaxLinesToggleClickListener(private val collapsedLines: Int) : View.OnClickListener {
+    private val transition = ChangeBounds().apply {
+        duration = 200
+        interpolator = FastOutSlowInInterpolator()
+    }
+
+    override fun onClick(view: View) {
+        TransitionManager.beginDelayedTransition(view.parent as ViewGroup, transition)
+        val textView = view as TextView
+        textView.maxLines = if (textView.maxLines > collapsedLines) collapsedLines else Int.MAX_VALUE
     }
 }
