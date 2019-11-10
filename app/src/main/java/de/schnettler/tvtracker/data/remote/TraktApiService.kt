@@ -1,7 +1,7 @@
 package de.schnettler.tvtracker.data.remote
 
 import de.schnettler.tvtracker.data.model.OAuthToken
-import de.schnettler.tvtracker.data.model.ShowDetails
+import de.schnettler.tvtracker.data.model.ShowDetailsRemote
 import de.schnettler.tvtracker.data.model.ShowRemote
 import de.schnettler.tvtracker.data.model.TrendingShowRemote
 import retrofit2.Response
@@ -18,7 +18,7 @@ interface TraktApiService {
     suspend fun getPopularShows(@Query("page") page: Int, @Query("limit") limit: Int): Response<List<ShowRemote>>
 
     @GET("shows/{tv_id}?extended=full")
-    suspend fun getShowSummary(@Path("tv_id") id: Long): Response<ShowDetails>
+    suspend fun getShowSummary(@Path("tv_id") id: Long): Response<ShowDetailsRemote>
 
     @POST("oauth/token")
     suspend fun getToken(@Query("code") code: String, @Query("client_id") clientId: String, @Query("client_secret") secret: String, @Query("redirect_uri") uri: String, @Query("grant_type") type: String) : Response<OAuthToken>

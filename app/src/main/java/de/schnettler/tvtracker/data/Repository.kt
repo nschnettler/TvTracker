@@ -1,6 +1,7 @@
 package de.schnettler.tvtracker.data
 
 import android.app.Application
+import androidx.lifecycle.Transformations
 import androidx.paging.toLiveData
 import de.schnettler.tvtracker.data.local.getDatabase
 import de.schnettler.tvtracker.data.model.*
@@ -58,7 +59,14 @@ class Repository(private val context: Application, private val scope: CoroutineS
 
     suspend fun refreshShowSummary(show_id: Long) = withContext(Dispatchers.IO) {
         val result = showsService.getShowSummary(show_id)
-        Timber.i(result.toString())
+
+        if (result.isSuccessful) {
+            val showDB = result.body()?.asShowDetailsDB()
+
+            showDB?.let {
+                showsDao.insertShowDetails(showDB)
+            }
+        }
     }
 
     fun getTrendingShows()= showsDao.getTrending().map{
@@ -69,6 +77,9 @@ class Repository(private val context: Application, private val scope: CoroutineS
         it.show.asShow(it.popular.index)
     }.toLiveData(pageSize = SHOW_LIST_PAGE_SIZE, boundaryCallback = ShowBoundaryCallback(this, scope, ShowListType.POPULAR))
 
+    fun getShowDetails(id: Long) = Transformations.map(showsDao.getShowDetails(id)) {
+        it?.asShowDetails()
+    }
 
     private suspend fun refreshPosters(showsDB: List<ShowDB>) {
         for (showDB in showsDB) {

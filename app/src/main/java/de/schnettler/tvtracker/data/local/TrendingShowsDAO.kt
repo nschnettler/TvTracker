@@ -16,6 +16,9 @@ interface TrendingShowsDAO{
     @Query("SELECT * FROM table_popular ORDER BY `index` ASC")
     fun getPopular(): DataSource.Factory<Int, ShowPopularDB>
 
+    @Query("SELECT * FROM table_show_details WHERE showId = :id")
+    fun getShowDetails(id: Long): LiveData<ShowDetailsDB>
+
     /**
      * Insert a new Shows in table_shows
      */
@@ -33,6 +36,9 @@ interface TrendingShowsDAO{
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPopular(popular: List<PopularDB>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertShowDetails(showDetails: ShowDetailsDB)
 
     @Transaction
     suspend fun insertTrendingShows(shows: List<ShowTrendingDB>) {

@@ -7,6 +7,9 @@
         <variable
             name="viewModel"
             type="de.schnettler.tvtracker.ui.detail.DetailViewModel" />
+        <variable
+            name="showDetails"
+            type="de.schnettler.tvtracker.data.model.ShowDetails" />
         <import type="de.schnettler.tvtracker.util.ImageQuality"/>
     </data>
 
@@ -55,25 +58,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="2000dp">
-
-                <ImageView
-                    android:id="@+id/showPoster"
-                    imageQuality="@{ImageQuality.LOW}"
-                    imageUrl="@{viewModel.show.posterUrl}"
-                    android:layout_width="96dp"
-                    android:layout_height="144dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/round_background_invisible"
-                    android:transitionName="showPoster"
-                    app:layout_constraintDimensionRatio="h,12:18"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:srcCompat="@tools:sample/avatars" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <include
+                layout="@layout/detail_content"
+                app:show="@{viewModel.show}"
+                app:showDetails="@{viewModel.showDetails}"
+                android:id="@+id/detailContent"/>
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

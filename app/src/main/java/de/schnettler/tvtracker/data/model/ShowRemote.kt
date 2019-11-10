@@ -26,7 +26,7 @@ data class ShowImagesRemote(
         val backdrop_path: String
 )
 
-data class ShowDetails(
+data class ShowDetailsRemote(
     val title: String,
     val year: Long,
     val ids: ShowIdRemote,
@@ -38,7 +38,20 @@ data class ShowDetails(
     val trailer: String,
     val status: String,
     val rating: String,
-    val genres: List<String>)
+    val genres: List<String>) {
+
+    fun asShowDetailsDB(): ShowDetailsDB = ShowDetailsDB(
+        showId = ids.trakt,
+        overview = overview,
+        firstAired = firstAired,
+        runtime = runtime,
+        network = network,
+        trailer = trailer,
+        status = status,
+        rating = rating/*,
+        genres = genres */
+    )
+}
 
 class ShowAirInformationRemote(
         val day: String,

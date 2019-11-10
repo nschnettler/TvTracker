@@ -49,7 +49,7 @@ class DetailFragment : Fragment() {
         val args = DetailFragmentArgs.fromBundle(arguments!!)
 
         val show = args.show
-        viewModel = ViewModelProviders.of(this, DetailViewModel.Factory(show)).get(DetailViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, DetailViewModel.Factory(show, this.activity!!.application)).get(DetailViewModel::class.java)
         binding.viewModel = viewModel
 
         if(activity is AppCompatActivity){

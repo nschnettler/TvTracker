@@ -42,3 +42,31 @@ data class ShowDB(
         )
     }
 }
+
+@Entity(tableName = "table_show_details")
+data class ShowDetailsDB(
+    @PrimaryKey val showId: Long,
+    val overview : String,
+    val firstAired : String,
+    //val airs: ShowAirInformationRemote,
+    val runtime: String,
+    val network: String,
+    val trailer: String,
+    val status: String,
+    val rating: String/*,
+    val genres: List<String> */
+) {
+    fun asShowDetails(): ShowDetails {
+        return ShowDetails(
+            showId = showId,
+            overview = overview,
+            firstAired = firstAired,
+            runtime = runtime,
+            network = network,
+            trailer = trailer,
+            status = status,
+            rating = rating/*,
+            genres = genres*/
+        )
+    }
+}
