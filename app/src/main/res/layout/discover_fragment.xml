@@ -9,38 +9,15 @@
             name="viewmodel"
             type="de.schnettler.tvtracker.ui.discover.DiscoverViewModel" />
     </data>
-
     <de.schnettler.tvtracker.util.SwipeRefreshLayout
         android:id="@+id/discover_swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:refreshing="@{viewmodel.isRefreshing}"
         app:onRefreshListener="@{() -> viewmodel.onRefresh()}">
-
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/discover_scroll"
+        <com.airbnb.epoxy.EpoxyRecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <include
-                    android:id="@+id/trending_shows_holder"
-                    layout="@layout/show_recyler_with_header"
-                    app:shows="@{viewmodel.trendingShows}"
-                    app:title="@{@string/trending_now}"/>
-
-                <include
-                    android:id="@+id/popular"
-                    layout="@layout/show_recyler_with_header"
-                    app:shows="@{viewmodel.popularShows}"
-                    app:title="@{@string/popular}"/>
-            </LinearLayout>
-
-
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            android:layout_height="match_parent"/>
     </de.schnettler.tvtracker.util.SwipeRefreshLayout>
 </layout>

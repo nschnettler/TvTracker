@@ -5,9 +5,18 @@
 
     <data>
         <variable
-            name="show"
-            type="de.schnettler.tvtracker.data.model.Show" />
+            name="title"
+            type="String" />
+        <variable
+            name="posterUrl"
+            type="String" />
         <import type="de.schnettler.tvtracker.util.ImageQuality"/>
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="transitionName"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,7 +32,7 @@
             android:layout_height="0dp"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@{show.title}"
+            android:text="@{title}"
             android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="h,12:18"
@@ -34,12 +43,10 @@
 
         <ImageView
             android:id="@+id/showPoster"
-            imageUrl="@{show.posterUrl}"
+            imageUrl="@{posterUrl}"
             imageQuality="@{ImageQuality.LOW}"
             android:layout_width="96dp"
             android:layout_height="0dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp"
             android:background="@drawable/round_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="h,12:18"
@@ -47,7 +54,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"/>
+            android:transitionName="@{transitionName}"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:onClick="@{onClickListener}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

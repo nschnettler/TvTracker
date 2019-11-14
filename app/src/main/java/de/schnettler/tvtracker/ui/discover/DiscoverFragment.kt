@@ -6,13 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import de.schnettler.tvtracker.data.model.Show
 import de.schnettler.tvtracker.databinding.DiscoverFragmentBinding
 import de.schnettler.tvtracker.util.ViewModelFactory
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import timber.log.Timber
 
 class DiscoverFragment : Fragment() {
 
@@ -26,28 +27,38 @@ class DiscoverFragment : Fragment() {
             .get(DiscoverViewModel::class.java)
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
-        binding.trendingShowsHolder.trendingRecycler.adapter = ShowListAdapter(ShowListAdapter.OnClickListener{ show, view ->
-            Timber.i("Transition Start ${view.transitionName}")
-            val extras = FragmentNavigatorExtras(
-                 view to "showPoster"
-            )
-            findNavController().navigate(DiscoverFragmentDirections.actionDiscoverToDetailFragment(show, view.transitionName), extras)
-        }, "trending")
 
-        binding.popular.trendingRecycler.adapter = ShowListAdapter(ShowListAdapter.OnClickListener{show, view ->
-            Timber.i("Transition Start ${view.transitionName}")
-            val extras = FragmentNavigatorExtras(
-                view to "showPoster"
-            )
-            findNavController().navigate(DiscoverFragmentDirections.actionDiscoverToDetailFragment(show, view.transitionName), extras)
-        }, "popular")
-        binding.discoverScroll.doOnApplyWindowInsets { view, insets, initialState ->
+        val controller = DiscoverController(null)
+        val recycler = binding.recyclerView
+        recycler.adapter = controller.adapter
+
+        //Recyclerviews
+        viewModel.trendingShows.observe(this, Observer{
+            controller.trendingShows = it
+            controller.requestModelBuild()
+        })
+        viewModel.popularShows.observe(this, Observer {
+            controller.popularShows = it
+            controller.requestModelBuild()
+        })
+
+        //WindowInsets
+        binding.recyclerView.doOnApplyWindowInsets { view, insets, initialState ->
             view.updatePadding(
                 top = initialState.paddings.top + insets.systemWindowInsetTop
             )
         }
-        binding.discoverScroll.clipToPadding = false
 
+        //Click Listener Callback
+        controller.callbacks = object: DiscoverController.Callbacks {
+            override fun onItemClicked(view: View, item: Show) {
+                val extras = FragmentNavigatorExtras(
+                    view to "showPoster"
+                )
+                findNavController().navigate(DiscoverFragmentDirections.actionDiscoverToDetailFragment(item, view.transitionName), extras)
+            }
+
+        }
         return binding.root
     }
 }

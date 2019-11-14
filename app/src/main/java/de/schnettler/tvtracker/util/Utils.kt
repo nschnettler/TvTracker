@@ -15,6 +15,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
+import com.airbnb.epoxy.CarouselModelBuilder
+import com.airbnb.epoxy.CarouselModel_
+import com.airbnb.epoxy.EpoxyController
+import com.airbnb.epoxy.EpoxyModel
 import com.google.android.material.appbar.AppBarLayout
 import de.schnettler.tvtracker.MainViewModel
 import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
@@ -170,4 +174,28 @@ fun getEmoji(genre: String): String = when (genre) {
     "suspense" -> "\uD83D\uDE1F"
     "western" -> "\uD83E\uDD20"
     else -> ""
+}
+
+
+/** For use in the buildModels method of EpoxyController. A shortcut for creating a Carousel model, initializing it, and adding it to the controller.
+ *
+ */
+inline fun EpoxyController.carousel(modelInitializer: CarouselModelBuilder.() -> Unit) {
+    CarouselModel_().apply {
+        modelInitializer()
+    }.addTo(this)
+}
+
+/** Add models to a CarouselModel_ by transforming a list of items into EpoxyModels.
+ *
+ * @param items The items to transform to models
+ * @param modelBuilder A function that take an item and returns a new EpoxyModel for that item.
+ */
+inline fun <T> CarouselModelBuilder.withModelsFrom(
+    items: List<T>?,
+    modelBuilder: (T) -> EpoxyModel<*>
+) {
+    items?.let {item ->
+        models(item.map { modelBuilder(it) })
+    }
 }

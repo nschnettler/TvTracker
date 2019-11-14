@@ -30,6 +30,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -96,4 +99,10 @@ dependencies {
 
     //Transition
     implementation "androidx.transition:transition:$version_transition"
+
+    //Epoxy
+    implementation "com.airbnb.android:epoxy:$version_epoxy"
+    implementation "com.airbnb.android:epoxy-databinding:$version_epoxy"
+    implementation "com.airbnb.android:epoxy-paging:$version_epoxy"
+    kapt "com.airbnb.android:epoxy-processor:$version_epoxy"
 }
