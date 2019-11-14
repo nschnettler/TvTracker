@@ -46,19 +46,3 @@ fun maxLinesClickListener(view: TextView, oldCollapsedMaxLines: Int, newCollapse
         view.setOnClickListener(MaxLinesToggleClickListener(newCollapsedMaxLines))
     }
 }
-
-@BindingAdapter(value = ["chips", "strokeWidth", "strokeColor", "backgroundColor"], requireAll = false)
-fun bindChips(group: ChipGroup, content: List<String>?, strokeWidth: Float, strokeColor: Int, backgroundColor: Int) {
-    if (group.isEmpty()) {
-        content?.let {
-            for (tag in it) {
-                val chip = Chip(group.context)
-                chip.text= "${getEmoji(tag)} $tag"
-                chip.chipStrokeWidth = strokeWidth
-                chip.chipStrokeColor = ColorStateList.valueOf(strokeColor)
-                chip.chipBackgroundColor = ColorStateList.valueOf(backgroundColor)
-                group.addView(chip)
-            }
-        }
-    }
-}

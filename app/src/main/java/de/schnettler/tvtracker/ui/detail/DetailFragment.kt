@@ -11,10 +11,13 @@ import androidx.transition.TransitionInflater
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
 import de.schnettler.tvtracker.util.AppBarStateChangedListener
 import android.R.attr.name
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.airbnb.epoxy.Carousel
 import com.google.android.material.appbar.AppBarLayout
 import de.schnettler.tvtracker.MainActivity
+import de.schnettler.tvtracker.ui.discover.DiscoverController
 import de.schnettler.tvtracker.util.clearLightStatusBar
 import de.schnettler.tvtracker.util.isDarkTheme
 import de.schnettler.tvtracker.util.setLightStatusBar
@@ -36,6 +39,23 @@ class DetailFragment : Fragment() {
         binding = DetailFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = this
 
+        val args = DetailFragmentArgs.fromBundle(arguments!!)
+        val show = args.show
+        viewModel = ViewModelProviders.of(this, DetailViewModel.Factory(show, this.activity!!.application)).get(DetailViewModel::class.java)
+        binding.viewModel = viewModel
+
+        val controller = DetailController(show)
+        val recycler = binding.recyclerView
+        recycler.adapter = controller.adapter
+        Carousel.setDefaultGlobalSnapHelperFactory(null)
+
+        viewModel.showDetails.observe(this, Observer{
+            it?.let {
+                controller.showDetails = it
+                controller.requestModelBuild()
+            }
+        })
+
         //StatusBar Icon Color
         binding.appbar.addOnOffsetChangedListener(object : AppBarStateChangedListener() {
             override fun onStateChanged(state: AppBarStateChangedListener.State) {
@@ -49,12 +69,6 @@ class DetailFragment : Fragment() {
                 }
             }
         })
-
-        val args = DetailFragmentArgs.fromBundle(arguments!!)
-
-        val show = args.show
-        viewModel = ViewModelProviders.of(this, DetailViewModel.Factory(show, this.activity!!.application)).get(DetailViewModel::class.java)
-        binding.viewModel = viewModel
 
         if(activity is MainActivity){
             val ac = activity as MainActivity

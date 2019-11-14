@@ -21,4 +21,10 @@
     <style name="TextAppearance.CollapsedToolbar" parent="@style/TextAppearance.Design.CollapsingToolbar.Expanded">
         <item name="android:textColor">#FFF</item>
     </style>
+
+    <style name="ChipStyle" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="chipStrokeColor">@color/colorStroke</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipBackgroundColor">@color/colorBackground</item>
+    </style>
 </resources>
