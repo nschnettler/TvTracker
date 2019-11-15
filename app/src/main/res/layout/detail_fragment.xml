@@ -9,7 +9,7 @@
             type="de.schnettler.tvtracker.ui.detail.DetailViewModel" />
         <variable
             name="showDetails"
-            type="de.schnettler.tvtracker.data.model.ShowDetails" />
+            type="de.schnettler.tvtracker.data.show.model.ShowDetails" />
         <import type="de.schnettler.tvtracker.util.ImageQuality"/>
     </data>
 
@@ -33,7 +33,6 @@
                 android:layout_height="match_parent"
                 android:id="@+id/collapsing_toolbar"
                 app:contentScrim="?attr/colorPrimary"
-                app:expandedTitleTextAppearance="@style/TextAppearance.CollapsedToolbar"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 android:fitsSystemWindows="true"
                 app:statusBarScrim="?colorSurface">
