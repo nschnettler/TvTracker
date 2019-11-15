@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.lang.Exception
 
 class Repository(private val context: Application, private val scope: CoroutineScope) {
     private val showsService = RetrofitClient.showsNetworkService
@@ -58,14 +59,32 @@ class Repository(private val context: Application, private val scope: CoroutineS
     }
 
     suspend fun refreshShowSummary(show_id: Long) = withContext(Dispatchers.IO) {
-        val result = showsService.getShowSummary(show_id)
+        try {
+            val result = showsService.getShowSummary(show_id)
 
-        if (result.isSuccessful) {
-            val showDB = result.body()?.asShowDetailsDB()
+            if (result.isSuccessful) {
+                val showDB = result.body()?.asShowDetailsDB()
 
-            showDB?.let {
-                showsDao.insertShowDetails(showDB)
+                showDB?.let {
+                    showsDao.insertShowDetails(showDB)
+                }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    suspend fun refreshShowCast(show_id: Long) = withContext(Dispatchers.IO) {
+        try {
+            val response = showsService.getShowCast(show_id)
+
+            if(response.isSuccessful) {
+                response.body()?.let {castRM ->
+                    showsDao.insertShowCast(castRM.toShowCastListDB(show_id))
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -79,6 +98,10 @@ class Repository(private val context: Application, private val scope: CoroutineS
 
     fun getShowDetails(id: Long) = Transformations.map(showsDao.getShowDetails(id)) {
         it?.asShowDetails()
+    }
+
+    fun getCast(show_id: Long) = Transformations.map(showsDao.getCast(show_id)) {entries ->
+        entries?.toCastEntries()
     }
 
     private suspend fun refreshPosters(showsDB: List<ShowDB>) {

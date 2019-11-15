@@ -5,13 +5,14 @@ import com.airbnb.epoxy.Carousel
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.carousel
 import de.schnettler.tvtracker.*
+import de.schnettler.tvtracker.data.model.CastEntry
 import de.schnettler.tvtracker.data.model.Show
 import de.schnettler.tvtracker.data.model.ShowDetails
 import de.schnettler.tvtracker.util.getEmoji
 import de.schnettler.tvtracker.util.withModelsFrom
 import timber.log.Timber
 
-class DetailController(val show: Show, var showDetails: ShowDetails? = null): EpoxyController(){
+class DetailController(val show: Show, var showDetails: ShowDetails? = null, var showCast: List<CastEntry>? = null): EpoxyController(){
 
 //    var callbacks: Callbacks? = null
 //    interface Callbacks {
@@ -38,7 +39,19 @@ class DetailController(val show: Show, var showDetails: ShowDetails? = null): Ep
                     .title(it)
                     .emoji(getEmoji(it))
             }
-            padding(Carousel.Padding.dp(16,8,16,8,8))
+            padding(Carousel.Padding.dp(16,8,16,4,8))
+        }
+
+        if (!showCast.isNullOrEmpty()) {
+            carousel {
+                id("cast")
+                withModelsFrom(showCast) {
+                    CastBindingModel_()
+                        .id("${it.actorId}_${it.character}")
+                        .castItem(it)
+                }
+                padding(Carousel.Padding.dp(16,8,16,4,8))
+            }
         }
     }
 }

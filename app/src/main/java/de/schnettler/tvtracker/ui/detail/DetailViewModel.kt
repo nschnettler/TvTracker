@@ -13,10 +13,12 @@ class DetailViewModel(val show: Show, val context: Application) : ViewModel() {
     private val repo = Repository(context, viewModelScope)
 
     var showDetails = repo.getShowDetails(show.id)
+    var cast = repo.getCast(show.id)
 
     init {
         viewModelScope.launch {
             repo.refreshShowSummary(show.id)
+            //repo.refreshShowCast(show.id)
         }
     }
     /**

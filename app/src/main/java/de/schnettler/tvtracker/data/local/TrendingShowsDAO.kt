@@ -47,9 +47,27 @@ interface TrendingShowsDAO{
     }
 
     @Transaction
+    suspend fun insertShowCast(cast: List<ShowCastEntryDB>) {
+        insertPerson(cast.map { it.person })
+        insertCast(cast.map { it.cast })
+    }
+
+    @Transaction
     suspend fun insertPopularShows(shows: List<ShowPopularDB>) {
         insertShows(shows.map { it.show })
         insertPopular(shows.map { it.popular })
     }
+
+    /**
+     * Insert a new Shows in table_shows
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertPerson(persons: List<PersonDB>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCast(castEntry: List<CastDB>)
+
+    @Query("SELECT * FROM table_cast WHERE showId = :id ORDER BY episodeCount DESC")
+    fun getCast(id: Long): LiveData<List<ShowCastEntryDB>?>
 }
 

@@ -17,7 +17,6 @@ data class ShowRemote(
 data class ShowIdRemote(
         val trakt: Long,
         val slug: String,
-        val tvdb: Long,
         val imdb: String?,
         val tmdb: Long?
 )
@@ -53,6 +52,41 @@ data class ShowDetailsRemote(
         genres = genres
     )
 }
+
+data class ShowCastListRemote(
+    val cast: List<ShowCastEntryRemote>
+) {
+    fun toShowCastListDB(id: Long): List<ShowCastEntryDB> = cast.map {
+        it.toShowCastEntryRemote(id)
+    }
+}
+
+data class ShowCastEntryRemote(
+    val characters: List<String>,
+    val episode_count: Long,
+    val person: PersonRemote
+) {
+    fun toShowCastEntryRemote(id: Long): ShowCastEntryDB = ShowCastEntryDB(
+        CastDB(
+            showId = id,
+            personId = person.ids.trakt,
+            episodeCount = episode_count,
+            characters = characters
+
+        ),
+        PersonDB(
+            id = person.ids.trakt,
+            name = person.name,
+            tmdbId = person.ids.tmdb.toString()
+        )
+    )
+}
+
+data class PersonRemote(
+    val name: String,
+    val ids: ShowIdRemote
+
+)
 
 class ShowAirInformationRemote(
         val day: String?,

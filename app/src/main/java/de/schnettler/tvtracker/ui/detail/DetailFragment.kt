@@ -34,7 +34,7 @@ class DetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         //Shared Element Enter
-        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        //sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
 
         binding = DetailFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = this
@@ -52,6 +52,13 @@ class DetailFragment : Fragment() {
         viewModel.showDetails.observe(this, Observer{
             it?.let {
                 controller.showDetails = it
+                controller.requestModelBuild()
+            }
+        })
+
+        viewModel.cast.observe(this, Observer {
+            if (!it.isNullOrEmpty()) {
+                controller.showCast = it
                 controller.requestModelBuild()
             }
         })
