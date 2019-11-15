@@ -8,6 +8,7 @@
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="colorSurface">@color/colorBackgroundElevated</item>
         <item name="elevationOverlayEnabled">false</item>
+        <item name="fontFamily">@font/nunito</item>
         <!--
 
 
@@ -17,6 +18,10 @@
         <item name="colorOnPrimarySurface">#0f0</item>
  -->
     </style>
+<!--
+    <style name="TextAppearance.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+
+    </style> -->
 
     <style name="TextAppearance.CollapsedToolbar" parent="@style/TextAppearance.Design.CollapsingToolbar.Expanded">
         <item name="android:textColor">#FFF</item>
@@ -26,5 +31,9 @@
         <item name="chipStrokeColor">@color/colorStroke</item>
         <item name="chipStrokeWidth">1dp</item>
         <item name="chipBackgroundColor">@color/colorBackground</item>
+    </style>
+
+    <style name="TextAppearance.Chip" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="fontFamily">@font/nunito</item>
     </style>
 </resources>

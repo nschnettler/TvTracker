@@ -26,12 +26,12 @@
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_mono_medium"
+            android:ellipsize="end"
             android:lineSpacingMultiplier="1.1"
             android:padding="16dp"
             android:text="@{showSummary}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             app:maxLinesToggle="@{4}"
-            android:ellipsize="end"
             tools:text="Description" />
     </com.google.android.material.card.MaterialCardView>
 </layout>

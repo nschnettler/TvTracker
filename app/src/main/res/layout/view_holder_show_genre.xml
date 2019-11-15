@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:text="@{emoji + ' ' + title}"
         tools:text="😨 Genre"
-        style="@style/ChipStyle">
+        style="@style/ChipStyle"
+        android:textAppearance="@style/TextAppearance.Chip">
     </com.google.android.material.chip.Chip>
 </layout>
