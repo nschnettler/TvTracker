@@ -69,5 +69,8 @@ interface TrendingShowsDAO{
 
     @Query("SELECT * FROM table_cast WHERE showId = :id ORDER BY episodeCount DESC")
     fun getCast(id: Long): LiveData<List<ShowCastEntryDB>?>
+
+    @Update
+    suspend fun updatePerson(person: PersonDB)
 }
 

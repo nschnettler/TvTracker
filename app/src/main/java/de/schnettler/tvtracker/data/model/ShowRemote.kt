@@ -1,7 +1,6 @@
 package de.schnettler.tvtracker.data.model
 
 import com.squareup.moshi.Json
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 data class TrendingShowRemote(
@@ -24,6 +23,10 @@ data class ShowIdRemote(
 data class ShowImagesRemote(
         val poster_path: String,
         val backdrop_path: String
+)
+
+data class PersonImageRemote(
+    val profile_path: String
 )
 
 data class ShowDetailsRemote(
@@ -57,7 +60,7 @@ data class ShowCastListRemote(
     val cast: List<ShowCastEntryRemote>
 ) {
     fun toShowCastListDB(id: Long): List<ShowCastEntryDB> = cast.map {
-        it.toShowCastEntryRemote(id)
+        it.toShowCastEntryDB(id)
     }
 }
 
@@ -66,7 +69,7 @@ data class ShowCastEntryRemote(
     val episode_count: Long,
     val person: PersonRemote
 ) {
-    fun toShowCastEntryRemote(id: Long): ShowCastEntryDB = ShowCastEntryDB(
+    fun toShowCastEntryDB(id: Long): ShowCastEntryDB = ShowCastEntryDB(
         CastDB(
             showId = id,
             personId = person.ids.trakt,

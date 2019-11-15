@@ -22,6 +22,10 @@ class Repository(private val context: Application, private val scope: CoroutineS
         imagesService.getShowPoster(showId, TMDB_API_KEY)
     }
 
+    private suspend fun getPersonImage(personId: String) = withContext(Dispatchers.IO) {
+        imagesService.getPersonImage(personId, TMDB_API_KEY)
+    }
+
     suspend fun loadNewShowListPage(page: Int, limit: Int = 10, type: ShowListType) = withContext(Dispatchers.IO) {
         try {
             when (type) {
@@ -80,7 +84,9 @@ class Repository(private val context: Application, private val scope: CoroutineS
 
             if(response.isSuccessful) {
                 response.body()?.let {castRM ->
-                    showsDao.insertShowCast(castRM.toShowCastListDB(show_id))
+                    val castDB = castRM.toShowCastListDB(show_id)
+                    showsDao.insertShowCast(castDB)
+                    refreshPersonImages(castDB.map { it.person })
                 }
             }
         } catch (e: Exception) {
@@ -111,6 +117,16 @@ class Repository(private val context: Application, private val scope: CoroutineS
                 showDB.posterUrl = image.body()!!.poster_path
                 showDB.backdropUrl = image.body()!!.backdrop_path
                 showsDao.updateShow(showDB)
+            }
+        }
+    }
+
+    private suspend fun refreshPersonImages(personDB: List<PersonDB>) {
+        for (person in personDB) {
+            val image = getPersonImage(person.tmdbId)
+            if (image.isSuccessful) {
+                person.imageUrl = image.body()?.profile_path
+                showsDao.updatePerson(person)
             }
         }
     }

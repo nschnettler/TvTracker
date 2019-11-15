@@ -34,7 +34,8 @@ class ShowCastEntryDB(
         CastEntry(
             character = it,
             actor = person.name,
-            actorId = person.id
+            actorId = person.id,
+            posterUrl = person.imageUrl
         )
     }
 }

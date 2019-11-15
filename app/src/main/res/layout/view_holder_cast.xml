@@ -7,6 +7,7 @@
         <variable
             name="castItem"
             type="de.schnettler.tvtracker.data.model.CastEntry" />
+        <import type="de.schnettler.tvtracker.util.ImageQuality" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -51,6 +52,8 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                imageUrl="@{castItem.posterUrl}"
+                imageQuality="@{ImageQuality.LOW}"
                 tools:scaleType="centerCrop"
                 tools:srcCompat="@tools:sample/avatars" />
 

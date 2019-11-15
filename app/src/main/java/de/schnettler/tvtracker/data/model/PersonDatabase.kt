@@ -8,7 +8,8 @@ import androidx.room.PrimaryKey
 data class PersonDB(
     @PrimaryKey val id: Long,
     val name: String,
-    var tmdbId: String
+    var tmdbId: String,
+    var imageUrl: String? = null
 )
 
 @Entity(tableName = "table_cast", primaryKeys = ["showId", "personId"])

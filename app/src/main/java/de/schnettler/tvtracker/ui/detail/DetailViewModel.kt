@@ -18,7 +18,7 @@ class DetailViewModel(val show: Show, val context: Application) : ViewModel() {
     init {
         viewModelScope.launch {
             repo.refreshShowSummary(show.id)
-            //repo.refreshShowCast(show.id)
+            repo.refreshShowCast(show.id)
         }
     }
     /**
