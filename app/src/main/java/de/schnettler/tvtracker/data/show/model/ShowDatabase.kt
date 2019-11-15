@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 //Trending Show
 @Entity(tableName = "table_trending")
 data class TrendingDB(
-    val index: Int,
-    @PrimaryKey val showId: Long,
+    @PrimaryKey val index: Int,
+    val showId: Long,
     val watcher: Long
 )
 
