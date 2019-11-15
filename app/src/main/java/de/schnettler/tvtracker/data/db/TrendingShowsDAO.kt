@@ -1,7 +1,9 @@
-package de.schnettler.tvtracker.data.local
+package de.schnettler.tvtracker.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import de.schnettler.tvtracker.data.auth.model.AuthTokenDB
+import de.schnettler.tvtracker.data.auth.model.AuthTokenType
 import de.schnettler.tvtracker.data.person.model.CastDB
 import de.schnettler.tvtracker.data.person.model.PersonDB
 import de.schnettler.tvtracker.data.show.model.*
@@ -73,5 +75,15 @@ interface TrendingShowsDAO{
 
     @Update
     suspend fun updatePerson(person: PersonDB)
+
+
+    /*
+     * Auth
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAuthToken(authTokenDB: AuthTokenDB)
+
+    @Query("SELECT * FROM table_auth WHERE tokenName = :type")
+    fun getAuthToken(type: String): LiveData<AuthTokenDB?>
 }
 

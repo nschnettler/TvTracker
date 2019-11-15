@@ -10,10 +10,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.airbnb.epoxy.Carousel
 import de.schnettler.tvtracker.MainActivity
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
-import de.schnettler.tvtracker.util.AppBarStateChangedListener
-import de.schnettler.tvtracker.util.clearLightStatusBar
-import de.schnettler.tvtracker.util.isDarkTheme
-import de.schnettler.tvtracker.util.setLightStatusBar
+import de.schnettler.tvtracker.util.*
+import timber.log.Timber
 
 
 class DetailFragment : Fragment() {
@@ -51,6 +49,19 @@ class DetailFragment : Fragment() {
         viewModel.cast.observe(this, Observer {
             it?.let {
                 controller.showCast = it
+            }
+        })
+
+        viewModel.tvdbAuth.observe(this, Observer {
+            if (it == null) {
+                //Login Needed
+                viewModel.authenticate(true)
+            } else {
+                val threshold = System.currentTimeMillis() / 1000L + 72000
+                if(it.createdAtMillis >= threshold) {
+                    //Token expires in 4h, Refresh
+                    viewModel.authenticate(false)
+                }
             }
         })
 

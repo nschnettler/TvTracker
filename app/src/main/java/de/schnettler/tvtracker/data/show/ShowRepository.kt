@@ -25,4 +25,15 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
 
     fun getShowDetails(showId: Long) =
         Transformations.map(localDao.getShowDetail(showId)) { it?.asShowDetails() }
+
+
+    suspend fun refreshCast(showId: Long, token: String) {
+        //Refresh Details from Network
+        val result = remoteService.getCast(showId, token)
+
+        if (result is Result.Success) {
+            //Insert in DB
+            //localDao.insertShowDetails(result.data.asShowDetailsDB())
+        }
+    }
 }
