@@ -31,7 +31,7 @@
         tools:layout="@layout/detail_fragment" >
         <argument
             android:name="show"
-            app:argType="de.schnettler.tvtracker.data.model.Show" />
+            app:argType="de.schnettler.tvtracker.data.show.model.Show" />
         <argument
             android:name="transitionName"
             app:argType="string" />

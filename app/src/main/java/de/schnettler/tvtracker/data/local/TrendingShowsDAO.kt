@@ -1,9 +1,10 @@
 package de.schnettler.tvtracker.data.local
 
 import androidx.lifecycle.LiveData
-import androidx.paging.DataSource
 import androidx.room.*
-import de.schnettler.tvtracker.data.model.*
+import de.schnettler.tvtracker.data.person.model.CastDB
+import de.schnettler.tvtracker.data.person.model.PersonDB
+import de.schnettler.tvtracker.data.show.model.*
 
 @Dao
 interface TrendingShowsDAO{
@@ -11,10 +12,10 @@ interface TrendingShowsDAO{
      * Get all Trending Shows. Creates Inner Join of Trending and Shows Table
      */
     @Query("SELECT * FROM table_trending ORDER BY `index` ASC")
-    fun getTrending(): DataSource.Factory<Int, ShowTrendingDB>
+    fun getTrending(): LiveData<List<ShowTrendingDB>?>
 
     @Query("SELECT * FROM table_popular ORDER BY `index` ASC")
-    fun getPopular(): DataSource.Factory<Int, ShowPopularDB>
+    fun getPopular(): LiveData<List<ShowPopularDB>?>
 
     @Query("SELECT * FROM table_show_details WHERE showId = :id")
     fun getShowDetails(id: Long): LiveData<ShowDetailsDB>

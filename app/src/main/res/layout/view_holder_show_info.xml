@@ -10,7 +10,7 @@
             type="String" />
         <variable
             name="showDetails"
-            type="de.schnettler.tvtracker.data.model.ShowDetails" />
+            type="de.schnettler.tvtracker.data.show.model.ShowDetails" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

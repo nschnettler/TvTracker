@@ -2,15 +2,17 @@ package de.schnettler.tvtracker.data
 
 import android.app.Application
 import androidx.lifecycle.Transformations
-import androidx.paging.toLiveData
-import de.schnettler.tvtracker.data.local.getDatabase
-import de.schnettler.tvtracker.data.model.*
-import de.schnettler.tvtracker.data.remote.RetrofitClient
+import de.schnettler.tvtracker.data.db.getDatabase
+import de.schnettler.tvtracker.data.person.model.PersonDB
+import de.schnettler.tvtracker.data.api.RetrofitClient
+import de.schnettler.tvtracker.data.show.model.ShowDB
+import de.schnettler.tvtracker.data.show.model.asShowPopularDB
+import de.schnettler.tvtracker.data.show.model.asShowTrendingDB
+import de.schnettler.tvtracker.data.show.model.toCastEntries
 import de.schnettler.tvtracker.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.lang.Exception
 
 class Repository(private val context: Application, private val scope: CoroutineScope) {
@@ -62,22 +64,6 @@ class Repository(private val context: Application, private val scope: CoroutineS
         }
     }
 
-    suspend fun refreshShowSummary(show_id: Long) = withContext(Dispatchers.IO) {
-        try {
-            val result = showsService.getShowSummary(show_id)
-
-            if (result.isSuccessful) {
-                val showDB = result.body()?.asShowDetailsDB()
-
-                showDB?.let {
-                    showsDao.insertShowDetails(showDB)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     suspend fun refreshShowCast(show_id: Long) = withContext(Dispatchers.IO) {
         try {
             val response = showsService.getShowCast(show_id)
@@ -94,16 +80,16 @@ class Repository(private val context: Application, private val scope: CoroutineS
         }
     }
 
-    fun getTrendingShows()= showsDao.getTrending().map{
-        it.show.asShow(it.trending.index)
-    }.toLiveData(pageSize = SHOW_LIST_PAGE_SIZE, boundaryCallback = ShowBoundaryCallback(this, scope, ShowListType.TRENDING))
+    fun getTrendingShows()= Transformations.map(showsDao.getTrending()) {
+        it?.map {trendingDB ->
+            trendingDB.show.asShow(trendingDB.trending.index)
+        }
+    }
 
-    fun getPopularShows() = showsDao.getPopular().map{
-        it.show.asShow(it.popular.index)
-    }.toLiveData(pageSize = SHOW_LIST_PAGE_SIZE, boundaryCallback = ShowBoundaryCallback(this, scope, ShowListType.POPULAR))
-
-    fun getShowDetails(id: Long) = Transformations.map(showsDao.getShowDetails(id)) {
-        it?.asShowDetails()
+    fun getPopularShows() = Transformations.map(showsDao.getPopular()) {
+        it?.map {trendingDB ->
+            trendingDB.show.asShow(trendingDB.popular.index)
+        }
     }
 
     fun getCast(show_id: Long) = Transformations.map(showsDao.getCast(show_id)) {entries ->

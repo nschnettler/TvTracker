@@ -6,7 +6,7 @@
     <data>
         <variable
             name="castItem"
-            type="de.schnettler.tvtracker.data.model.CastEntry" />
+            type="de.schnettler.tvtracker.data.person.model.CastEntry" />
         <import type="de.schnettler.tvtracker.util.ImageQuality" />
     </data>
 

@@ -1,13 +1,21 @@
-package de.schnettler.tvtracker.data.remote
+package de.schnettler.tvtracker.data.api.trakt
 
-import de.schnettler.tvtracker.data.model.*
+import de.schnettler.tvtracker.data.auth.model.OAuthToken
+import de.schnettler.tvtracker.data.show.model.ShowCastListRemote
+import de.schnettler.tvtracker.data.show.model.ShowDetailsRemote
+import de.schnettler.tvtracker.data.show.model.ShowRemote
+import de.schnettler.tvtracker.data.show.model.TrendingShowRemote
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface TraktApiService {
+interface TraktService {
+    companion object {
+        const val ENDPOINT = "https://api.trakt.tv/"
+    }
+
     @GET("shows/trending")
     suspend fun getTrendingShows(@Query("page") page: Int, @Query("limit") limit: Int): Response<List<TrendingShowRemote>>
 

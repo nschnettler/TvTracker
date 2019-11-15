@@ -4,7 +4,7 @@ import android.view.View
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.carousel
 import de.schnettler.tvtracker.ShowSmallBindingModel_
-import de.schnettler.tvtracker.data.model.Show
+import de.schnettler.tvtracker.data.show.model.Show
 import de.schnettler.tvtracker.header
 import de.schnettler.tvtracker.util.withModelsFrom
 import timber.log.Timber

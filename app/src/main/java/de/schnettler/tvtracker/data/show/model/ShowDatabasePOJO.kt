@@ -1,7 +1,10 @@
-package de.schnettler.tvtracker.data.model
+package de.schnettler.tvtracker.data.show.model
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import de.schnettler.tvtracker.data.person.model.CastDB
+import de.schnettler.tvtracker.data.person.model.CastEntry
+import de.schnettler.tvtracker.data.person.model.PersonDB
 
 
 class ShowTrendingDB(

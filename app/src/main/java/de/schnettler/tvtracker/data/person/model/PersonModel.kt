@@ -1,4 +1,4 @@
-package de.schnettler.tvtracker.data.model
+package de.schnettler.tvtracker.data.person.model
 
 data class CastEntry(
     val character: String,

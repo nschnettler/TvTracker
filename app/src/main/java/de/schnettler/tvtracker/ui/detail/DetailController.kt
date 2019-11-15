@@ -1,16 +1,14 @@
 package de.schnettler.tvtracker.ui.detail
 
-import android.view.View
 import com.airbnb.epoxy.Carousel
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.carousel
 import de.schnettler.tvtracker.*
-import de.schnettler.tvtracker.data.model.CastEntry
-import de.schnettler.tvtracker.data.model.Show
-import de.schnettler.tvtracker.data.model.ShowDetails
+import de.schnettler.tvtracker.data.person.model.CastEntry
+import de.schnettler.tvtracker.data.show.model.Show
+import de.schnettler.tvtracker.data.show.model.ShowDetails
 import de.schnettler.tvtracker.util.getEmoji
 import de.schnettler.tvtracker.util.withModelsFrom
-import timber.log.Timber
 
 class DetailController(val show: Show, var showDetails: ShowDetails? = null, var showCast: List<CastEntry>? = null): EpoxyController(){
 

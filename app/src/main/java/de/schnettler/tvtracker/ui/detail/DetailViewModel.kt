@@ -1,23 +1,34 @@
 package de.schnettler.tvtracker.ui.detail
 
 import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import de.schnettler.tvtracker.data.Repository
-import de.schnettler.tvtracker.data.model.Show
-import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
+import de.schnettler.tvtracker.data.db.getDatabase
+import de.schnettler.tvtracker.data.show.model.Show
+import de.schnettler.tvtracker.data.api.RetrofitClient
+import de.schnettler.tvtracker.data.show.ShowDataSourceLocal
+import de.schnettler.tvtracker.data.show.ShowDataSourceRemote
+import de.schnettler.tvtracker.data.show.ShowRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetailViewModel(val show: Show, val context: Application) : ViewModel() {
     private val repo = Repository(context, viewModelScope)
+    private val showRepository = ShowRepository(
+        ShowDataSourceRemote(RetrofitClient.showsNetworkService),
+        ShowDataSourceLocal(getDatabase(context).trendingShowsDao)
+    )
 
-    var showDetails = repo.getShowDetails(show.id)
+    var showDetails = showRepository.getShowDetails(show.id)
     var cast = repo.getCast(show.id)
 
     init {
         viewModelScope.launch {
-            repo.refreshShowSummary(show.id)
+            withContext(Dispatchers.IO) {
+                showRepository.refreshShowDetails(show.id)
+            }
+
             repo.refreshShowCast(show.id)
         }
     }

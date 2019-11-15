@@ -1,4 +1,4 @@
-package de.schnettler.tvtracker.data.model
+package de.schnettler.tvtracker.data.person.model
 
 import androidx.room.Entity
 import androidx.room.Ignore

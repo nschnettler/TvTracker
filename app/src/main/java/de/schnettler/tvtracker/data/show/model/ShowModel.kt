@@ -1,4 +1,4 @@
-package de.schnettler.tvtracker.data.model
+package de.schnettler.tvtracker.data.show.model
 
 import android.os.Parcelable
 import com.squareup.moshi.Json

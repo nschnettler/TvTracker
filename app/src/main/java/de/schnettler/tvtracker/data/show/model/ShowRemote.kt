@@ -1,6 +1,8 @@
-package de.schnettler.tvtracker.data.model
+package de.schnettler.tvtracker.data.show.model
 
 import com.squareup.moshi.Json
+import de.schnettler.tvtracker.data.person.model.CastDB
+import de.schnettler.tvtracker.data.person.model.PersonDB
 import kotlin.math.roundToInt
 
 data class TrendingShowRemote(
@@ -11,7 +13,8 @@ data class TrendingShowRemote(
 data class ShowRemote(
         val title: String,
         val year: Long,
-        val ids: ShowIdRemote)
+        val ids: ShowIdRemote
+)
 
 data class ShowIdRemote(
         val trakt: Long,
@@ -43,17 +46,18 @@ data class ShowDetailsRemote(
     val rating: String,
     val genres: List<String>) {
 
-    fun asShowDetailsDB(): ShowDetailsDB = ShowDetailsDB(
-        showId = ids.trakt,
-        overview = overview,
-        firstAired = firstAired,
-        runtime = runtime,
-        network = network,
-        trailer = trailer,
-        status = status,
-        rating = rating.toFloat().times(10).roundToInt().toString(),
-        genres = genres
-    )
+    fun asShowDetailsDB(): ShowDetailsDB =
+        ShowDetailsDB(
+            showId = ids.trakt,
+            overview = overview,
+            firstAired = firstAired,
+            runtime = runtime,
+            network = network,
+            trailer = trailer,
+            status = status,
+            rating = rating.toFloat().times(10).roundToInt().toString(),
+            genres = genres
+        )
 }
 
 data class ShowCastListRemote(
@@ -69,20 +73,21 @@ data class ShowCastEntryRemote(
     val episode_count: Long,
     val person: PersonRemote
 ) {
-    fun toShowCastEntryDB(id: Long): ShowCastEntryDB = ShowCastEntryDB(
-        CastDB(
-            showId = id,
-            personId = person.ids.trakt,
-            episodeCount = episode_count,
-            characters = characters
+    fun toShowCastEntryDB(id: Long): ShowCastEntryDB =
+        ShowCastEntryDB(
+            CastDB(
+                showId = id,
+                personId = person.ids.trakt,
+                episodeCount = episode_count,
+                characters = characters
 
-        ),
-        PersonDB(
-            id = person.ids.trakt,
-            name = person.name,
-            tmdbId = person.ids.tmdb.toString()
+            ),
+            PersonDB(
+                id = person.ids.trakt,
+                name = person.name,
+                tmdbId = person.ids.tmdb.toString()
+            )
         )
-    )
 }
 
 data class PersonRemote(
@@ -118,18 +123,18 @@ fun List<TrendingShowRemote>.asShowTrendingDB(page: Int): List<ShowTrendingDB>? 
 
 fun List<ShowRemote>.asShowPopularDB(page: Int): List<ShowPopularDB>? {
         return mapIndexed {localIndex, it ->
-                ShowPopularDB(
-                        PopularDB(
-                            showId = it.ids.trakt,
-                            index = localIndex + 10 * page
-                        ),
-                        ShowDB(
-                            id = it.ids.trakt,
-                            title = it.title,
-                            tmdbId = it.ids.tmdb.toString(),
-                            posterUrl = "",
-                            backdropUrl = ""
-                        )
+            ShowPopularDB(
+                PopularDB(
+                    showId = it.ids.trakt,
+                    index = localIndex + 10 * page
+                ),
+                ShowDB(
+                    id = it.ids.trakt,
+                    title = it.title,
+                    tmdbId = it.ids.tmdb.toString(),
+                    posterUrl = "",
+                    backdropUrl = ""
                 )
+            )
         }
 }

@@ -1,4 +1,4 @@
-package de.schnettler.tvtracker.data.model
+package de.schnettler.tvtracker.data.auth.model
 
 data class OAuthToken(
     val access_token: String,

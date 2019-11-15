@@ -1,18 +1,10 @@
 package de.schnettler.tvtracker.util
 
-import android.content.res.ColorStateList
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isEmpty
 import androidx.databinding.BindingAdapter
-import androidx.paging.PagedList
-import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import de.schnettler.tvtracker.R
-import de.schnettler.tvtracker.data.model.Show
-import timber.log.Timber
 
 
 @BindingAdapter(value = ["imageUrl", "imageQuality"], requireAll = true)

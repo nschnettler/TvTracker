@@ -4,24 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.transition.TransitionInflater
+import com.airbnb.epoxy.Carousel
+import de.schnettler.tvtracker.MainActivity
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
 import de.schnettler.tvtracker.util.AppBarStateChangedListener
-import android.R.attr.name
-import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.airbnb.epoxy.Carousel
-import com.google.android.material.appbar.AppBarLayout
-import de.schnettler.tvtracker.MainActivity
-import de.schnettler.tvtracker.ui.discover.DiscoverController
 import de.schnettler.tvtracker.util.clearLightStatusBar
 import de.schnettler.tvtracker.util.isDarkTheme
 import de.schnettler.tvtracker.util.setLightStatusBar
-import timber.log.Timber
 
 
 class DetailFragment : Fragment() {
@@ -57,9 +49,8 @@ class DetailFragment : Fragment() {
         })
 
         viewModel.cast.observe(this, Observer {
-            if (!it.isNullOrEmpty()) {
+            it?.let {
                 controller.showCast = it
-                controller.requestModelBuild()
             }
         })
 

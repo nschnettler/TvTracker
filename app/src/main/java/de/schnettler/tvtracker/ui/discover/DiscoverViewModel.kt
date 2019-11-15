@@ -3,7 +3,6 @@ package de.schnettler.tvtracker.ui.discover
 import android.app.Application
 import androidx.lifecycle.*
 import de.schnettler.tvtracker.data.Repository
-import de.schnettler.tvtracker.data.model.Show
 import de.schnettler.tvtracker.util.ShowListType
 import kotlinx.coroutines.launch
 
@@ -30,12 +29,5 @@ class DiscoverViewModel(val context: Application) : AndroidViewModel(context) {
              repo.loadNewShowListPage(page = 1, type = ShowListType.POPULAR)
          }
          _isRefreshing.value = false
-    }
-
-    fun onShowClicked(show: Show) {
-        viewModelScope.launch {
-            repo.refreshShowSummary(show.id)
-        }
-
     }
 }

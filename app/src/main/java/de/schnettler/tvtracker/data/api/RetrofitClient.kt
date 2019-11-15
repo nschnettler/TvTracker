@@ -1,26 +1,9 @@
-/*
- * Copyright 2018, The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
-package de.schnettler.tvtracker.data.remote
+package de.schnettler.tvtracker.data.api
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.schnettler.tvtracker.util.TMD_BASE_URL
-import de.schnettler.tvtracker.util.TRAKT_API_BASE_URL
+import de.schnettler.tvtracker.data.api.tmdb.TmdbApiService
+import de.schnettler.tvtracker.data.api.trakt.TraktService
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -52,19 +35,19 @@ object RetrofitClient {
     private val traktRetrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addConverterFactory(ScalarsConverterFactory.create())
-        .baseUrl(TRAKT_API_BASE_URL)
+        .baseUrl(TraktService.ENDPOINT)
         .client(traktHttpClient)
         .build()
 
     private val tmdbRetrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addConverterFactory(ScalarsConverterFactory.create())
-        .baseUrl(TMD_BASE_URL)
+        .baseUrl(TmdbApiService.ENDPOINT)
         .client(tmdbHttpClient)
         .build()
 
-    val showsNetworkService: TraktApiService by lazy {
-        traktRetrofit.create(TraktApiService::class.java)
+    val showsNetworkService: TraktService by lazy {
+        traktRetrofit.create(TraktService::class.java)
     }
 
     val imagesNetworkService: TmdbApiService by lazy {
