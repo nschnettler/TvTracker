@@ -2,6 +2,7 @@ package de.schnettler.tvtracker.ui.detail
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.etiennelenhart.eiffel.viewmodel.StateViewModel
 import de.schnettler.tvtracker.data.Repository
 import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.show.model.Show
@@ -9,7 +10,6 @@ import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.auth.AuthDataSourceLocal
 import de.schnettler.tvtracker.data.auth.AuthDataSourceRemote
 import de.schnettler.tvtracker.data.auth.AuthRepository
-import de.schnettler.tvtracker.data.auth.model.AuthTokenDB
 import de.schnettler.tvtracker.data.auth.model.AuthTokenType
 import de.schnettler.tvtracker.data.show.ShowDataSourceLocal
 import de.schnettler.tvtracker.data.show.ShowDataSourceRemote
@@ -19,7 +19,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class DetailViewModel(val show: Show, val context: Application) : ViewModel() {
+class DetailViewModel(val show: Show, val context: Application) : StateViewModel<DetailViewState>() {
+    override val state = MediatorLiveData<DetailViewState>()
+
     private val repo = Repository(context, viewModelScope)
     private val showRepository = ShowRepository(
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService),
@@ -30,11 +32,57 @@ class DetailViewModel(val show: Show, val context: Application) : ViewModel() {
         AuthDataSourceLocal(getDatabase(context).trendingShowsDao)
     )
 
-    var showDetails = showRepository.getShowDetails(show.id)
-    val tvdbAuth = authRepository.getAuthToken(AuthTokenType.TVDB)
-    val showCast = showRepository.getShowCast(show.tvdbId!!)
+    private val showDetails = showRepository.getShowDetails(show.id)
+    private val tvdbAuth = authRepository.getAuthToken(AuthTokenType.TVDB)
+    private val showCast = showRepository.getShowCast(show.tvdbId!!)
 
     init {
+        initState { DetailViewState(show) }
+        stateInitialized
+
+        //Observe Details
+        state.addSource(showDetails) {
+            //Details Changed
+            Timber.i("Show Details Changed")
+            updateState {state ->
+                state.copy(showDetails = it)
+            }
+        }
+
+        //Observe Auth State
+        state.addSource(tvdbAuth) {
+            var authState: String = "Unauthorized"
+
+            if (it == null) {
+                //Login Needed
+                startAuthentication(true)
+            } else {
+                val threshold = System.currentTimeMillis() / 1000L + 72000
+                if(it.createdAtMillis >= threshold) {
+                   authState = "Authorization expiring"
+                    startAuthentication(false)
+                } else {
+                    authState = "Authorized"
+                    show.tvdbId?.let {id ->
+                        if (showCast.value.isNullOrEmpty()) {
+                            refreshCast(id, it.token)
+                        }
+                    }
+
+                }
+            }
+            Timber.i("Auth State Changed: $authState")
+        }
+
+        //Observe Cast
+        state.addSource(showCast) {
+            Timber.i("Show Cast Changed")
+            updateState { state ->
+                state.copy(showCast = it)
+            }
+        }
+
+        //Refresh Data
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 showRepository.refreshShowDetails(show.id)
@@ -42,7 +90,7 @@ class DetailViewModel(val show: Show, val context: Application) : ViewModel() {
         }
     }
 
-    fun authenticate(loginNeeded: Boolean) {
+    private fun startAuthentication(loginNeeded: Boolean) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 Timber.i("Refreshing Auth Token (is login $loginNeeded)")
@@ -51,25 +99,15 @@ class DetailViewModel(val show: Show, val context: Application) : ViewModel() {
         }
     }
 
-    fun load(token: String) {
-        if (showCast.value.isNullOrEmpty()) {
-            Timber.i("Refreshing Cast")
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    show.tvdbId?.let {
-                        showRepository.refreshCast(show.tvdbId, token)
-                    }
-                }
+    private fun refreshCast(showId: Long, token: String) {
+        Timber.i("Refreshing Cast")
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                showRepository.refreshCast(showId, token)
             }
         }
     }
-//    fun validTokenLoaded() {
-//        viewModelScope.launch {
-//            withContext(Dispatchers.IO) {
-//                showRepository.refreshCast(270915, tvdbAuth.value!!.token)
-//            }
-//        }
-//    }
+
     /**
      * Factory for constructing DevByteViewModel with parameter
      */

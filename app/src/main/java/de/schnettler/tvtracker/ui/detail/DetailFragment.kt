@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.transition.TransitionInflater
 import com.airbnb.epoxy.Carousel
 import de.schnettler.tvtracker.MainActivity
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
@@ -25,7 +26,7 @@ class DetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         //Shared Element Enter
-        //sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
 
         binding = DetailFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = this
@@ -35,40 +36,14 @@ class DetailFragment : Fragment() {
         viewModel = ViewModelProviders.of(this, DetailViewModel.Factory(show, this.activity!!.application)).get(DetailViewModel::class.java)
         binding.viewModel = viewModel
 
-        val controller = DetailController(show)
+        val controller = DetailTypedController()
         val recycler = binding.recyclerView
         recycler.adapter = controller.adapter
         Carousel.setDefaultGlobalSnapHelperFactory(null)
 
-        viewModel.showDetails.observe(this, Observer{
-            it?.let {
-                controller.showDetails = it
-                controller.requestModelBuild()
-            }
-        })
-
-        viewModel.showCast.observe(this, Observer {
-            it?.let {
-                controller.showCast = it
-            }
-        })
-
-        viewModel.tvdbAuth.observe(this, Observer {
-            if (it == null) {
-                Toast.makeText(context, "Authenticating", Toast.LENGTH_SHORT).show()
-                //Login Needed
-                viewModel.authenticate(true)
-            } else {
-                val threshold = System.currentTimeMillis() / 1000L + 72000
-                if(it.createdAtMillis >= threshold) {
-                    //Token expires in 4h, Refresh
-                    viewModel.authenticate(false)
-                    Toast.makeText(context, "ReAuthenticating", Toast.LENGTH_SHORT).show()
-                }
-                viewModel.load(it.token)
-                Toast.makeText(context, "LoggedIn", Toast.LENGTH_SHORT).show()
-            }
-        })
+        viewModel.observeState(this) {
+            controller.setData(it)
+        }
 
         //StatusBar Icon Color
         binding.appbar.addOnOffsetChangedListener(object : AppBarStateChangedListener() {

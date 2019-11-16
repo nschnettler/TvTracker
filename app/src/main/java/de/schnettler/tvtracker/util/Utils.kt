@@ -190,10 +190,8 @@ inline fun EpoxyController.carousel(modelInitializer: CarouselModelBuilder.() ->
  * @param modelBuilder A function that take an item and returns a new EpoxyModel for that item.
  */
 inline fun <T> CarouselModelBuilder.withModelsFrom(
-    items: List<T>?,
+    items: List<T>,
     modelBuilder: (T) -> EpoxyModel<*>
 ) {
-    items?.let {item ->
-        models(item.map { modelBuilder(it) })
-    }
+    models(items.map { modelBuilder(it) })
 }

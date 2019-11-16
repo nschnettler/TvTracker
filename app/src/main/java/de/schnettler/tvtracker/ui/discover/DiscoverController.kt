@@ -25,7 +25,7 @@ class DiscoverController(var trendingShows: List<Show>? = null, var popularShows
         trendingShows?.let {
             carousel {
                 id("trending")
-                withModelsFrom(trendingShows) {
+                withModelsFrom(trendingShows!!) {
                     ShowSmallBindingModel_()
                         .id("trending_$it.id")
                         .title(it.title)
@@ -47,7 +47,7 @@ class DiscoverController(var trendingShows: List<Show>? = null, var popularShows
         popularShows?.let {
             carousel {
                 id("popular")
-                withModelsFrom(popularShows) {
+                withModelsFrom(popularShows!!) {
                     ShowSmallBindingModel_()
                         .id(it.id)
                         .title(it.title)
