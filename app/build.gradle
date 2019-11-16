@@ -106,5 +106,7 @@ dependencies {
     implementation "com.airbnb.android:epoxy-paging:$version_epoxy"
     kapt "com.airbnb.android:epoxy-processor:$version_epoxy"
 
-    implementation "com.squareup.okhttp3:logging-interceptor:4.2.1"
+    //OkHttp Logging
+    implementation "com.squareup.okhttp3:logging-interceptor:$version_okhttp"
+    implementation "com.github.etiennelenhart:eiffel:$version_eiffel"
 }
