@@ -56,7 +56,7 @@ interface TrendingShowsDAO{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCast(castEntry: List<CastEntry>)
 
-    @Query("SELECT * FROM table_cast WHERE showId = :id ORDER BY id ASC")
+    @Query("SELECT * FROM table_cast WHERE showId = :id ORDER BY id ASC LIMIT 10")
     fun getCast(id: Long): LiveData<List<CastEntry>?>
 
     /*
