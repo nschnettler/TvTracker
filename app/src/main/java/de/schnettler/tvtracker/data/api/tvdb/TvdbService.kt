@@ -9,7 +9,8 @@ import retrofit2.http.*
 interface TvdbService {
     companion object {
         const val ENDPOINT = "https://api.thetvdb.com/"
-        const val IMAGE_ENDPOINT ="https://artworks.thetvdb.com/banners/"
+        const val IMAGE_ENDPOINT = "https://artworks.thetvdb.com/banners/"
+        const val IMAGE_ENDPOINT_SHORT ="https://artworks.thetvdb.com"
         const val API_KEY = "***TVDB_API_KEY***"
         const val AUTH_PREFIX = "Bearer "
     }
