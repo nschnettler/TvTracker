@@ -22,24 +22,6 @@
             android:focusable="true"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:paddingStart="4dp"
-                android:paddingTop="4dp"
-                android:paddingEnd="4dp"
-                android:paddingBottom="4dp"
-                android:singleLine="true"
-                android:text="@{castItem.name}"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/showPoster"
-                tools:text="Actor" />
-
             <ImageView
                 android:id="@+id/showPoster"
                 tvdbUrl="@{castItem.image}"
@@ -48,13 +30,57 @@
                 android:background="@drawable/round_background"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:scaleType="centerCrop"
-                app:layout_constraintDimensionRatio="h,2:3"
+                app:layout_constraintDimensionRatio="h,1:1.5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:scaleType="centerCrop"
                 tools:srcCompat="@tools:sample/avatars" />
+
+            <ImageView
+                android:id="@+id/overlay"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/backdrop_bg"
+                android:scaleType="centerCrop"
+                app:layout_constraintDimensionRatio="h,1:1.5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:text="@{castItem.name}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/textView2"
+                app:layout_constraintEnd_toEndOf="@+id/textView2"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/textView2"
+                tools:text="Actor" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:singleLine="true"
+                android:text="@{castItem.role}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/showPoster"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/showPoster"
+                tools:text="Role" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
