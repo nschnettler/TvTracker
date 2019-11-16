@@ -17,10 +17,9 @@ fun bindImage(imgView: ImageView, imageUrl: String?, imageQuality: ImageQuality)
 
 @BindingAdapter("tvdbUrl")
 fun bindTvdbImage(imageView: ImageView, url: String?) {
-    url?.let {
-        val prefix = if (url.startsWith("/person")) TvdbService.IMAGE_ENDPOINT_SHORT else TvdbService.IMAGE_ENDPOINT
-        bindImageFromUrl(imageView, prefix + url)
-    }
+    val suffix = if (url.isNullOrBlank()) "/person/actor.jpg" else url
+    val prefix = if (suffix.startsWith("/person")) TvdbService.IMAGE_ENDPOINT_SHORT else TvdbService.IMAGE_ENDPOINT
+    bindImageFromUrl(imageView, prefix + suffix)
 }
 
 fun bindImageFromUrl(imageView: ImageView, fullUrl: String) {
