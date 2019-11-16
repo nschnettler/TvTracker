@@ -4,9 +4,9 @@ import com.airbnb.epoxy.Carousel
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.carousel
 import de.schnettler.tvtracker.*
-import de.schnettler.tvtracker.data.person.model.CastEntry
 import de.schnettler.tvtracker.data.show.model.Show
 import de.schnettler.tvtracker.data.show.model.ShowDetails
+import de.schnettler.tvtracker.data.show.model.cast.CastEntry
 import de.schnettler.tvtracker.util.getEmoji
 import de.schnettler.tvtracker.util.withModelsFrom
 
@@ -45,7 +45,7 @@ class DetailController(val show: Show, var showDetails: ShowDetails? = null, var
                 id("cast")
                 withModelsFrom(showCast) {
                     CastBindingModel_()
-                        .id("${it.actorId}_${it.character}")
+                        .id("${it.id}")
                         .castItem(it)
                 }
                 padding(Carousel.Padding.dp(16,8,16,4,8))

@@ -3,10 +3,8 @@ package de.schnettler.tvtracker.data.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import de.schnettler.tvtracker.data.auth.model.AuthTokenDB
-import de.schnettler.tvtracker.data.auth.model.AuthTokenType
-import de.schnettler.tvtracker.data.person.model.CastDB
-import de.schnettler.tvtracker.data.person.model.PersonDB
 import de.schnettler.tvtracker.data.show.model.*
+import de.schnettler.tvtracker.data.show.model.cast.CastEntry
 
 @Dao
 interface TrendingShowsDAO{
@@ -50,32 +48,16 @@ interface TrendingShowsDAO{
     }
 
     @Transaction
-    suspend fun insertShowCast(cast: List<ShowCastEntryDB>) {
-        insertPerson(cast.map { it.person })
-        insertCast(cast.map { it.cast })
-    }
-
-    @Transaction
     suspend fun insertPopularShows(shows: List<ShowPopularDB>) {
         insertShows(shows.map { it.show })
         insertPopular(shows.map { it.popular })
     }
 
-    /**
-     * Insert a new Shows in table_shows
-     */
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertPerson(persons: List<PersonDB>)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCast(castEntry: List<CastDB>)
+    suspend fun insertCast(castEntry: List<CastEntry>)
 
-    @Query("SELECT * FROM table_cast WHERE showId = :id ORDER BY episodeCount DESC")
-    fun getCast(id: Long): LiveData<List<ShowCastEntryDB>?>
-
-    @Update
-    suspend fun updatePerson(person: PersonDB)
-
+    @Query("SELECT * FROM table_cast WHERE showId = :id ORDER BY id ASC")
+    fun getCast(id: Long): LiveData<List<CastEntry>?>
 
     /*
      * Auth

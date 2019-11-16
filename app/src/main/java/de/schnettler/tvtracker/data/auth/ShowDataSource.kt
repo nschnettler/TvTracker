@@ -24,7 +24,7 @@ class AuthDataSourceRemote(private val service: TvdbService) {
     private suspend fun refreshToken(login: Boolean, token: String): Result<TvdbAuthTokenResponse> {
         val paramObject = JSONObject()
         paramObject.put("apikey", TvdbService.API_KEY)
-        val response = if (login) service.login(TvdbLoginData()) else service.refreshToken("${TvdbService.AUTH_PREFIX} $token")
+        val response = if (login) service.login(TvdbLoginData()) else service.refreshToken(TvdbService.AUTH_PREFIX + token)
         if (response.isSuccessful) {
             response.body()?.let {
                 return Result.Success(it)

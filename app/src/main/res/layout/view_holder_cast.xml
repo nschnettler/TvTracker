@@ -6,7 +6,7 @@
     <data>
         <variable
             name="castItem"
-            type="de.schnettler.tvtracker.data.person.model.CastEntry" />
+            type="de.schnettler.tvtracker.data.show.model.cast.CastEntry" />
         <import type="de.schnettler.tvtracker.util.ImageQuality" />
     </data>
 
@@ -32,7 +32,7 @@
                 android:paddingEnd="4dp"
                 android:paddingBottom="4dp"
                 android:singleLine="true"
-                android:text="@{castItem.actor}"
+                android:text="@{castItem.name}"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -42,8 +42,7 @@
 
             <ImageView
                 android:id="@+id/showPoster"
-                imageQuality="@{ImageQuality.LOW}"
-                imageUrl="@{castItem.posterUrl}"
+                tvdbUrl="@{castItem.image}"
                 android:layout_width="112dp"
                 android:layout_height="0dp"
                 android:background="@drawable/round_background"

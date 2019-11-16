@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import de.schnettler.tvtracker.databinding.AccountFragmentBinding
 import de.schnettler.tvtracker.util.TRAKT_BASE_URL
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 
 class AccountFragment : Fragment() {
@@ -27,7 +28,7 @@ class AccountFragment : Fragment() {
 
         viewModel.startAuthentication.observe(this, Observer {
             if (it == true) {
-                val authorizeUrl = HttpUrl.parse(TRAKT_BASE_URL + "oauth/authorize")
+                val authorizeUrl = (TRAKT_BASE_URL + "oauth/authorize").toHttpUrlOrNull()
                     ?.newBuilder()
                     ?.addQueryParameter("client_id", "***TRAKT_CLIENT_ID***")
                     ?.addQueryParameter("redirect_uri", "de.schnettler.tvtrack://auth")
@@ -37,7 +38,7 @@ class AccountFragment : Fragment() {
                 val builder = CustomTabsIntent.Builder()
                 val customTabsIntent = builder.build()
                 customTabsIntent.launchUrl(
-                    context, Uri.parse(authorizeUrl?.uri().toString()))
+                    context, Uri.parse(authorizeUrl?.toUri().toString()))
                 viewModel.onLoginHandled()
             }
 

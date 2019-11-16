@@ -3,12 +3,10 @@ package de.schnettler.tvtracker.data
 import android.app.Application
 import androidx.lifecycle.Transformations
 import de.schnettler.tvtracker.data.db.getDatabase
-import de.schnettler.tvtracker.data.person.model.PersonDB
 import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.show.model.ShowDB
 import de.schnettler.tvtracker.data.show.model.asShowPopularDB
 import de.schnettler.tvtracker.data.show.model.asShowTrendingDB
-import de.schnettler.tvtracker.data.show.model.toCastEntries
 import de.schnettler.tvtracker.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -64,22 +62,6 @@ class Repository(private val context: Application, private val scope: CoroutineS
         }
     }
 
-    suspend fun refreshShowCast(show_id: Long) = withContext(Dispatchers.IO) {
-        try {
-            val response = showsService.getShowCast(show_id)
-
-            if(response.isSuccessful) {
-                response.body()?.let {castRM ->
-                    val castDB = castRM.toShowCastListDB(show_id)
-                    showsDao.insertShowCast(castDB)
-                    refreshPersonImages(castDB.map { it.person })
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     fun getTrendingShows()= Transformations.map(showsDao.getTrending()) {
         it?.map {trendingDB ->
             trendingDB.show.asShow(trendingDB.trending.index)
@@ -92,10 +74,6 @@ class Repository(private val context: Application, private val scope: CoroutineS
         }
     }
 
-    fun getCast(show_id: Long) = Transformations.map(showsDao.getCast(show_id)) {entries ->
-        entries?.toCastEntries()
-    }
-
     private suspend fun refreshPosters(showsDB: List<ShowDB>) {
         for (showDB in showsDB) {
             val image = getPoster(showDB.tmdbId)
@@ -103,16 +81,6 @@ class Repository(private val context: Application, private val scope: CoroutineS
                 showDB.posterUrl = image.body()!!.poster_path
                 showDB.backdropUrl = image.body()!!.backdrop_path
                 showsDao.updateShow(showDB)
-            }
-        }
-    }
-
-    private suspend fun refreshPersonImages(personDB: List<PersonDB>) {
-        for (person in personDB) {
-            val image = getPersonImage(person.tmdbId)
-            if (image.isSuccessful) {
-                person.imageUrl = image.body()?.profile_path
-                showsDao.updatePerson(person)
             }
         }
     }

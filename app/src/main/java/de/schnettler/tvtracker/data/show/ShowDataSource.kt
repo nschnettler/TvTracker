@@ -6,6 +6,8 @@ import de.schnettler.tvtracker.data.show.model.ShowDetailsDB
 import de.schnettler.tvtracker.data.show.model.ShowDetailsRemote
 import de.schnettler.tvtracker.data.api.trakt.TraktService
 import de.schnettler.tvtracker.data.api.tvdb.TvdbService
+import de.schnettler.tvtracker.data.show.model.cast.CastEntry
+import de.schnettler.tvtracker.data.show.model.cast.CastListRemote
 import de.schnettler.tvtracker.util.safeApiCall
 import timber.log.Timber
 import java.io.IOException
@@ -37,9 +39,9 @@ class ShowDataSourceRemote(private val trakt: TraktService, private val tvdb: Tv
         errorMessage = "Error getting Cast"
     )
 
-    private suspend fun requestCast(showID: Long, token: String): Result<String> {
+    private suspend fun requestCast(showID: Long, token: String): Result<CastListRemote> {
         val response = tvdb.getActors(TvdbService.AUTH_PREFIX + token, showID)
-        Timber.i(response.toString())
+        Timber.i("RESPONSE $response.toString()")
 
         if (response.isSuccessful) {
             response.body()?.let {
@@ -57,4 +59,10 @@ class ShowDataSourceLocal(private val dao: TrendingShowsDAO) {
     }
 
     fun getShowDetail(showID: Long) = dao.getShowDetails(showID)
+
+    suspend fun insertShowCast(cast: List<CastEntry>) {
+        dao.insertCast(cast)
+    }
+
+    fun getShowCast(showID: Long) = dao.getCast(showID)
 }

@@ -1,8 +1,6 @@
 package de.schnettler.tvtracker.data.show.model
 
 import com.squareup.moshi.Json
-import de.schnettler.tvtracker.data.person.model.CastDB
-import de.schnettler.tvtracker.data.person.model.PersonDB
 import kotlin.math.roundToInt
 
 data class TrendingShowRemote(
@@ -59,42 +57,6 @@ data class ShowDetailsRemote(
             genres = genres
         )
 }
-
-data class ShowCastListRemote(
-    val cast: List<ShowCastEntryRemote>
-) {
-    fun toShowCastListDB(id: Long): List<ShowCastEntryDB> = cast.map {
-        it.toShowCastEntryDB(id)
-    }
-}
-
-data class ShowCastEntryRemote(
-    val characters: List<String>,
-    val episode_count: Long,
-    val person: PersonRemote
-) {
-    fun toShowCastEntryDB(id: Long): ShowCastEntryDB =
-        ShowCastEntryDB(
-            CastDB(
-                showId = id,
-                personId = person.ids.trakt,
-                episodeCount = episode_count,
-                characters = characters
-
-            ),
-            PersonDB(
-                id = person.ids.trakt,
-                name = person.name,
-                tmdbId = person.ids.tmdb.toString()
-            )
-        )
-}
-
-data class PersonRemote(
-    val name: String,
-    val ids: ShowIdRemote
-
-)
 
 class ShowAirInformationRemote(
         val day: String?,

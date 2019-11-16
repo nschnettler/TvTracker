@@ -9,6 +9,7 @@ import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.auth.AuthDataSourceLocal
 import de.schnettler.tvtracker.data.auth.AuthDataSourceRemote
 import de.schnettler.tvtracker.data.auth.AuthRepository
+import de.schnettler.tvtracker.data.auth.model.AuthTokenDB
 import de.schnettler.tvtracker.data.auth.model.AuthTokenType
 import de.schnettler.tvtracker.data.show.ShowDataSourceLocal
 import de.schnettler.tvtracker.data.show.ShowDataSourceRemote
@@ -30,16 +31,14 @@ class DetailViewModel(val show: Show, val context: Application) : ViewModel() {
     )
 
     var showDetails = showRepository.getShowDetails(show.id)
-    var cast = repo.getCast(show.id)
     val tvdbAuth = authRepository.getAuthToken(AuthTokenType.TVDB)
+    val showCast = showRepository.getShowCast(270915)
 
     init {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 showRepository.refreshShowDetails(show.id)
-
             }
-            repo.refreshShowCast(show.id)
         }
     }
 
@@ -52,6 +51,13 @@ class DetailViewModel(val show: Show, val context: Application) : ViewModel() {
         }
     }
 
+    fun load(token: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val test = showRepository.refreshCast(270915, token)
+            }
+        }
+    }
 //    fun validTokenLoaded() {
 //        viewModelScope.launch {
 //            withContext(Dispatchers.IO) {
