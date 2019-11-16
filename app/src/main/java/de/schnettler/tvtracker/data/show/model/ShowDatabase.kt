@@ -23,22 +23,20 @@ data class PopularDB(
 @Entity(tableName = "table_show")
 data class ShowDB(
     @PrimaryKey val id: Long,
+    val tvdbId: Long?,
+    val tmdbId: String,
     val title: String,
     var posterUrl: String,
     var backdropUrl: String
 ) {
-    @Ignore var tmdbId: String = ""
-
-    constructor(id: Long, title: String,  posterUrl: String, backdropUrl: String, tmdbId: String): this(id, title, posterUrl, backdropUrl) {
-        this.tmdbId = tmdbId
-    }
-
     fun asShow(index: Int): Show {
         return Show(
-            id = this.id,
-            title = this.title,
-            posterUrl = this.posterUrl,
-            backdropUrl = this.backdropUrl,
+            id = id,
+            tvdbId = tvdbId,
+            tmdbId = tmdbId,
+            title = title,
+            posterUrl = posterUrl,
+            backdropUrl = backdropUrl,
             index = index
         )
     }

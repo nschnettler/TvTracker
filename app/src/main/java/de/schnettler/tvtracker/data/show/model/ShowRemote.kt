@@ -17,6 +17,7 @@ data class ShowRemote(
 data class ShowIdRemote(
         val trakt: Long,
         val slug: String,
+        val tvdb: Long?,
         val imdb: String?,
         val tmdb: Long?
 )
@@ -75,6 +76,7 @@ fun List<TrendingShowRemote>.asShowTrendingDB(page: Int): List<ShowTrendingDB>? 
                 ShowDB(
                     id = it.show.ids.trakt,
                     title = it.show.title,
+                    tvdbId = it.show.ids.tvdb,
                     tmdbId = it.show.ids.tmdb.toString(),
                     posterUrl = "",
                     backdropUrl = ""
@@ -93,6 +95,7 @@ fun List<ShowRemote>.asShowPopularDB(page: Int): List<ShowPopularDB>? {
                 ShowDB(
                     id = it.ids.trakt,
                     title = it.title,
+                    tvdbId = it.ids.tvdb,
                     tmdbId = it.ids.tmdb.toString(),
                     posterUrl = "",
                     backdropUrl = ""

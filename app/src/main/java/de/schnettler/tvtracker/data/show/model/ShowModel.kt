@@ -7,6 +7,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Show(
     val id: Long,
+    val tvdbId: Long?,
+    val tmdbId: String,
     val title: String,
     var posterUrl: String = "",
     var backdropUrl: String = "",
