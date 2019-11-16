@@ -32,7 +32,7 @@ class DetailViewModel(val show: Show, val context: Application) : ViewModel() {
 
     var showDetails = showRepository.getShowDetails(show.id)
     val tvdbAuth = authRepository.getAuthToken(AuthTokenType.TVDB)
-    val showCast = showRepository.getShowCast(270915)
+    val showCast = showRepository.getShowCast(show.tvdbId!!)
 
     init {
         viewModelScope.launch {
@@ -52,9 +52,14 @@ class DetailViewModel(val show: Show, val context: Application) : ViewModel() {
     }
 
     fun load(token: String) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val test = showRepository.refreshCast(270915, token)
+        if (showCast.value.isNullOrEmpty()) {
+            Timber.i("Refreshing Cast")
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    show.tvdbId?.let {
+                        showRepository.refreshCast(show.tvdbId, token)
+                    }
+                }
             }
         }
     }
