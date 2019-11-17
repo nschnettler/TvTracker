@@ -2,6 +2,7 @@ package de.schnettler.tvtracker.data.show
 
 import androidx.lifecycle.Transformations
 import de.schnettler.tvtracker.data.Result
+import de.schnettler.tvtracker.data.mapping.ShowDetailsMapper
 import de.schnettler.tvtracker.data.show.model.cast.asCastEntryList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,12 +22,14 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
 
         if (result is Result.Success) {
             //Insert in DB
-            localDao.insertShowDetails(result.data.asShowDetailsDB())
+            localDao.insertShowDetails(ShowDetailsMapper.mapToDatabase(result.data))
         }
     }
 
     fun getShowDetails(showId: Long) =
-        Transformations.map(localDao.getShowDetail(showId)) { it?.asShowDetails() }
+        Transformations.map(localDao.getShowDetail(showId)) {
+            it?.let { ShowDetailsMapper.mapToDomain(it) }
+        }
 
 
     suspend fun refreshCast(showId: Long, token: String) {

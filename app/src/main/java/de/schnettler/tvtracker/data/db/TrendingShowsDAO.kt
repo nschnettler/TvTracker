@@ -18,7 +18,7 @@ interface TrendingShowsDAO{
     fun getPopular(): LiveData<List<ShowPopularDB>?>
 
     @Query("SELECT * FROM table_show_details WHERE showId = :id")
-    fun getShowDetails(id: Long): LiveData<ShowDetailsDB>
+    fun getShowDetails(id: Long): LiveData<ShowDetailsDB?>
 
     /**
      * Insert a new Shows in table_shows

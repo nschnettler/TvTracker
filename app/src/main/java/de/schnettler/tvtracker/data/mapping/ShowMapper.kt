@@ -1,8 +1,9 @@
 package de.schnettler.tvtracker.data.mapping
 
 import de.schnettler.tvtracker.data.show.model.*
+import kotlin.math.roundToInt
 
-object TrendingShowMapper: Mapper<TrendingShowRemote, ShowTrendingDB, Show> {
+object TrendingShowMapper : Mapper<TrendingShowRemote, ShowTrendingDB, Show> {
 
     override fun mapToDatabase(input: TrendingShowRemote, index: Int): ShowTrendingDB {
         return ShowTrendingDB(
@@ -21,25 +22,24 @@ object TrendingShowMapper: Mapper<TrendingShowRemote, ShowTrendingDB, Show> {
 }
 
 
-object PopularShowMapper: Mapper<ShowRemote, ShowPopularDB, Show> {
+object PopularShowMapper : Mapper<ShowRemote, ShowPopularDB, Show> {
     override fun mapToDatabase(input: ShowRemote, index: Int): ShowPopularDB {
         return ShowPopularDB(
-                PopularDB(
-                    index = index,
-                    showId = input.ids.trakt
-                ),
-                ShowMapper.mapToDatabase(input)
-            )
+            PopularDB(
+                index = index,
+                showId = input.ids.trakt
+            ),
+            ShowMapper.mapToDatabase(input)
+        )
     }
 
     override fun mapToDomain(input: ShowPopularDB, index: Int): Show {
         return ShowMapper.mapToDomain(input.show)
     }
-
 }
 
 
-object ShowMapper: Mapper<ShowRemote, ShowDB, Show> {
+object ShowMapper : Mapper<ShowRemote, ShowDB, Show> {
     override fun mapToDomain(input: ShowDB, index: Int): Show {
         return Show(
             id = input.id,
@@ -62,5 +62,35 @@ object ShowMapper: Mapper<ShowRemote, ShowDB, Show> {
             backdropUrl = ""
         )
     }
+}
 
+
+object ShowDetailsMapper : Mapper<ShowDetailsRemote, ShowDetailsDB, ShowDetails> {
+    override fun mapToDatabase(input: ShowDetailsRemote, index: Int): ShowDetailsDB {
+        return ShowDetailsDB(
+            showId = input.ids.trakt,
+            overview = input.overview,
+            firstAired = input.firstAired,
+            runtime = input.runtime,
+            network = input.network,
+            trailer = input.trailer,
+            status = input.status,
+            rating = input.rating.toFloat().times(10).roundToInt().toString(),
+            genres = input.genres
+        )
+    }
+
+    override fun mapToDomain(input: ShowDetailsDB, index: Int): ShowDetails {
+        return ShowDetails(
+            showId = input.showId,
+            overview = input.overview,
+            firstAired = input.firstAired,
+            runtime = input.runtime,
+            network = input.network,
+            trailer = input.trailer,
+            status = input.status,
+            rating = input.rating,
+            genres = input.genres
+        )
+    }
 }

@@ -42,18 +42,4 @@ data class ShowDetailsDB(
     val status: String,
     val rating: String,
     val genres: List<String>
-) {
-    fun asShowDetails(): ShowDetails {
-        return ShowDetails(
-            showId = showId,
-            overview = overview,
-            firstAired = firstAired,
-            runtime = runtime,
-            network = network,
-            trailer = trailer,
-            status = status,
-            rating = rating,
-            genres = genres
-        )
-    }
-}
+)
