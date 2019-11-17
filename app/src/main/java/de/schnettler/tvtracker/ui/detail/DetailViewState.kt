@@ -8,7 +8,8 @@ import de.schnettler.tvtracker.data.show.model.cast.CastEntry
 
 data class DetailViewState(
     val show: Show,
-    val showDetails: ShowDetails? = null,
+    val details: ShowDetails? = null,
     val tvdbAuth: AuthTokenDB? = null,
-    val showCast: List<CastEntry>? = null
+    val cast: List<CastEntry>? = null,
+    val relatedShows: List<Show>? = null
 ): ViewState

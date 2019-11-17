@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="title"
+            type="String" />
+        <variable
+            name="posterUrl"
+            type="String" />
+        <import type="de.schnettler.tvtracker.util.ImageQuality"/>
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="transitionName"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/showTitle"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@{title}"
+            android:textAlignment="center"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="h,12:18"
+            app:layout_constraintEnd_toEndOf="@+id/showPoster"
+            app:layout_constraintStart_toStartOf="@+id/showPoster"
+            app:layout_constraintTop_toTopOf="@+id/showPoster"
+            tools:text="Show Title" />
+
+        <ImageView
+            android:id="@+id/showPoster"
+            imageUrl="@{posterUrl}"
+            imageQuality="@{ImageQuality.LOW}"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            android:background="@drawable/round_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="h,12:18"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars"
+            android:transitionName="@{transitionName}"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:onClick="@{onClickListener}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
