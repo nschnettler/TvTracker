@@ -28,19 +28,7 @@ data class ShowDB(
     val title: String,
     var posterUrl: String,
     var backdropUrl: String
-) {
-    fun asShow(index: Int): Show {
-        return Show(
-            id = id,
-            tvdbId = tvdbId,
-            tmdbId = tmdbId,
-            title = title,
-            posterUrl = posterUrl,
-            backdropUrl = backdropUrl,
-            index = index
-        )
-    }
-}
+)
 
 @Entity(tableName = "table_show_details")
 data class ShowDetailsDB(

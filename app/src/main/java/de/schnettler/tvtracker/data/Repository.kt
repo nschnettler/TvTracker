@@ -4,9 +4,10 @@ import android.app.Application
 import androidx.lifecycle.Transformations
 import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.api.RetrofitClient
-import de.schnettler.tvtracker.data.show.model.ShowDB
-import de.schnettler.tvtracker.data.show.model.asShowPopularDB
-import de.schnettler.tvtracker.data.show.model.asShowTrendingDB
+import de.schnettler.tvtracker.data.mapping.ListMapper
+import de.schnettler.tvtracker.data.mapping.PopularShowMapper
+import de.schnettler.tvtracker.data.mapping.TrendingShowMapper
+import de.schnettler.tvtracker.data.show.model.*
 import de.schnettler.tvtracker.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +18,8 @@ class Repository(private val context: Application, private val scope: CoroutineS
     private val showsService = RetrofitClient.showsNetworkService
     private val imagesService = RetrofitClient.imagesNetworkService
     private val showsDao = getDatabase(context).trendingShowsDao
+    private val trendingMapper = ListMapper(TrendingShowMapper)
+    private val popularMapper = ListMapper(PopularShowMapper)
 
     private suspend fun getPoster(showId: String) = withContext(Dispatchers.IO) {
         imagesService.getShowPoster(showId, TMDB_API_KEY)
@@ -34,7 +37,7 @@ class Repository(private val context: Application, private val scope: CoroutineS
 
                     //Save Data in Database
                     if (trendingShows.isSuccessful) {
-                        val showsDB = trendingShows.body()?.asShowTrendingDB(page)
+                        val showsDB = trendingMapper.mapToDatabase(trendingShows.body())
                         showsDB?.let {
                             // Update Cached Trending Shows
                             showsDao.insertTrendingShows(showsDB)
@@ -48,7 +51,7 @@ class Repository(private val context: Application, private val scope: CoroutineS
 
                     //Save Data in Database
                     if (popularShows.isSuccessful) {
-                        val showsDB = popularShows.body()?.asShowPopularDB(page)
+                        val showsDB = popularMapper.mapToDatabase(popularShows.body())
                         showsDB?.let {
                             // Update Cached Trending Shows
                             showsDao.insertPopularShows(showsDB)
@@ -62,16 +65,12 @@ class Repository(private val context: Application, private val scope: CoroutineS
         }
     }
 
-    fun getTrendingShows()= Transformations.map(showsDao.getTrending()) {
-        it?.map {trendingDB ->
-            trendingDB.show.asShow(trendingDB.trending.index)
-        }
+    fun getTrendingShows() = Transformations.map(showsDao.getTrending()) {
+        trendingMapper.mapToDomain(it)
     }
 
     fun getPopularShows() = Transformations.map(showsDao.getPopular()) {
-        it?.map {trendingDB ->
-            trendingDB.show.asShow(trendingDB.popular.index)
-        }
+        popularMapper.mapToDomain(it)
     }
 
     private suspend fun refreshPosters(showsDB: List<ShowDB>) {
