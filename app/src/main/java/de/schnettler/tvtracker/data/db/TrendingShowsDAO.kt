@@ -67,5 +67,21 @@ interface TrendingShowsDAO{
 
     @Query("SELECT * FROM table_auth WHERE tokenName = :type")
     fun getAuthToken(type: String): LiveData<AuthTokenDB?>
+
+
+    /*
+     * Related Shows
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRelations(relations: List<RelationEntity>)
+
+    @Transaction
+    suspend fun insertShowRelations(showRelations: List<ShowRelationEntity>) {
+        insertShows(showRelations.map { it.relatedShow })
+        insertRelations(showRelations.map { it.relation })
+    }
+
+    @Query("SELECT * FROM table_relations WHERE sourceId = :showId ORDER BY `index` ASC")
+    fun getShowRelations(showId: Long): LiveData<List<ShowRelationEntity>?>
 }
 

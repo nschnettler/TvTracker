@@ -21,3 +21,12 @@ class ShowPopularDB(
     )
     val show: ShowDB
 )
+
+class ShowRelationEntity(
+    @Embedded val relation: RelationEntity,
+    @Relation(
+        parentColumn = "targetId",
+        entityColumn = "id"
+    )
+    val relatedShow: ShowDB
+)

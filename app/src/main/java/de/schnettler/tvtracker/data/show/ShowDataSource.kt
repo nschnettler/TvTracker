@@ -6,6 +6,8 @@ import de.schnettler.tvtracker.data.show.model.ShowDetailsDB
 import de.schnettler.tvtracker.data.show.model.ShowDetailsRemote
 import de.schnettler.tvtracker.data.api.trakt.TraktService
 import de.schnettler.tvtracker.data.api.tvdb.TvdbService
+import de.schnettler.tvtracker.data.show.model.ShowRelationEntity
+import de.schnettler.tvtracker.data.show.model.ShowRemote
 import de.schnettler.tvtracker.data.show.model.cast.CastEntry
 import de.schnettler.tvtracker.data.show.model.cast.CastListRemote
 import de.schnettler.tvtracker.util.safeApiCall
@@ -50,19 +52,45 @@ class ShowDataSourceRemote(private val trakt: TraktService, private val tvdb: Tv
         }
         return Result.Error(IOException("Error getting cast: ${response.code()} ${response.message()}"))
     }
+
+    //Related Shows
+    suspend fun getRelated(showID: Long) = safeApiCall(
+        call = { requestRelatedShows(showID) },
+        errorMessage = "Error getting Related Shows"
+    )
+
+    private suspend fun requestRelatedShows(showID: Long): Result<List<ShowRemote>> {
+        val response = trakt.getRelatedShows(showID)
+
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return Result.Success(it)
+            }
+        }
+        return Result.Error(IOException("Error getting related shows: ${response.code()} ${response.message()}"))
+    }
 }
 
 
 class ShowDataSourceLocal(private val dao: TrendingShowsDAO) {
+    //Show Details
     suspend fun insertShowDetails(showDetailsDB: ShowDetailsDB) {
         dao.insertShowDetails(showDetailsDB)
     }
-
     fun getShowDetail(showID: Long) = dao.getShowDetails(showID)
 
+
+    //ShowCast
     suspend fun insertShowCast(cast: List<CastEntry>) {
         dao.insertCast(cast)
     }
-
     fun getShowCast(showID: Long) = dao.getCast(showID)
+
+
+    //Related Shows
+    suspend fun insertRelatedShows(relatedShows: List<ShowRelationEntity>?) {
+        relatedShows?.let { dao.insertShowRelations(relatedShows) }
+    }
+    fun getRelatedShows(showID: Long) = dao.getShowRelations(showID)
+
 }

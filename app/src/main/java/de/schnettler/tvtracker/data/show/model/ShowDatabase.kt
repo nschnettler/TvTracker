@@ -43,3 +43,10 @@ data class ShowDetailsDB(
     val rating: String,
     val genres: List<String>
 )
+
+@Entity(tableName = "table_relations", primaryKeys = ["sourceId", "index"])
+data class RelationEntity(
+    val sourceId: Long,
+    val index: Int,
+    val targetId: Long
+)

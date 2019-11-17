@@ -24,6 +24,9 @@ interface TraktService {
     @GET("shows/{tv_id}?extended=full")
     suspend fun getShowSummary(@Path("tv_id") id: Long): Response<ShowDetailsRemote>
 
+    @GET("shows/{tv_id}/related")
+    suspend fun getRelatedShows(@Path("tv_id") id: Long): Response<List<ShowRemote>>
+
     @POST("oauth/token")
     suspend fun getToken(@Query("code") code: String, @Query("client_id") clientId: String, @Query("client_secret") secret: String, @Query("redirect_uri") uri: String, @Query("grant_type") type: String) : Response<OAuthToken>
 }
