@@ -10,6 +10,7 @@ import retrofit2.http.Query
 interface TmdbApiService {
     companion object {
         const val ENDPOINT = "https://api.themoviedb.org/"
+        const val API_KEY = "***TMDB_API_KEY***"
     }
 
     @GET("/3/tv/{tv_id}")

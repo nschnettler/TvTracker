@@ -25,7 +25,6 @@ import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
 import kotlin.math.abs
 
 
-const val TMDB_API_KEY = "***TMDB_API_KEY***"
 const val TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/"
 const val SHOW_LIST_PAGE_SIZE = 10
 const val SHOW_LIST_PAGE_MAX = 5

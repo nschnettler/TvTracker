@@ -3,7 +3,6 @@ package de.schnettler.tvtracker.ui.detail
 import android.app.Application
 import androidx.lifecycle.*
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
-import de.schnettler.tvtracker.data.Repository
 import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.show.model.Show
 import de.schnettler.tvtracker.data.api.RetrofitClient
@@ -21,10 +20,8 @@ import timber.log.Timber
 
 class DetailViewModel(val show: Show, val context: Application) : StateViewModel<DetailViewState>() {
     override val state = MediatorLiveData<DetailViewState>()
-
-    private val repo = Repository(context, viewModelScope)
     private val showRepository = ShowRepository(
-        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService),
+        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
         ShowDataSourceLocal(getDatabase(context).trendingShowsDao)
     )
     private val authRepository = AuthRepository(
