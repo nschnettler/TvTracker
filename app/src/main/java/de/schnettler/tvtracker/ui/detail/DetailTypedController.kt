@@ -1,13 +1,21 @@
 package de.schnettler.tvtracker.ui.detail
 
+import android.view.View
 import com.airbnb.epoxy.Carousel
 import com.airbnb.epoxy.TypedEpoxyController
 import com.airbnb.epoxy.carousel
 import de.schnettler.tvtracker.*
+import de.schnettler.tvtracker.data.show.model.Show
 import de.schnettler.tvtracker.util.getEmoji
 import de.schnettler.tvtracker.util.withModelsFrom
+import timber.log.Timber
 
 class DetailTypedController: TypedEpoxyController<DetailViewState>() {
+    var callbacks: Callbacks? = null
+    interface Callbacks {
+        fun onItemClicked(view: View, item: Show)
+    }
+
     override fun buildModels(data: DetailViewState?) {
 
         data?.let {
@@ -63,6 +71,11 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                             .id(it.id)
                             .title(it.title)
                             .posterUrl(it.posterUrl)
+                            .transitionName("related_${it.id}")
+                            .onClickListener{ _, _, view, _ ->
+                                Timber.i("Clicked on ${it.title}")
+                                callbacks?.onItemClicked(view, it)
+                            }
                     }
                     padding(Carousel.Padding.dp(16,8,16,4,8))
                 }

@@ -35,5 +35,8 @@
         <argument
             android:name="transitionName"
             app:argType="string" />
+        <action
+            android:id="@+id/action_detailFragment_self"
+            app:destination="@id/detailFragment" />
     </fragment>
 </navigation>

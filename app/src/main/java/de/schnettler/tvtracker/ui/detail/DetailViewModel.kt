@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class DetailViewModel(val show: Show, val context: Application) : StateViewModel<DetailViewState>() {
+class DetailViewModel(var show: Show, val context: Application) : StateViewModel<DetailViewState>() {
     override val state = MediatorLiveData<DetailViewState>()
     private val showRepository = ShowRepository(
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
@@ -113,6 +113,10 @@ class DetailViewModel(val show: Show, val context: Application) : StateViewModel
                 showRepository.refreshCast(showId, token)
             }
         }
+    }
+
+    fun changeShow(new: Show) {
+        show = new
     }
 
     /**
