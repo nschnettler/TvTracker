@@ -18,8 +18,9 @@ class DiscoverViewModel(val context: Application) : AndroidViewModel(context) {
     )
 
     //Trending Shows
-    var trendingShows = showRepository.getTrending()
-    var popularShows = showRepository.getPopular()
+    val trendingShows = showRepository.getTrending()
+    val popularShows = showRepository.getPopular()
+    val anticipatedShows = showRepository.getAnticipated()
 
     private val _isRefreshing = MutableLiveData<Boolean>()
     val isRefreshing: LiveData<Boolean>
@@ -34,6 +35,7 @@ class DiscoverViewModel(val context: Application) : AndroidViewModel(context) {
          viewModelScope.launch {
              showRepository.refreshTrendingShows()
              showRepository.refreshPopularShows()
+             showRepository.refreshAnticipatedShows()
          }
          _isRefreshing.value = false
     }

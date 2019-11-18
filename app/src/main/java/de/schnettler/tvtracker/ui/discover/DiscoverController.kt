@@ -9,7 +9,7 @@ import de.schnettler.tvtracker.header
 import de.schnettler.tvtracker.util.withModelsFrom
 import timber.log.Timber
 
-class DiscoverController(var trendingShows: List<Show>? = null, var popularShows: List<Show>? = null): EpoxyController(){
+class DiscoverController(var trendingShows: List<Show>? = null, var popularShows: List<Show>? = null, var anticipatedShows: List<Show>? = null): EpoxyController(){
 
     var callbacks: Callbacks? = null
     interface Callbacks {
@@ -53,6 +53,29 @@ class DiscoverController(var trendingShows: List<Show>? = null, var popularShows
                         .title(it.title)
                         .posterUrl(it.posterUrl)
                         .transitionName("popular_${it.id}")
+                        .onClickListener{ _, _, view, _ ->
+                            Timber.i("Clicked on ${it.title}")
+                            callbacks?.onItemClicked(view, it)
+                        }
+                }
+            }
+        }
+
+
+        header {
+            id("header_anticipated")
+            title("Most Anticipated")
+        }
+
+        anticipatedShows?.let {
+            carousel {
+                id("anticipated")
+                withModelsFrom(it) {
+                    ShowSmallBindingModel_()
+                        .id(it.id)
+                        .title(it.title)
+                        .posterUrl(it.posterUrl)
+                        .transitionName("anticipated_${it.id}")
                         .onClickListener{ _, _, view, _ ->
                             Timber.i("Clicked on ${it.title}")
                             callbacks?.onItemClicked(view, it)

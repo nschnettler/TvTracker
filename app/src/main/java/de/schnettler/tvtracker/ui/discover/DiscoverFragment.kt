@@ -44,6 +44,10 @@ class DiscoverFragment : Fragment() {
             controller.popularShows = it
             controller.requestModelBuild()
         })
+        viewModel.anticipatedShows.observe(this, Observer {
+            controller.anticipatedShows = it
+            controller.requestModelBuild()
+        })
 
         //WindowInsets
         binding.recyclerView.doOnApplyWindowInsets { view, insets, initialState ->
