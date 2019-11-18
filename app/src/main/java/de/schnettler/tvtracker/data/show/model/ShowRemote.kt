@@ -28,8 +28,8 @@ data class ShowIdRemote(
 )
 
 data class ShowImagesRemote(
-    val poster_path: String,
-    val backdrop_path: String
+    val poster_path: String?,
+    val backdrop_path: String?
 )
 
 data class PersonImageRemote(

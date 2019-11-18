@@ -146,9 +146,18 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         for (showDB in showsDB) {
             val result = remoteService.getImages(showDB.tmdbId)
             if (result is Result.Success) {
-                showDB.posterUrl = result.data.poster_path
-                showDB.backdropUrl = result.data.backdrop_path
-                localDao.updateShow(showDB)
+                var changed = false
+                result.data.poster_path?.let {
+                    showDB.posterUrl = it
+                    changed = true
+                }
+                result.data.backdrop_path?.let {
+                    showDB.backdropUrl = it
+                    changed = true
+                }
+                if (changed) {
+                    localDao.updateShow(showDB)
+                }
             }
         }
     }
