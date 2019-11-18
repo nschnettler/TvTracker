@@ -74,6 +74,49 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         relatedMapper.mapToDomain(it)
     }
 
+
+    /*
+     * Trending Shows
+     */
+    suspend fun refreshTrendingShows() {
+        val result = remoteService.getTrendingShows()
+        if (result is Result.Success) {
+            //Insert in DB
+            val entities = trendingMapper.mapToDatabase(result.data)
+            localDao.insertTrending(entities)
+
+            //Refresh Poster
+            entities?.let {
+                refreshPosters(entities.map { it.show })
+            }
+        }
+    }
+    fun getTrending() = Transformations.map(localDao.getTrending()) {
+        trendingMapper.mapToDomain(it)
+    }
+
+
+    /*
+    * Popular Shows
+    */
+    suspend fun refreshPopularShows() {
+        val result = remoteService.getPopularShows()
+        if (result is Result.Success) {
+            //Insert in DB
+            val entities = popularMapper.mapToDatabase(result.data)
+            localDao.insertPopular(entities)
+
+            //Refresh Poster
+            entities?.let {
+                refreshPosters(entities.map { it.show })
+            }
+        }
+    }
+    fun getPopular() = Transformations.map(localDao.getPopular()) {
+        popularMapper.mapToDomain(it)
+    }
+
+
     /*
      * Show Poster
      */
@@ -86,68 +129,6 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
                 localDao.updateShow(showDB)
             }
         }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //OLD
-    suspend fun loadNewShowListPage(page: Int, limit: Int = 10, type: ShowListType) = withContext(Dispatchers.IO) {
-        try {
-            when (type) {
-                ShowListType.TRENDING -> {
-                    val trendingShows = remoteService.trakt.getTrendingShows(page, limit)
-
-                    //Save Data in Database
-                    if (trendingShows.isSuccessful) {
-                        val showsDB = trendingMapper.mapToDatabase(trendingShows.body())
-                        showsDB?.let {
-                            // Update Cached Trending Shows
-                            localDao.dao.insertTrendingShows(showsDB)
-                            refreshPosters(showsDB.map { it.show })
-                        }
-                    }
-                }
-                ShowListType.POPULAR -> {
-                    //Load Data From Network
-                    val popularShows = remoteService.trakt.getPopularShows(page, limit)
-
-                    //Save Data in Database
-                    if (popularShows.isSuccessful) {
-                        val showsDB = popularMapper.mapToDatabase(popularShows.body())
-                        showsDB?.let {
-                            // Update Cached Trending Shows
-                            localDao.dao.insertPopularShows(showsDB)
-                            refreshPosters(showsDB.map { it.show })
-                        }
-                    }
-                }
-            }
-        } catch (t: Throwable) {
-            t.printStackTrace()
-        }
-    }
-
-    fun getTrendingShows() = Transformations.map(localDao.dao.getTrending()) {
-        trendingMapper.mapToDomain(it)
-    }
-
-    fun getPopularShows() = Transformations.map(localDao.dao.getPopular()) {
-        popularMapper.mapToDomain(it)
     }
 
     suspend fun retrieveAccessToken(code: String) = withContext(Dispatchers.IO) {

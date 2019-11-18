@@ -13,6 +13,7 @@ import retrofit2.http.Query
 interface TraktService {
     companion object {
         const val ENDPOINT = "https://api.trakt.tv/"
+        const val DISCOVER_AMOUNT = 15
     }
 
     @GET("shows/trending")
@@ -20,6 +21,9 @@ interface TraktService {
 
     @GET("shows/popular")
     suspend fun getPopularShows(@Query("page") page: Int, @Query("limit") limit: Int): Response<List<ShowRemote>>
+
+    @GET("shows/anticipated")
+    suspend fun getAnticipated(): Response<List<ShowRemote>>
 
     @GET("shows/{tv_id}?extended=full")
     suspend fun getShowSummary(@Path("tv_id") id: Long): Response<ShowDetailsRemote>

@@ -49,6 +49,7 @@ class ShowDataSourceRemote(val trakt: TraktService, val tvdb: TvdbService, val t
         return Result.Error(IOException("Error getting cast: ${response.code()} ${response.message()}"))
     }
 
+
     //Related Shows
     suspend fun getRelated(showID: Long) = safeApiCall(
         call = { requestRelatedShows(showID) },
@@ -81,6 +82,38 @@ class ShowDataSourceRemote(val trakt: TraktService, val tvdb: TvdbService, val t
         }
         return Result.Error(IOException("Error getting show images: ${response.code()} ${response.message()}"))
     }
+
+
+    //Trending Shows
+    suspend fun getTrendingShows() = safeApiCall(
+        call = { requestTrendingShows() },
+        errorMessage = "Error loading Trending Shows"
+    )
+    private suspend fun requestTrendingShows(): Result<List<TrendingShowRemote>> {
+        val response = trakt.getTrendingShows(0, TraktService.DISCOVER_AMOUNT)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return Result.Success(it)
+            }
+        }
+        return Result.Error(IOException("Error getting trending shows: ${response.code()} ${response.message()}"))
+    }
+
+
+    //Popular Shows
+    suspend fun getPopularShows() = safeApiCall(
+        call = { requestPopularShows() },
+        errorMessage = "Error loading Popular Shows"
+    )
+    private suspend fun requestPopularShows(): Result<List<ShowRemote>> {
+        val response = trakt.getPopularShows(0, TraktService.DISCOVER_AMOUNT)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return Result.Success(it)
+            }
+        }
+        return Result.Error(IOException("Error getting popular shows: ${response.code()} ${response.message()}"))
+    }
 }
 
 
@@ -110,4 +143,17 @@ class ShowDataSourceLocal(val dao: TrendingShowsDAO) {
     }
     fun getRelatedShows(showID: Long) = dao.getShowRelations(showID)
 
+
+    //Trending Shows
+    suspend fun insertTrending(shows: List<ShowTrendingDB>?) {
+        shows?.let { dao.insertTrendingShows(it) }
+    }
+    fun getTrending() = dao.getTrending()
+
+
+    //Popular Shows
+    suspend fun insertPopular(shows: List<ShowPopularDB>?) {
+        shows?.let { dao.insertPopularShows(it) }
+    }
+    fun getPopular() = dao.getPopular()
 }

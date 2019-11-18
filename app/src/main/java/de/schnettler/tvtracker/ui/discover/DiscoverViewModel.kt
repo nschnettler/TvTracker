@@ -18,8 +18,8 @@ class DiscoverViewModel(val context: Application) : AndroidViewModel(context) {
     )
 
     //Trending Shows
-    var trendingShows = showRepository.getTrendingShows()
-    var popularShows = showRepository.getPopularShows()
+    var trendingShows = showRepository.getTrending()
+    var popularShows = showRepository.getPopular()
 
     private val _isRefreshing = MutableLiveData<Boolean>()
     val isRefreshing: LiveData<Boolean>
@@ -32,8 +32,8 @@ class DiscoverViewModel(val context: Application) : AndroidViewModel(context) {
      fun onRefresh() {
          _isRefreshing.value = true
          viewModelScope.launch {
-             showRepository.loadNewShowListPage(page = 1, type = ShowListType.TRENDING)
-             showRepository.loadNewShowListPage(page = 1, type = ShowListType.POPULAR)
+             showRepository.refreshTrendingShows()
+             showRepository.refreshPopularShows()
          }
          _isRefreshing.value = false
     }
