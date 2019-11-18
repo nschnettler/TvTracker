@@ -14,10 +14,12 @@ import de.schnettler.tvtracker.data.show.model.Show
 import de.schnettler.tvtracker.databinding.DiscoverFragmentBinding
 import de.schnettler.tvtracker.util.ViewModelFactory
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
+import timber.log.Timber
 
 class DiscoverFragment : Fragment() {
 
     private lateinit var viewModel: DiscoverViewModel
+    private lateinit var controller: DiscoverController
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -28,7 +30,8 @@ class DiscoverFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
 
-        val controller = DiscoverController(null)
+        controller = DiscoverController(null)
+        controller.onRestoreInstanceState(savedInstanceState)
         val recycler = binding.recyclerView
         recycler.adapter = controller.adapter
 
@@ -60,5 +63,12 @@ class DiscoverFragment : Fragment() {
 
         }
         return binding.root
+    }
+
+
+    //Only gets called on Configuration Change (Activity Recreation)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        controller.onSaveInstanceState(outState)
     }
 }
