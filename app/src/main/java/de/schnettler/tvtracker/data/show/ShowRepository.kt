@@ -19,6 +19,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
     private val relatedMapper = ListMapper(ShowRelatedMapper)
     private val trendingMapper = ListMapper(TrendingShowMapper)
     private val popularMapper = ListMapper(PopularShowMapper)
+    private val anticipatedMapper = ListMapper(AnticipatedShowMapper)
 
     /*
      * Show Details
@@ -114,6 +115,27 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
     }
     fun getPopular() = Transformations.map(localDao.getPopular()) {
         popularMapper.mapToDomain(it)
+    }
+
+
+    /*
+   * Anticipated Shows
+   */
+    suspend fun refreshAnticipatedShows() {
+        val result = remoteService.getAnticipated()
+        if (result is Result.Success) {
+            //Insert in DB
+            val entities = anticipatedMapper.mapToDatabase(result.data)
+            localDao.insertAnticipated(entities)
+
+            //Refresh Poster
+            entities?.let {
+                refreshPosters(entities.map { it.show })
+            }
+        }
+    }
+    fun getAnticipated() = Transformations.map(localDao.getAnticipated()) {
+        anticipatedMapper.mapToDomain(it)
     }
 
 

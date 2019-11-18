@@ -39,6 +39,28 @@ object PopularShowMapper : Mapper<ShowRemote, ShowPopularDB, Show> {
     }
 }
 
+object AnticipatedShowMapper : Mapper<AnticipatedShowRemote, AnticipatedShowDB, Show> {
+    override fun mapToDatabase(
+        input: AnticipatedShowRemote,
+        index: Int,
+        id: Long
+    ): AnticipatedShowDB {
+        return AnticipatedShowDB(
+            AnticipatedDB(
+                index = index,
+                showId = input.show.ids.trakt,
+                lists = input.listCount
+            ),
+            ShowMapper.mapToDatabase(input.show)
+
+        )
+    }
+
+    override fun mapToDomain(input: AnticipatedShowDB, index: Int, id: Long): Show {
+        return ShowMapper.mapToDomain(input.show)
+    }
+}
+
 
 object ShowMapper : Mapper<ShowRemote, ShowDB, Show> {
     override fun mapToDomain(input: ShowDB, index: Int, id: Long): Show {
@@ -96,7 +118,7 @@ object ShowDetailsMapper : Mapper<ShowDetailsRemote, ShowDetailsDB, ShowDetails>
     }
 }
 
-object ShowRelatedMapper: Mapper<ShowRemote, ShowRelationEntity, Show> {
+object ShowRelatedMapper : Mapper<ShowRemote, ShowRelationEntity, Show> {
     override fun mapToDatabase(input: ShowRemote, index: Int, id: Long): ShowRelationEntity {
         return ShowRelationEntity(
             RelationEntity(

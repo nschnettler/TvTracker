@@ -22,6 +22,15 @@ class ShowPopularDB(
     val show: ShowDB
 )
 
+class AnticipatedShowDB(
+    @Embedded val anticipated: AnticipatedDB,
+    @Relation(
+        parentColumn = "showId",
+        entityColumn = "id"
+    )
+    val show: ShowDB
+)
+
 class ShowRelationEntity(
     @Embedded val relation: RelationEntity,
     @Relation(

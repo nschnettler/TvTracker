@@ -1,6 +1,7 @@
 package de.schnettler.tvtracker.data.api.trakt
 
 import de.schnettler.tvtracker.data.auth.model.OAuthToken
+import de.schnettler.tvtracker.data.show.model.AnticipatedShowRemote
 import de.schnettler.tvtracker.data.show.model.ShowDetailsRemote
 import de.schnettler.tvtracker.data.show.model.ShowRemote
 import de.schnettler.tvtracker.data.show.model.TrendingShowRemote
@@ -23,7 +24,7 @@ interface TraktService {
     suspend fun getPopularShows(@Query("page") page: Int, @Query("limit") limit: Int): Response<List<ShowRemote>>
 
     @GET("shows/anticipated")
-    suspend fun getAnticipated(): Response<List<ShowRemote>>
+    suspend fun getAnticipated(): Response<List<AnticipatedShowRemote>>
 
     @GET("shows/{tv_id}?extended=full")
     suspend fun getShowSummary(@Path("tv_id") id: Long): Response<ShowDetailsRemote>

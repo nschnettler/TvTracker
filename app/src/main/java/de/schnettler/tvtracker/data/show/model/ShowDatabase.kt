@@ -19,6 +19,14 @@ data class PopularDB(
     @PrimaryKey val index: Int
 )
 
+//Anticipated Show
+@Entity(tableName = "table_anticipated")
+data class AnticipatedDB(
+    val showId: Long,
+    @PrimaryKey val index: Int,
+    val lists: Long
+)
+
 //Show (Short)
 @Entity(tableName = "table_show")
 data class ShowDB(

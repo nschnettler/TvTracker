@@ -114,6 +114,21 @@ class ShowDataSourceRemote(val trakt: TraktService, val tvdb: TvdbService, val t
         }
         return Result.Error(IOException("Error getting popular shows: ${response.code()} ${response.message()}"))
     }
+
+    //Anticipated Shows
+    suspend fun getAnticipated() = safeApiCall(
+        call = { refreshAnticipated() },
+        errorMessage = "Error loading anticipated Shows"
+    )
+    private suspend fun refreshAnticipated(): Result<List<AnticipatedShowRemote>> {
+        val response = trakt.getAnticipated()
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return Result.Success(it)
+            }
+        }
+        return Result.Error(IOException("Error getting anticipated shows: ${response.code()} ${response.message()}"))
+    }
 }
 
 
@@ -156,4 +171,11 @@ class ShowDataSourceLocal(val dao: TrendingShowsDAO) {
         shows?.let { dao.insertPopularShows(it) }
     }
     fun getPopular() = dao.getPopular()
+
+
+    //Anticipated Shows
+    suspend fun insertAnticipated(shows: List<AnticipatedShowDB>?) {
+        shows?.let { dao.insertAnticipatedShows(it) }
+    }
+    fun getAnticipated() = dao.getAnticipated()
 }

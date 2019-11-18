@@ -8,6 +8,11 @@ data class TrendingShowRemote(
     val show: ShowRemote
 )
 
+data class AnticipatedShowRemote(
+    @Json(name = "list_count") val listCount: Long,
+    val show: ShowRemote
+)
+
 data class ShowRemote(
     val title: String,
     val year: Long,

@@ -17,6 +17,9 @@ interface TrendingShowsDAO{
     @Query("SELECT * FROM table_popular ORDER BY `index` ASC")
     fun getPopular(): LiveData<List<ShowPopularDB>?>
 
+    @Query("SELECT * FROM table_anticipated ORDER BY `index` ASC")
+    fun getAnticipated(): LiveData<List<AnticipatedShowDB>?>
+
     @Query("SELECT * FROM table_show_details WHERE showId = :id")
     fun getShowDetails(id: Long): LiveData<ShowDetailsDB?>
 
@@ -39,6 +42,9 @@ interface TrendingShowsDAO{
     fun insertPopular(popular: List<PopularDB>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAnticipated(popular: List<AnticipatedDB>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertShowDetails(showDetails: ShowDetailsDB)
 
     @Transaction
@@ -51,6 +57,12 @@ interface TrendingShowsDAO{
     suspend fun insertPopularShows(shows: List<ShowPopularDB>) {
         insertShows(shows.map { it.show })
         insertPopular(shows.map { it.popular })
+    }
+
+    @Transaction
+    suspend fun insertAnticipatedShows(shows: List<AnticipatedShowDB>) {
+        insertShows(shows.map { it.show })
+        insertAnticipated(shows.map { it.anticipated })
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
