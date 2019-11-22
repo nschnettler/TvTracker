@@ -14,9 +14,6 @@ import de.schnettler.tvtracker.data.show.ShowDataSourceLocal
 import de.schnettler.tvtracker.data.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.show.ShowRepository
 import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
-import de.schnettler.tvtracker.util.SeasonAction
-import de.schnettler.tvtracker.util.SeasonAction.COLLAPSE
-import de.schnettler.tvtracker.util.SeasonAction.EXPAND
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -138,18 +135,18 @@ class DetailViewModel(var show: Show, val context: Application) : StateViewModel
                 updateState {
                     it.copy(expandedSeasons = it.expandedSeasons + season.id)
                 }
+
+                //Refresh Episodes
+                viewModelScope.launch {
+                    withContext(Dispatchers.IO) {
+                        showRepository.refreshEpisodes(show.id, season.number, season.id)
+                    }
+                }
             }
             false -> {
                 updateState {
                     it.copy(expandedSeasons = it.expandedSeasons - season.id)
                 }
-            }
-        }
-
-        //Refresh Episodes
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                showRepository.refreshEpisodes(show.id, season.number, season.id)
             }
         }
     }
