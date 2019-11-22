@@ -114,7 +114,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                     twoLineList {
                         id(season.id)
                         title(season.title)
-                        subTitle("${season.episodeCount} Episodes • ${season.rating * 10}% Rating")
+                        subTitle("${season.episodeCount} Episodes • ${season.rating}% Rating")
                         imageText("${season.number}")
                     }
                 }
