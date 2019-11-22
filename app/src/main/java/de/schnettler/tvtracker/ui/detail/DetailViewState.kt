@@ -13,5 +13,6 @@ data class DetailViewState(
     val tvdbAuth: AuthTokenDB? = null,
     val cast: List<CastEntry>? = null,
     val relatedShows: List<Show>? = null,
-    val seasons: List<SeasonDomain>? = null
+    val seasons: List<SeasonDomain>? = null,
+    val expandedSeasons: Set<Long> = setOf()
 ): ViewState

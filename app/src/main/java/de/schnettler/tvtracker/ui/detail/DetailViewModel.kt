@@ -13,7 +13,12 @@ import de.schnettler.tvtracker.data.auth.model.AuthTokenType
 import de.schnettler.tvtracker.data.show.ShowDataSourceLocal
 import de.schnettler.tvtracker.data.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.show.ShowRepository
+import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
+import de.schnettler.tvtracker.util.SeasonAction
+import de.schnettler.tvtracker.util.SeasonAction.COLLAPSE
+import de.schnettler.tvtracker.util.SeasonAction.EXPAND
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -33,7 +38,7 @@ class DetailViewModel(var show: Show, val context: Application) : StateViewModel
     private val tvdbAuth = authRepository.getAuthToken(AuthTokenType.TVDB)
     private val showCast = showRepository.getShowCast(show.tvdbId!!)
     private val relatedShows = showRepository.getRelatedShows(show.id)
-    private val seasons = showRepository.getSeasons(show.id)
+    private val seasons = showRepository.getSeasonsWithEpisodes(show.id)
 
     init {
         initState { DetailViewState(show) }
@@ -126,8 +131,27 @@ class DetailViewModel(var show: Show, val context: Application) : StateViewModel
         }
     }
 
-    fun changeShow(new: Show) {
-        show = new
+    fun onChangeSeasonExpansion(season: SeasonDomain, expand: Boolean) {
+        //Change ExpansionState
+        when (expand) {
+            true -> {
+                updateState {
+                    it.copy(expandedSeasons = it.expandedSeasons + season.id)
+                }
+            }
+            false -> {
+                updateState {
+                    it.copy(expandedSeasons = it.expandedSeasons - season.id)
+                }
+            }
+        }
+
+        //Refresh Episodes
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                showRepository.refreshEpisodes(show.id, season.number, season.id)
+            }
+        }
     }
 
     /**

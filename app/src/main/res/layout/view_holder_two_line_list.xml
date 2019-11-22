@@ -13,6 +13,9 @@
         <variable
             name="imageText"
             type="String" />
+        <variable
+            name="onClickListener"
+            type="android.view.View.OnClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,7 +23,8 @@
         android:layout_height="72dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:onClick="@{onClickListener}">
 
         <ImageView
             android:id="@+id/imageView"

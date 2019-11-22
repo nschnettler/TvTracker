@@ -4,23 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
-import com.airbnb.epoxy.Carousel
 import de.schnettler.tvtracker.MainActivity
 import de.schnettler.tvtracker.data.show.model.Show
+import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
-import de.schnettler.tvtracker.ui.discover.DiscoverController
-import de.schnettler.tvtracker.ui.discover.DiscoverFragmentDirections
 import de.schnettler.tvtracker.util.*
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import timber.log.Timber
 
 
 class DetailFragment : Fragment() {
@@ -80,6 +75,10 @@ class DetailFragment : Fragment() {
 
         //Click Listener Callback
         controller.callbacks = object: DetailTypedController.Callbacks {
+            override fun onSeasonClicked(season: SeasonDomain, isExpanded: Boolean) {
+                viewModel.onChangeSeasonExpansion(season, !isExpanded)
+            }
+
             override fun onItemClicked(view: View, item: Show) {
                 val extras = FragmentNavigatorExtras(
                     view to "showPoster"

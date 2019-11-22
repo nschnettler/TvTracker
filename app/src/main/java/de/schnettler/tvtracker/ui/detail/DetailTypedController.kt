@@ -6,6 +6,7 @@ import com.airbnb.epoxy.TypedEpoxyController
 import com.airbnb.epoxy.carousel
 import de.schnettler.tvtracker.*
 import de.schnettler.tvtracker.data.show.model.Show
+import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
 import de.schnettler.tvtracker.util.getEmoji
 import de.schnettler.tvtracker.util.isoToDate
 import de.schnettler.tvtracker.util.withModelsFrom
@@ -15,6 +16,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
     var callbacks: Callbacks? = null
     interface Callbacks {
         fun onItemClicked(view: View, item: Show)
+        fun onSeasonClicked(season: SeasonDomain, isExpanded: Boolean)
     }
 
     override fun buildModels(data: DetailViewState?) {
@@ -25,6 +27,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
             val showCast = data.cast
             val showRelated = data.relatedShows
             val seasons = data.seasons
+            val expandedSeasons = data.expandedSeasons
 
             showDetails?.let {
                 //Show Info
@@ -92,6 +95,19 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                         title(season.title)
                         subTitle("${season.episodeCount} Episodes • ${season.rating}% Rating")
                         imageText("${season.number}")
+                        onClickListener { _, _, _, _ ->
+                            callbacks?.onSeasonClicked(season, expandedSeasons.contains(season.id))
+                        }
+                    }
+                    if (expandedSeasons.contains(season.id)) {
+                        season.episodes?.forEach {episode ->
+                            twoLineList {
+                                id(episode.id)
+                                title(episode.title)
+                                subTitle("Test")
+                                imageText("${season.number}")
+                            }
+                        }
                     }
                 }
             }
