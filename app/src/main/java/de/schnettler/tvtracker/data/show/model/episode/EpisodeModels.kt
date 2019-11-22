@@ -7,7 +7,7 @@ import de.schnettler.tvtracker.data.show.model.ShowIdRemote
 data class EpisodeResponse(
     val season: Long,
     val number: Long,
-    val title: String,
+    val title: String?,
     val ids: ShowIdRemote
 )
 
@@ -17,7 +17,7 @@ data class EpisodeEntity(
     val seasonId: Long,
     val season: Long,
     val number: Long,
-    val title: String
+    val title: String?
 )
 
 data class EpisodeDomain(
@@ -25,5 +25,5 @@ data class EpisodeDomain(
     val seasonId: Long,
     val season: Long,
     val number: Long,
-    val title: String
+    val title: String?
 )
