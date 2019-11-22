@@ -59,7 +59,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                             .title(it)
                             .emoji(getEmoji(it))
                     }
-                    padding(Carousel.Padding.dp(16,8,16,16,8))
+                    padding(Carousel.Padding.dp(16,8,16,8,8))
                 }
             }
 
