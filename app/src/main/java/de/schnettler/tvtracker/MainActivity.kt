@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.airbnb.epoxy.Carousel
 import de.schnettler.tvtracker.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -49,6 +50,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        Carousel.setDefaultGlobalSnapHelperFactory(null)
     }
 
     override fun onNewIntent(intent: Intent?) {

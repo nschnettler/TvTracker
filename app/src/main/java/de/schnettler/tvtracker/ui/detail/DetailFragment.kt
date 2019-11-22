@@ -46,7 +46,6 @@ class DetailFragment : Fragment() {
         val controller = DetailTypedController()
         val recycler = binding.recyclerView
         recycler.adapter = controller.adapter
-        Carousel.setDefaultGlobalSnapHelperFactory(null)
 
         viewModel.observeState(this) {
             controller.setData(it)
