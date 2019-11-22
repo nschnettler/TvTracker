@@ -80,6 +80,22 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                 }
             }
 
+            seasons?.let {
+                header {
+                    id("episodes_header")
+                    title("Seasons")
+                    showExpand(false)
+                }
+                seasons.forEach {season ->
+                    twoLineList {
+                        id(season.id)
+                        title(season.title)
+                        subTitle("${season.episodeCount} Episodes • ${season.rating}% Rating")
+                        imageText("${season.number}")
+                    }
+                }
+            }
+
             showRelated?.let {
                 header {
                     id("related_header")
@@ -100,23 +116,6 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                             }
                     }
                     padding(Carousel.Padding.dp(16,8,16,16,8))
-                }
-            }
-
-
-            seasons?.let {
-                header {
-                    id("episodes_header")
-                    title("Seasons")
-                    showExpand(false)
-                }
-                seasons.forEach {season ->
-                    twoLineList {
-                        id(season.id)
-                        title(season.title)
-                        subTitle("${season.episodeCount} Episodes • ${season.rating}% Rating")
-                        imageText("${season.number}")
-                    }
                 }
             }
         }
