@@ -26,7 +26,7 @@ fun getDatabase(context: Context): DataBaseShows.ShowsDatabase {
     synchronized(DataBaseShows.ShowsDatabase::class.java) {
         if (!::INSTANCE.isInitialized) {
             INSTANCE = Room.databaseBuilder(context.applicationContext,
-                DataBaseShows.ShowsDatabase::class.java, "shows").build()
+                DataBaseShows.ShowsDatabase::class.java, "shows").fallbackToDestructiveMigration().build()
         }
     }
     return INSTANCE
