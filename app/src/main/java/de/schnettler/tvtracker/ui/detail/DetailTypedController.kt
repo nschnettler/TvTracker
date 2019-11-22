@@ -59,11 +59,16 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                             .title(it)
                             .emoji(getEmoji(it))
                     }
-                    padding(Carousel.Padding.dp(16,8,16,4,8))
+                    padding(Carousel.Padding.dp(16,8,16,16,8))
                 }
             }
 
             showCast?.let {
+                header {
+                    id("cast_header")
+                    title("Cast")
+                    showExpand(false)
+                }
                 carousel {
                     id("cast")
                     withModelsFrom(showCast) {
@@ -71,11 +76,16 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                             .id("${it.id}")
                             .castItem(it)
                     }
-                    padding(Carousel.Padding.dp(16,8,16,4,8))
+                    padding(Carousel.Padding.dp(16,8,16,16,8))
                 }
             }
 
             showRelated?.let {
+                header {
+                    id("related_header")
+                    title("Related Shows")
+                    showExpand(false)
+                }
                 carousel {
                     id("related")
                     withModelsFrom(showRelated) {
@@ -89,12 +99,17 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                                 callbacks?.onItemClicked(view, it)
                             }
                     }
-                    padding(Carousel.Padding.dp(16,8,16,4,8))
+                    padding(Carousel.Padding.dp(16,8,16,16,8))
                 }
             }
 
 
             seasons?.let {
+                header {
+                    id("episodes_header")
+                    title("Seasons")
+                    showExpand(false)
+                }
                 seasons.forEach {season ->
                     twoLineList {
                         id(season.id)
