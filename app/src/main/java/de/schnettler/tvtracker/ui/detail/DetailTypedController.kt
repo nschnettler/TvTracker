@@ -24,6 +24,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
             val showDetails = data.details
             val showCast = data.cast
             val showRelated = data.relatedShows
+            val seasons = data.seasons
 
             showDetails?.let {
                 //Show Info
@@ -89,6 +90,16 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                             }
                     }
                     padding(Carousel.Padding.dp(16,8,16,4,8))
+                }
+            }
+
+
+            seasons?.let {
+                seasons.forEach {season ->
+                    header {
+                        id(season.id)
+                        title(season.title)
+                    }
                 }
             }
         }

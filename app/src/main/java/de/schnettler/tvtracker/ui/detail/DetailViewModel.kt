@@ -33,6 +33,7 @@ class DetailViewModel(var show: Show, val context: Application) : StateViewModel
     private val tvdbAuth = authRepository.getAuthToken(AuthTokenType.TVDB)
     private val showCast = showRepository.getShowCast(show.tvdbId!!)
     private val relatedShows = showRepository.getRelatedShows(show.id)
+    private val seasons = showRepository.getSeasons(show.id)
 
     init {
         initState { DetailViewState(show) }
@@ -89,11 +90,20 @@ class DetailViewModel(var show: Show, val context: Application) : StateViewModel
             }
         }
 
+        //Observe Seasons
+        state.addSource(seasons) {
+            Timber.i("Seasons Changed")
+            updateState { state ->
+                state.copy(seasons = it)
+            }
+        }
+
         //Refresh Data
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 showRepository.refreshShowDetails(show.id)
                 showRepository.refreshRelatedShows(show.id)
+                showRepository.refreshSeasons(show.id)
             }
         }
     }
