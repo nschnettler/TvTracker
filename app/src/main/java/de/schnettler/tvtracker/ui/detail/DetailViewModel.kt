@@ -104,8 +104,8 @@ class DetailViewModel(var show: Show, val context: Application) : StateViewModel
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 showRepository.refreshShowDetails(show.id)
-                showRepository.refreshRelatedShows(show.id)
                 showRepository.refreshSeasons(show.id)
+                showRepository.refreshRelatedShows(show.id)
             }
         }
     }
