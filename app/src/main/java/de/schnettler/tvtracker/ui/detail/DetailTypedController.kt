@@ -101,11 +101,10 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                     }
                     if (expandedSeasons.contains(season.id)) {
                         season.episodes?.forEach {episode ->
-                            twoLineList {
+                            episodeItem {
                                 id(episode.id)
                                 title(episode.title)
-                                subTitle("Test")
-                                imageText("${season.number}")
+                                imageText("#${episode.number}")
                             }
                         }
                     }
