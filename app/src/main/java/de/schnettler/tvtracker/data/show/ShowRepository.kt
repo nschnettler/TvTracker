@@ -21,6 +21,8 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
     private val popularMapper = ListMapper(PopularShowMapper)
     private val anticipatedMapper = ListMapper(AnticipatedShowMapper)
     private val seasonMapper = ListMapperWithId(SeasonSummaryMapper)
+    private val episodeMapper = ListMapperWithId(EpisodeMapper)
+    private val seasonWithEpisodeMapper = ListMapper(SeasonWithEpisodeMapper)
 
     /*
      * Show Details
@@ -153,8 +155,24 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
             }
         }
     }
-    fun getSeasons(showId: Long) = Transformations.map(localDao.getSeasons(showId)) {
-        seasonMapper.mapToDomain(it)
+    fun getSeasonsWithEpisodes(showId: Long) = Transformations.map(localDao.getSeasonsWithEpisodes(showId)) {
+        seasonWithEpisodeMapper.mapToDomain(it)
+    }
+
+
+    /*
+    * Season Episodes
+    */
+    suspend fun refreshEpisodes(showId: Long, seasonNumber: Long, seasonId: Long) {
+        when(val result = remoteService.getEpisodesOfSeason(showId, seasonNumber)) {
+            is Result.Success -> {
+                //Insert in DB
+                localDao.insertEpisodes(episodeMapper.mapToDatabase(result.data, seasonId))
+            }
+            is Result.Error -> {
+                Timber.e(result.exception)
+            }
+        }
     }
 
     /*

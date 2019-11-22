@@ -8,8 +8,11 @@ import de.schnettler.tvtracker.data.api.tvdb.TvdbService
 import de.schnettler.tvtracker.data.show.model.*
 import de.schnettler.tvtracker.data.show.model.cast.CastEntry
 import de.schnettler.tvtracker.data.show.model.cast.CastListRemote
+import de.schnettler.tvtracker.data.show.model.episode.EpisodeEntity
+import de.schnettler.tvtracker.data.show.model.episode.EpisodeResponse
 import de.schnettler.tvtracker.data.show.model.season.SeasonEntity
 import de.schnettler.tvtracker.data.show.model.season.SeasonResponse
+import de.schnettler.tvtracker.data.show.model.season.SeasonWithEpisodes
 import de.schnettler.tvtracker.util.safeApiCall
 import timber.log.Timber
 import java.io.IOException
@@ -147,6 +150,22 @@ class ShowDataSourceRemote(val trakt: TraktService, val tvdb: TvdbService, val t
         }
         return Result.Error(IOException("Error getting seasons: ${response.code()} ${response.message()}"))
     }
+
+
+    //Episodes
+    suspend fun getEpisodesOfSeason(showID: Long, seasonNumber: Long) = safeApiCall(
+        call = { refreshEpisodesOfSeason(showID, seasonNumber) },
+        errorMessage = "Error loading Seasons"
+    )
+    private suspend fun refreshEpisodesOfSeason(showID: Long, seasonNumber: Long): Result<List<EpisodeResponse>> {
+        val response = trakt.getSeasonEpisodes(showID, seasonNumber, "de")
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return Result.Success(it)
+            }
+        }
+        return Result.Error(IOException("Error getting seasons: ${response.code()} ${response.message()}"))
+    }
 }
 
 
@@ -198,9 +217,12 @@ class ShowDataSourceLocal(val dao: TrendingShowsDAO) {
     fun getAnticipated() = dao.getAnticipated()
 
 
-    //Anticipated Shows
+    //Seasons & Episodes
     suspend fun insertSeasons(shows: List<SeasonEntity>?) {
-        shows?.let { dao.insertSeason(it) }
+        shows?.let { dao.insertSeasons(it) }
     }
-    fun getSeasons(showID: Long) = dao.getShowSeasons(showID)
+    suspend fun insertEpisodes(episodes: List<EpisodeEntity>?) {
+        episodes?.let { dao.insertEpisodes(it) }
+    }
+    fun getSeasonsWithEpisodes(showID: Long) = dao.getSeasonsWithEpisodes(showID)
 }

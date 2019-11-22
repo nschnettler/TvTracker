@@ -1,11 +1,16 @@
 package de.schnettler.tvtracker.data.mapping
 
 import de.schnettler.tvtracker.data.show.model.*
+import de.schnettler.tvtracker.data.show.model.episode.EpisodeDomain
+import de.schnettler.tvtracker.data.show.model.episode.EpisodeEntity
+import de.schnettler.tvtracker.data.show.model.episode.EpisodeResponse
 import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
 import de.schnettler.tvtracker.data.show.model.season.SeasonEntity
 import de.schnettler.tvtracker.data.show.model.season.SeasonResponse
+import de.schnettler.tvtracker.data.show.model.season.SeasonWithEpisodes
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
+import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 object TrendingShowMapper : IndexedMapper<TrendingShowRemote, ShowTrendingDB, Show> {
 
@@ -154,4 +159,34 @@ object SeasonSummaryMapper: IndexedMapperWithId<SeasonResponse, SeasonEntity, Se
         number = input.number,
         episodeCount = input.episodeCount
     )
+}
+
+object EpisodeMapper: IndexedMapperWithId<EpisodeResponse, EpisodeEntity, EpisodeDomain> {
+    override fun mapToDatabase(input: EpisodeResponse, index: Int, id: Long) = EpisodeEntity(
+        id = input.ids.trakt,
+        seasonId = id,
+        number = input.number,
+        title = input.title,
+        season = input.season
+    )
+
+    override fun mapToDomain(input: EpisodeEntity): EpisodeDomain = EpisodeDomain(
+        id = input.id,
+        seasonId = input.seasonId,
+        number = input.number,
+        title = input.title,
+        season = input.season
+    )
+}
+
+object SeasonWithEpisodeMapper: IndexedMapper<Any, SeasonWithEpisodes, SeasonDomain> {
+    override fun mapToDatabase(input: Any, index: Int): SeasonWithEpisodes {
+        TODO("not implemented")
+    }
+
+    override fun mapToDomain(input: SeasonWithEpisodes): SeasonDomain {
+        val season = SeasonSummaryMapper.mapToDomain(input.season)
+        season.episodes = input.episodes.map { EpisodeMapper.mapToDomain(it) }
+        return season
+    }
 }

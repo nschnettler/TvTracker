@@ -5,7 +5,9 @@ import androidx.room.*
 import de.schnettler.tvtracker.data.auth.model.AuthTokenDB
 import de.schnettler.tvtracker.data.show.model.*
 import de.schnettler.tvtracker.data.show.model.cast.CastEntry
+import de.schnettler.tvtracker.data.show.model.episode.EpisodeEntity
 import de.schnettler.tvtracker.data.show.model.season.SeasonEntity
+import de.schnettler.tvtracker.data.show.model.season.SeasonWithEpisodes
 
 @Dao
 interface TrendingShowsDAO{
@@ -99,12 +101,28 @@ interface TrendingShowsDAO{
 
 
     /*
-     * Season Summary
+     * Season & Episodes Summary
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSeason(seasons: List<SeasonEntity>)
+    suspend fun insertSeasons(seasons: List<SeasonEntity>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertEpisodes(episodes: List<EpisodeEntity>)
 
+    /*
+     * Season with Episodes
+     */
+    @Transaction
     @Query("SELECT * FROM table_seasons WHERE showId = :showId ORDER BY number ASC")
-    fun getShowSeasons(showId: Long): LiveData<List<SeasonEntity>?>
+    fun getSeasonsWithEpisodes(showId: Long): LiveData<List<SeasonWithEpisodes>>
+
+    @Transaction
+    suspend fun insertSeasonWithEpisodes(seasons: List<SeasonWithEpisodes>) {
+        //Insert Season
+        insertSeasons(seasons.map { it.season })
+        //Insert Episodes
+        seasons.forEach {
+            insertEpisodes(it.episodes)
+        }
+    }
 }
 

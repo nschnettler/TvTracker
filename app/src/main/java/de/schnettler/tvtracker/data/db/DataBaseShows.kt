@@ -8,13 +8,14 @@ import androidx.room.TypeConverters
 import de.schnettler.tvtracker.data.auth.model.AuthTokenDB
 import de.schnettler.tvtracker.data.show.model.*
 import de.schnettler.tvtracker.data.show.model.cast.CastEntry
+import de.schnettler.tvtracker.data.show.model.episode.EpisodeEntity
 import de.schnettler.tvtracker.data.show.model.season.SeasonEntity
 import de.schnettler.tvtracker.util.TypeConverter
 
 class DataBaseShows {
 
     @TypeConverters(TypeConverter::class)
-    @Database(entities = [TrendingDB::class, PopularDB::class, ShowDB::class, ShowDetailsDB::class, CastEntry::class, AuthTokenDB::class, RelationEntity::class, AnticipatedDB::class, SeasonEntity::class], version = 5)
+    @Database(entities = [TrendingDB::class, PopularDB::class, ShowDB::class, ShowDetailsDB::class, CastEntry::class, AuthTokenDB::class, RelationEntity::class, AnticipatedDB::class, SeasonEntity::class, EpisodeEntity::class], version = 7)
     abstract class ShowsDatabase : RoomDatabase() {
         //abstract val showDao: ShowDao
         abstract val trendingShowsDao: TrendingShowsDAO
