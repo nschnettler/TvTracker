@@ -16,7 +16,7 @@ import timber.log.Timber
  * Class that knows how to get and store Shows
  */
 class ShowRepository(private val remoteService: ShowDataSourceRemote, private val localDao: ShowDataSourceLocal) {
-    private val relatedMapper = ListMapper(ShowRelatedMapper)
+    private val relatedMapper = ListMapperWithId(ShowRelatedMapper)
     private val trendingMapper = ListMapper(TrendingShowMapper)
     private val popularMapper = ListMapper(PopularShowMapper)
     private val anticipatedMapper = ListMapper(AnticipatedShowMapper)
