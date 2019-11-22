@@ -96,9 +96,11 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
 
             seasons?.let {
                 seasons.forEach {season ->
-                    header {
+                    twoLineList {
                         id(season.id)
                         title(season.title)
+                        subTitle("${season.episodeCount} Episodes • ${season.rating * 10}% Rating")
+                        imageText("${season.number}")
                     }
                 }
             }
