@@ -20,6 +20,7 @@ class DiscoverController(var trendingShows: List<Show>? = null, var popularShows
         header {
             id("header_trending")
             title("Trending now")
+            showExpand(true)
         }
 
         trendingShows?.let {
@@ -42,6 +43,7 @@ class DiscoverController(var trendingShows: List<Show>? = null, var popularShows
         header {
             id("header_popular")
             title("Popular")
+            showExpand(true)
         }
 
         popularShows?.let {
@@ -65,6 +67,7 @@ class DiscoverController(var trendingShows: List<Show>? = null, var popularShows
         header {
             id("header_anticipated")
             title("Most Anticipated")
+            showExpand(true)
         }
 
         anticipatedShows?.let {
