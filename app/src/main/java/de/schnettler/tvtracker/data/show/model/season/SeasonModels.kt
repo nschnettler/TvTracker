@@ -1,7 +1,11 @@
 package de.schnettler.tvtracker.data.show.model.season
 
+import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.Relation
 import com.squareup.moshi.Json
+import de.schnettler.tvtracker.data.show.model.episode.EpisodeDomain
+import de.schnettler.tvtracker.data.show.model.episode.EpisodeEntity
 
 data class SeasonResponse(
     val number: Long,
@@ -31,6 +35,16 @@ data class SeasonEntity(
     val episodeCount: Long?
 )
 
+data class SeasonWithEpisodes(
+    @Embedded val season: SeasonEntity,
+    @Relation(
+        parentColumn = "id",
+        entity = EpisodeEntity::class,
+        entityColumn = "seasonId"
+    )
+    val episodes: List<EpisodeEntity>
+)
+
 data class SeasonDomain(
     val number: Long,
     val id: Long,
@@ -39,5 +53,6 @@ data class SeasonDomain(
     val overview: String?,
     val firstAired: String?,
     val episodeCount: Long?,
+    var episodes: List<EpisodeDomain>? = null,
     val isExpanded: Boolean = false
 )
