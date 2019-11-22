@@ -50,14 +50,15 @@ class DetailViewModel(var show: Show, val context: Application) : StateViewModel
         //Observe Auth State
         state.addSource(tvdbAuth) {
             var authState: String = "Unauthorized"
-
-            if (it == null) {
+            val currentTime = System.currentTimeMillis()  / 1000L
+            if (it == null || it.createdAtMillis + 86400 <= currentTime) {
                 //Login Needed
+                authState = "Login Needed"
                 startAuthentication(true)
             } else {
-                val threshold = System.currentTimeMillis() / 1000L + 72000
+                val threshold = currentTime + 72000
                 if(it.createdAtMillis >= threshold) {
-                   authState = "Authorization expiring"
+                    authState = "Authorization expiring"
                     startAuthentication(false)
                 } else {
                     authState = "Authorized"
