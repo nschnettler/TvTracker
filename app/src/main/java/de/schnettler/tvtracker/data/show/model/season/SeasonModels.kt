@@ -9,13 +9,13 @@ data class SeasonResponse(
     val rating: Float,
     val title: String,
     val overview: String?,
-    @Json(name = "first_aired") val firstAired: String
+    @Json(name = "first_aired") val firstAired: String?
 )
 
 data class SeasonIdResponse(
     val trakt: Long,
-    val tvdb: Long,
-    val tmdb: Long
+    val tvdb: Long?,
+    val tmdb: Long?
 )
 
 @Entity(tableName = "table_seasons", primaryKeys = ["showId", "number"])
@@ -26,7 +26,7 @@ data class SeasonEntity(
     val rating: Long,
     val title: String,
     val overview: String?,
-    val firstAired: String
+    val firstAired: String?
 )
 
 data class SeasonDomain(
@@ -35,6 +35,6 @@ data class SeasonDomain(
     val rating: Long,
     val title: String,
     val overview: String?,
-    val firstAired: String,
+    val firstAired: String?,
     val isExpanded: Boolean = false
 )
