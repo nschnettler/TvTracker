@@ -9,7 +9,8 @@ data class SeasonResponse(
     val rating: Float,
     val title: String,
     val overview: String?,
-    @Json(name = "first_aired") val firstAired: String?
+    @Json(name = "first_aired") val firstAired: String?,
+    @Json(name = "episode_count") val episodeCount: Long?
 )
 
 data class SeasonIdResponse(
@@ -26,7 +27,8 @@ data class SeasonEntity(
     val rating: Long,
     val title: String,
     val overview: String?,
-    val firstAired: String?
+    val firstAired: String?,
+    val episodeCount: Long?
 )
 
 data class SeasonDomain(
@@ -36,5 +38,6 @@ data class SeasonDomain(
     val title: String,
     val overview: String?,
     val firstAired: String?,
+    val episodeCount: Long?,
     val isExpanded: Boolean = false
 )

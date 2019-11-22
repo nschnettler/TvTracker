@@ -140,7 +140,8 @@ object SeasonSummaryMapper: IndexedMapperWithId<SeasonResponse, SeasonEntity, Se
         overview = input.overview,
         title = input.title,
         number = input.number,
-        showId = id
+        showId = id,
+        episodeCount = input.episodeCount
     )
 
     override fun mapToDomain(input: SeasonEntity)= SeasonDomain(
@@ -149,6 +150,7 @@ object SeasonSummaryMapper: IndexedMapperWithId<SeasonResponse, SeasonEntity, Se
         firstAired = input.firstAired,
         overview = input.overview,
         title = input.title,
-        number = input.number
+        number = input.number,
+        episodeCount = input.episodeCount
     )
 }
