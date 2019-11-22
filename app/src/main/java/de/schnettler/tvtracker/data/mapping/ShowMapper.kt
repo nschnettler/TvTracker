@@ -5,6 +5,7 @@ import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
 import de.schnettler.tvtracker.data.show.model.season.SeasonEntity
 import de.schnettler.tvtracker.data.show.model.season.SeasonResponse
 import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 object TrendingShowMapper : IndexedMapper<TrendingShowRemote, ShowTrendingDB, Show> {
 
@@ -135,7 +136,7 @@ object ShowRelatedMapper : IndexedMapperWithId<ShowRemote, ShowRelationEntity, S
 object SeasonSummaryMapper: IndexedMapperWithId<SeasonResponse, SeasonEntity, SeasonDomain> {
     override fun mapToDatabase(input: SeasonResponse, index: Int, id: Long)= SeasonEntity(
         id = input.ids.trakt,
-        rating = input.rating.toLong(),
+        rating = input.rating.times(10).roundToLong(),
         firstAired = input.firstAired,
         overview = input.overview,
         title = input.title,
