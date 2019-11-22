@@ -146,12 +146,15 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         when(val result = remoteService.getSeasonsOfShow(showId)) {
             is Result.Success -> {
                 //Insert in DB
-                localDao.insertSeasonSummary(seasonMapper.mapToDatabase(result.data, showId))
+                localDao.insertSeasons(seasonMapper.mapToDatabase(result.data, showId))
             }
             is Result.Error -> {
                 Timber.e(result.exception)
             }
         }
+    }
+    fun getSeasons(showId: Long) = Transformations.map(localDao.getSeasons(showId)) {
+        seasonMapper.mapToDomain(it)
     }
 
     /*

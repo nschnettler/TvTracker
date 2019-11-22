@@ -199,8 +199,8 @@ class ShowDataSourceLocal(val dao: TrendingShowsDAO) {
 
 
     //Anticipated Shows
-    suspend fun insertSeasonSummary(shows: List<SeasonEntity>?) {
+    suspend fun insertSeasons(shows: List<SeasonEntity>?) {
         shows?.let { dao.insertSeason(it) }
     }
-    fun getAnticipated(showID: Long) = dao.getShowSeasons(showID)
+    fun getSeasons(showID: Long) = dao.getShowSeasons(showID)
 }
