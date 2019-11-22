@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -18,6 +19,7 @@ import de.schnettler.tvtracker.databinding.DetailFragmentBinding
 import de.schnettler.tvtracker.ui.discover.DiscoverController
 import de.schnettler.tvtracker.ui.discover.DiscoverFragmentDirections
 import de.schnettler.tvtracker.util.*
+import dev.chrisbanes.insetter.doOnApplyWindowInsets
 import timber.log.Timber
 
 
@@ -63,6 +65,13 @@ class DetailFragment : Fragment() {
                 }
             }
         })
+
+        //WindowInsets
+        binding.recyclerView.doOnApplyWindowInsets { view, insets, initialState ->
+            view.updatePadding(
+                bottom = initialState.paddings.bottom + insets.systemWindowInsetBottom
+            )
+        }
 
         if(activity is MainActivity){
             val ac = activity as MainActivity
