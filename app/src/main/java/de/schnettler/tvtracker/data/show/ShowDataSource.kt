@@ -8,6 +8,8 @@ import de.schnettler.tvtracker.data.api.tvdb.TvdbService
 import de.schnettler.tvtracker.data.show.model.*
 import de.schnettler.tvtracker.data.show.model.cast.CastEntry
 import de.schnettler.tvtracker.data.show.model.cast.CastListRemote
+import de.schnettler.tvtracker.data.show.model.season.SeasonEntity
+import de.schnettler.tvtracker.data.show.model.season.SeasonResponse
 import de.schnettler.tvtracker.util.safeApiCall
 import timber.log.Timber
 import java.io.IOException
@@ -129,6 +131,22 @@ class ShowDataSourceRemote(val trakt: TraktService, val tvdb: TvdbService, val t
         }
         return Result.Error(IOException("Error getting anticipated shows: ${response.code()} ${response.message()}"))
     }
+
+
+    //Seasons
+    suspend fun getSeasonsOfShow(showID: Long) = safeApiCall(
+        call = { refreshSeasonsOfShow(showID) },
+        errorMessage = "Error loading Seasons"
+    )
+    private suspend fun refreshSeasonsOfShow(showID: Long): Result<List<SeasonResponse>> {
+        val response = trakt.getShowSeasons(showID)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return Result.Success(it)
+            }
+        }
+        return Result.Error(IOException("Error getting seasons: ${response.code()} ${response.message()}"))
+    }
 }
 
 
@@ -178,4 +196,11 @@ class ShowDataSourceLocal(val dao: TrendingShowsDAO) {
         shows?.let { dao.insertAnticipatedShows(it) }
     }
     fun getAnticipated() = dao.getAnticipated()
+
+
+    //Anticipated Shows
+    suspend fun insertSeasonSummary(shows: List<SeasonEntity>?) {
+        shows?.let { dao.insertSeason(it) }
+    }
+    fun getAnticipated(showID: Long) = dao.getShowSeasons(showID)
 }

@@ -20,6 +20,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
     private val trendingMapper = ListMapper(TrendingShowMapper)
     private val popularMapper = ListMapper(PopularShowMapper)
     private val anticipatedMapper = ListMapper(AnticipatedShowMapper)
+    private val seasonMapper = ListMapperWithId(SeasonSummaryMapper)
 
     /*
      * Show Details
@@ -138,6 +139,20 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         anticipatedMapper.mapToDomain(it)
     }
 
+    /*
+     * Seasons
+     */
+    suspend fun refreshSeasons(showId: Long) {
+        when(val result = remoteService.getSeasonsOfShow(showId)) {
+            is Result.Success -> {
+                //Insert in DB
+                localDao.insertSeasonSummary(seasonMapper.mapToDatabase(result.data, showId))
+            }
+            is Result.Error -> {
+                Timber.e(result.exception)
+            }
+        }
+    }
 
     /*
      * Show Poster

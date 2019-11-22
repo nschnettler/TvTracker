@@ -5,6 +5,7 @@ import androidx.room.*
 import de.schnettler.tvtracker.data.auth.model.AuthTokenDB
 import de.schnettler.tvtracker.data.show.model.*
 import de.schnettler.tvtracker.data.show.model.cast.CastEntry
+import de.schnettler.tvtracker.data.show.model.season.SeasonEntity
 
 @Dao
 interface TrendingShowsDAO{
@@ -95,5 +96,15 @@ interface TrendingShowsDAO{
 
     @Query("SELECT * FROM table_relations WHERE sourceId = :showId ORDER BY `index` ASC")
     fun getShowRelations(showId: Long): LiveData<List<ShowRelationEntity>?>
+
+
+    /*
+     * Season Summary
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSeason(seasons: List<SeasonEntity>)
+
+    @Query("SELECT * FROM table_seasons WHERE showId = :showId ORDER BY number ASC")
+    fun getShowSeasons(showId: Long): LiveData<List<SeasonEntity>?>
 }
 

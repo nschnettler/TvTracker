@@ -11,8 +11,7 @@ data class Show(
     val tmdbId: String,
     val title: String,
     var posterUrl: String = "",
-    var backdropUrl: String = "",
-    val index: Int
+    var backdropUrl: String = ""
 ): Parcelable
 
 data class ShowDetails(

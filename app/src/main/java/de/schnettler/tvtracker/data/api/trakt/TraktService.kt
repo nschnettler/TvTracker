@@ -5,6 +5,7 @@ import de.schnettler.tvtracker.data.show.model.AnticipatedShowRemote
 import de.schnettler.tvtracker.data.show.model.ShowDetailsRemote
 import de.schnettler.tvtracker.data.show.model.ShowRemote
 import de.schnettler.tvtracker.data.show.model.TrendingShowRemote
+import de.schnettler.tvtracker.data.show.model.season.SeasonResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -31,6 +32,9 @@ interface TraktService {
 
     @GET("shows/{tv_id}/related")
     suspend fun getRelatedShows(@Path("tv_id") id: Long): Response<List<ShowRemote>>
+
+    @GET("/shows/{tv_id}/seasons?extended=full")
+    suspend fun getShowSeasons(@Path("tv_id") id: Long): Response<List<SeasonResponse>>
 
     @POST("oauth/token")
     suspend fun getToken(@Query("code") code: String, @Query("client_id") clientId: String, @Query("client_secret") secret: String, @Query("redirect_uri") uri: String, @Query("grant_type") type: String) : Response<OAuthToken>
