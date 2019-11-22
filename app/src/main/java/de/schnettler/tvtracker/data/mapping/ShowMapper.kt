@@ -1,7 +1,9 @@
 package de.schnettler.tvtracker.data.mapping
 
-import android.provider.ContactsContract
 import de.schnettler.tvtracker.data.show.model.*
+import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
+import de.schnettler.tvtracker.data.show.model.season.SeasonEntity
+import de.schnettler.tvtracker.data.show.model.season.SeasonResponse
 import kotlin.math.roundToInt
 
 object TrendingShowMapper : IndexedMapper<TrendingShowRemote, ShowTrendingDB, Show> {
@@ -17,7 +19,7 @@ object TrendingShowMapper : IndexedMapper<TrendingShowRemote, ShowTrendingDB, Sh
         )
     }
 
-    override fun mapToDomain(input: ShowTrendingDB, index: Int): Show {
+    override fun mapToDomain(input: ShowTrendingDB): Show {
         return ShowMapper.mapToDomain(input.show)
     }
 }
@@ -34,7 +36,7 @@ object PopularShowMapper : IndexedMapper<ShowRemote, ShowPopularDB, Show> {
         )
     }
 
-    override fun mapToDomain(input: ShowPopularDB, index: Int): Show {
+    override fun mapToDomain(input: ShowPopularDB): Show {
         return ShowMapper.mapToDomain(input.show)
     }
 }
@@ -52,7 +54,7 @@ object AnticipatedShowMapper : IndexedMapper<AnticipatedShowRemote, AnticipatedS
         )
     }
 
-    override fun mapToDomain(input: AnticipatedShowDB, index: Int): Show {
+    override fun mapToDomain(input: AnticipatedShowDB): Show {
         return ShowMapper.mapToDomain(input.show)
     }
 }
@@ -125,8 +127,28 @@ object ShowRelatedMapper : IndexedMapperWithId<ShowRemote, ShowRelationEntity, S
         )
     }
 
-    override fun mapToDomain(input: ShowRelationEntity, index: Int, id: Long): Show {
+    override fun mapToDomain(input: ShowRelationEntity): Show {
         return ShowMapper.mapToDomain(input.relatedShow)
     }
+}
 
+object SeasonSummaryMapper: IndexedMapperWithId<SeasonResponse, SeasonEntity, SeasonDomain> {
+    override fun mapToDatabase(input: SeasonResponse, index: Int, id: Long)= SeasonEntity(
+        id = input.ids.trakt,
+        rating = input.rating.toLong(),
+        firstAired = input.firstAired,
+        overview = input.overview,
+        title = input.title,
+        number = input.number,
+        showId = id
+    )
+
+    override fun mapToDomain(input: SeasonEntity)= SeasonDomain(
+        id = input.id,
+        rating = input.rating,
+        firstAired = input.firstAired,
+        overview = input.overview,
+        title = input.title,
+        number = input.number
+    )
 }
