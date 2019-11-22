@@ -7,6 +7,7 @@ import com.airbnb.epoxy.carousel
 import de.schnettler.tvtracker.*
 import de.schnettler.tvtracker.data.show.model.Show
 import de.schnettler.tvtracker.util.getEmoji
+import de.schnettler.tvtracker.util.isoToDate
 import de.schnettler.tvtracker.util.withModelsFrom
 import timber.log.Timber
 
@@ -24,24 +25,34 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
             val showCast = data.cast
             val showRelated = data.relatedShows
 
-            //Show Info
-            showInfo {
-                id("showInfo")
-                posterUrl(show.posterUrl)
-                showDetails(showDetails)
-            }
-
-            //Show Summary
-            showSummary {
-                id("showSummary")
-                showSummary(showDetails?.overview)
-            }
-
             showDetails?.let {
+                //Show Info
+                showInfo {
+                    id("showInfo")
+                    posterUrl(show.posterUrl)
+                    showDetails(it)
+                    status(
+                        when(it.status) {
+                            "in production" -> "Upcoming • ${isoToDate(it.firstAired)}"
+                            "returning series" -> "Running"
+                            "ended" -> "Completed"
+                            else -> it.status
+                        }
+                    )
+                    rating("${it.rating}%")
+                    runtime("${it.runtime} min")
+                }
+
+                //Show Summary
+                showSummary {
+                    id("showSummary")
+                    showSummary(it.overview)
+                }
+
                 //Genres
                 carousel {
                     id("genres")
-                    withModelsFrom(showDetails.genres) {
+                    withModelsFrom(it.genres) {
                         ShowGenreBindingModel_()
                             .id(it)
                             .title(it)

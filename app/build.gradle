@@ -109,4 +109,5 @@ dependencies {
     //OkHttp Logging
     implementation "com.squareup.okhttp3:logging-interceptor:$version_okhttp"
     implementation "com.github.etiennelenhart:eiffel:$version_eiffel"
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
 }

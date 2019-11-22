@@ -11,6 +11,15 @@
         <variable
             name="showDetails"
             type="de.schnettler.tvtracker.data.show.model.ShowDetails" />
+        <variable
+            name="status"
+            type="String" />
+        <variable
+            name="rating"
+            type="String" />
+        <variable
+            name="runtime"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,11 +51,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            android:text="@{status}"
             app:layout_constraintBottom_toTopOf="@+id/showTime"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/showPoster"
             app:layout_constraintTop_toTopOf="@+id/showPoster"
-            app:status="@{showDetails.status}"
             tools:text="Status" />
 
         <TextView
@@ -65,7 +74,7 @@
             android:id="@+id/showRating"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{showDetails.rating + '%'}"
+            android:text="@{rating}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             app:layout_constraintBottom_toBottomOf="@+id/showPoster"
             app:layout_constraintEnd_toEndOf="@+id/showNetwork"
@@ -77,7 +86,7 @@
             android:id="@+id/showTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{showDetails.runtime + ` min`}"
+            android:text="@{runtime}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             app:layout_constraintBottom_toTopOf="@+id/showNetwork"
             app:layout_constraintEnd_toEndOf="@+id/showStatus"

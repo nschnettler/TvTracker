@@ -29,18 +29,6 @@ fun bindImageFromUrl(imageView: ImageView, fullUrl: String) {
     }
 }
 
-@BindingAdapter("status")
-fun bindStatus(textView: TextView, status: String?) {
-    textView.text = when(status) {
-        "returning series" -> "running"
-        "in production" -> "in production"
-        "planned" -> "planned"
-        "canceled" -> "canceled"
-        "ended" -> "ended"
-        else -> ""
-    }
-}
-
 @BindingAdapter("maxLinesToggle")
 fun maxLinesClickListener(view: TextView, oldCollapsedMaxLines: Int, newCollapsedMaxLines: Int) {
     if (oldCollapsedMaxLines != newCollapsedMaxLines) {
