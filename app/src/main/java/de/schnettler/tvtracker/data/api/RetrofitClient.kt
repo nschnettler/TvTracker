@@ -10,7 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import timber.log.Timber
+import java.util.*
 
 private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
@@ -23,7 +23,16 @@ private val traktHttpClient = OkHttpClient.Builder()
             .addHeader("trakt-api-version", "2")
             .build()
         it.proceed(request)
-    }.build()
+    }.addInterceptor {
+        var request = it.request()
+        val url = request.url.newBuilder().addQueryParameter("translations", Locale.getDefault().language).build()
+        request = request.newBuilder().url(url).build()
+        it.proceed(request)
+
+    }.addInterceptor(HttpLoggingInterceptor().apply {
+        this.level = HttpLoggingInterceptor.Level.BODY
+    })
+    .build()
 
 
 private val tvdbHttpClient = OkHttpClient.Builder()
