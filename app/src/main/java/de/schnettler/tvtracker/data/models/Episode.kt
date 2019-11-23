@@ -1,8 +1,7 @@
-package de.schnettler.tvtracker.data.show.model.episode
+package de.schnettler.tvtracker.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import de.schnettler.tvtracker.data.show.model.ShowIdRemote
 
 data class EpisodeResponse(
     val season: Long,

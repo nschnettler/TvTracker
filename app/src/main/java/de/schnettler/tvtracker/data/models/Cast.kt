@@ -1,12 +1,12 @@
-package de.schnettler.tvtracker.data.show.model.cast
+package de.schnettler.tvtracker.data.models
 
 import androidx.room.Entity
 
-data class CastListRemote(
-    val data: List<CastEntryRemote>
+data class CastListResponse(
+    val data: List<CastEntryResponse>
 )
 
-data class CastEntryRemote(
+data class CastEntryResponse(
     val id: Long,
     val image: String?,
     val name: String,
@@ -15,7 +15,7 @@ data class CastEntryRemote(
 )
 
 @Entity(tableName = "table_cast", primaryKeys = ["id", "showId"])
-data class CastEntry(
+data class CastEntity(
     val id: Long,
     val showId: Long,
     val name: String,
@@ -23,8 +23,8 @@ data class CastEntry(
     val image: String?
 )
 
-fun List<CastEntryRemote>.asCastEntryList() = this.map {
-    CastEntry(
+fun List<CastEntryResponse>.asCastEntryList() = this.map {
+    CastEntity(
         id = it.id,
         showId = it.seriesId,
         name = it.name,

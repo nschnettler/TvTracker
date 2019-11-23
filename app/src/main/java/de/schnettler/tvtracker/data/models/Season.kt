@@ -1,11 +1,9 @@
-package de.schnettler.tvtracker.data.show.model.season
+package de.schnettler.tvtracker.data.models
 
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Relation
 import com.squareup.moshi.Json
-import de.schnettler.tvtracker.data.show.model.episode.EpisodeDomain
-import de.schnettler.tvtracker.data.show.model.episode.EpisodeEntity
 
 data class SeasonResponse(
     val number: Long,
