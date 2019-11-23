@@ -5,6 +5,7 @@ import com.airbnb.epoxy.Carousel
 import com.airbnb.epoxy.TypedEpoxyController
 import com.airbnb.epoxy.carousel
 import de.schnettler.tvtracker.*
+import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.util.getEmoji
@@ -17,7 +18,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
     interface Callbacks {
         fun onShowClicked(view: View, item: ShowDomain)
         fun onSeasonClicked(season: SeasonDomain, isExpanded: Boolean)
-        fun onEpisodeClicked(episodeId: Long)
+        fun onEpisodeClicked(episode: EpisodeDomain)
     }
 
     override fun buildModels(data: DetailViewState?) {
@@ -107,7 +108,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                                 header(episode.title)
                                 imageText("#${episode.number}")
                                 onClickListener { _, _, _, _ ->
-                                    callbacks?.onEpisodeClicked(episode.id)
+                                    callbacks?.onEpisodeClicked(episode)
                                 }
                             }
                         }

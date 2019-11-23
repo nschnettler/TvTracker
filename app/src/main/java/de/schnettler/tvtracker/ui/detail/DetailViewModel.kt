@@ -10,6 +10,7 @@ import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceLocal
 import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceRemote
 import de.schnettler.tvtracker.data.repository.auth.AuthRepository
 import de.schnettler.tvtracker.data.models.AuthTokenType
+import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceLocal
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
@@ -29,6 +30,10 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
         AuthDataSourceRemote(RetrofitClient.tvdbNetworkService),
         AuthDataSourceLocal(getDatabase(context).trendingShowsDao)
     )
+
+    private val _episode = MutableLiveData<EpisodeDomain>()
+    val episode: LiveData<EpisodeDomain>
+        get() = _episode
 
     private val showDetails = showRepository.getShowDetails(show.id)
     private val tvdbAuth = authRepository.getAuthToken(AuthTokenType.TVDB)
@@ -148,6 +153,10 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
                 }
             }
         }
+    }
+
+    fun onEpisodeSelected(episode: EpisodeDomain) {
+        _episode.value = episode
     }
 
     /**
