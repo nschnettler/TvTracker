@@ -65,6 +65,7 @@ class SwipeRefreshLayout(context: Context, attrs: AttributeSet? = null) : SwipeR
  * Factory for constructing DevByteViewModel with parameter
  */
 class ViewModelFactory(val app: Application) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(DiscoverViewModel::class.java)) {
             return DiscoverViewModel(app) as T

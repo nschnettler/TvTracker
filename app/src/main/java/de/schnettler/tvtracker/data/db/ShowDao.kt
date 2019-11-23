@@ -10,12 +10,15 @@ interface ShowDao {
     /**
      * Get all Trending Shows. Creates Inner Join of Trending and Shows Table
      */
+    @Transaction
     @Query("SELECT * FROM table_trending ORDER BY `index` ASC")
     fun getTrending(): LiveData<List<TrendingWithShow>?>
 
+    @Transaction
     @Query("SELECT * FROM table_popular ORDER BY `index` ASC")
     fun getPopular(): LiveData<List<PopularWithShow>?>
 
+    @Transaction
     @Query("SELECT * FROM table_anticipated ORDER BY `index` ASC")
     fun getAnticipated(): LiveData<List<AnticipatedWithShow>?>
 
@@ -92,6 +95,7 @@ interface ShowDao {
         insertRelations(showRelations.map { it.relation })
     }
 
+    @Transaction
     @Query("SELECT * FROM table_relations WHERE sourceId = :showId ORDER BY `index` ASC")
     fun getShowRelations(showId: Long): LiveData<List<RelationWithShow>?>
 

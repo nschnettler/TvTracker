@@ -51,7 +51,7 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
 
         //Observe Auth State
         state.addSource(tvdbAuth) {
-            var authState: String = "Unauthorized"
+            val authState: String
             val currentTime = System.currentTimeMillis()  / 1000L
             if (it == null || it.createdAtMillis + 86400 <= currentTime) {
                 //Login Needed

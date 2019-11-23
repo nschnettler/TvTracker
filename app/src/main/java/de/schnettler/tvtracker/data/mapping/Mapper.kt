@@ -20,7 +20,7 @@ class ListMapper<I, O, P>(private val mapper: IndexedMapper<I, O, P>) {
             mapper.mapToDatabase(it, index)
     }
 
-    fun mapToDomain(input: List<O>?) = input?.mapIndexed { index, it ->
+    fun mapToDomain(input: List<O>?) = input?.map {it ->
         mapper.mapToDomain(it)
     }
 }
