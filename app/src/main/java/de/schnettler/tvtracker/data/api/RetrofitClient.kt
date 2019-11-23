@@ -2,9 +2,6 @@ package de.schnettler.tvtracker.data.api
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.schnettler.tvtracker.data.api.tmdb.TmdbApiService
-import de.schnettler.tvtracker.data.api.trakt.TraktService
-import de.schnettler.tvtracker.data.api.tvdb.TvdbService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -13,19 +10,24 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.*
 
 private val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
+    .add(KotlinJsonAdapterFactory())
+    .build()
 private val traktHttpClient = OkHttpClient.Builder()
     .addInterceptor {
         val request = it.request().newBuilder()
             .addHeader("Content-type", "application/json")
-            .addHeader("trakt-api-key", "***TRAKT_CLIENT_ID***")
+            .addHeader(
+                "trakt-api-key",
+                "***TRAKT_CLIENT_ID***"
+            )
             .addHeader("trakt-api-version", "2")
             .build()
         it.proceed(request)
     }.addInterceptor {
         var request = it.request()
-        val url = request.url.newBuilder().addQueryParameter("translations", Locale.getDefault().language).build()
+        val url =
+            request.url.newBuilder().addQueryParameter("translations", Locale.getDefault().language)
+                .build()
         request = request.newBuilder().url(url).build()
         it.proceed(request)
 
@@ -58,33 +60,33 @@ object RetrofitClient {
     private val traktRetrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addConverterFactory(ScalarsConverterFactory.create())
-        .baseUrl(TraktService.ENDPOINT)
+        .baseUrl(Trakt.ENDPOINT)
         .client(traktHttpClient)
         .build()
 
     private val tmdbRetrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addConverterFactory(ScalarsConverterFactory.create())
-        .baseUrl(TmdbApiService.ENDPOINT)
+        .baseUrl(TMDb.ENDPOINT)
         .client(tmdbHttpClient)
         .build()
 
     private val tvdbRetrofit = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .addConverterFactory(ScalarsConverterFactory.create())
-        .baseUrl(TvdbService.ENDPOINT)
+        .baseUrl(TVDB.ENDPOINT)
         .client(tvdbHttpClient)
         .build()
 
-    val showsNetworkService: TraktService by lazy {
-        traktRetrofit.create(TraktService::class.java)
+    val showsNetworkService: Trakt by lazy {
+        traktRetrofit.create(Trakt::class.java)
     }
 
-    val imagesNetworkService: TmdbApiService by lazy {
-        tmdbRetrofit.create(TmdbApiService::class.java)
+    val imagesNetworkService: TMDb by lazy {
+        tmdbRetrofit.create(TMDb::class.java)
     }
 
-    val tvdbNetworkService: TvdbService by lazy {
-        tvdbRetrofit.create(TvdbService::class.java)
+    val tvdbNetworkService: TVDB by lazy {
+        tvdbRetrofit.create(TVDB::class.java)
     }
 }
