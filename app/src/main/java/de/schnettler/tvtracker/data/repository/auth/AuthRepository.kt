@@ -1,11 +1,7 @@
-package de.schnettler.tvtracker.data.auth
+package de.schnettler.tvtracker.data.repository.auth
 
-import androidx.lifecycle.Transformations
 import de.schnettler.tvtracker.data.Result
-import de.schnettler.tvtracker.data.auth.model.AuthTokenType
-import de.schnettler.tvtracker.data.show.ShowDataSourceLocal
-import de.schnettler.tvtracker.data.show.ShowDataSourceRemote
-import timber.log.Timber
+import de.schnettler.tvtracker.data.models.AuthTokenType
 
 class AuthRepository(private val remoteService: AuthDataSourceRemote, private val localDao: AuthDataSourceLocal) {
 

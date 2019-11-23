@@ -1,11 +1,10 @@
-package de.schnettler.tvtracker.data.show
+package de.schnettler.tvtracker.data.repository.show
 
 import androidx.lifecycle.Transformations
 import de.schnettler.tvtracker.data.Result
 import de.schnettler.tvtracker.data.mapping.*
-import de.schnettler.tvtracker.data.show.model.ShowDB
-import de.schnettler.tvtracker.data.show.model.cast.asCastEntryList
-import de.schnettler.tvtracker.util.ShowListType
+import de.schnettler.tvtracker.data.models.ShowEntity
+import de.schnettler.tvtracker.data.models.asCastEntryList
 import de.schnettler.tvtracker.util.TRAKT_CLIENT_ID
 import de.schnettler.tvtracker.util.TRAKT_REDIRECT_URI
 import kotlinx.coroutines.Dispatchers
@@ -178,7 +177,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
     /*
      * Show Poster
      */
-    suspend fun refreshPosters(showsDB: List<ShowDB>) {
+    suspend fun refreshPosters(showsDB: List<ShowEntity>) {
         for (showDB in showsDB) {
             val result = remoteService.getImages(showDB.tmdbId)
             if (result is Result.Success) {
@@ -199,6 +198,6 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
     }
 
     suspend fun retrieveAccessToken(code: String) = withContext(Dispatchers.IO) {
-        remoteService.trakt.getToken(code = code, clientId = TRAKT_CLIENT_ID, uri = TRAKT_REDIRECT_URI, type = "authorization_code", secret = "***TRAKT_CLIENT_SECRET***")
+        remoteService.traktService.getToken(code = code, clientId = TRAKT_CLIENT_ID, uri = TRAKT_REDIRECT_URI, type = "authorization_code", secret = "***TRAKT_CLIENT_SECRET***")
     }
 }

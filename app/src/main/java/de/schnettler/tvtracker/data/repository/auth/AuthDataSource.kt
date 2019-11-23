@@ -1,20 +1,19 @@
-package de.schnettler.tvtracker.data.auth
+package de.schnettler.tvtracker.data.repository.auth
 
 import de.schnettler.tvtracker.data.Result
-import de.schnettler.tvtracker.data.api.tvdb.TvdbService
-import de.schnettler.tvtracker.data.auth.model.AuthTokenDB
-import de.schnettler.tvtracker.data.auth.model.AuthTokenType
-import de.schnettler.tvtracker.data.auth.model.TvdbAuthTokenResponse
-import de.schnettler.tvtracker.data.auth.model.TvdbLoginData
-import de.schnettler.tvtracker.data.db.TrendingShowsDAO
-import de.schnettler.tvtracker.data.show.model.ShowDetailsDB
+import de.schnettler.tvtracker.data.api.TVDB
+import de.schnettler.tvtracker.data.models.AuthTokenDB
+import de.schnettler.tvtracker.data.models.AuthTokenType
+import de.schnettler.tvtracker.data.models.TvdbAuthTokenResponse
+import de.schnettler.tvtracker.data.models.TvdbLoginData
+import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.util.safeApiCall
 import java.io.IOException
 import org.json.JSONObject
 
 
 
-class AuthDataSourceRemote(private val service: TvdbService) {
+class AuthDataSourceRemote(private val service: TVDB) {
     //Show Details
     suspend fun getRefreshToken(login: Boolean, token: String) = safeApiCall(
         call = { refreshToken(login, token) },
@@ -23,8 +22,8 @@ class AuthDataSourceRemote(private val service: TvdbService) {
 
     private suspend fun refreshToken(login: Boolean, token: String): Result<TvdbAuthTokenResponse> {
         val paramObject = JSONObject()
-        paramObject.put("apikey", TvdbService.API_KEY)
-        val response = if (login) service.login(TvdbLoginData()) else service.refreshToken(TvdbService.AUTH_PREFIX + token)
+        paramObject.put("apikey", TVDB.API_KEY)
+        val response = if (login) service.login(TvdbLoginData()) else service.refreshToken(TVDB.AUTH_PREFIX + token)
         if (response.isSuccessful) {
             response.body()?.let {
                 return Result.Success(it)
@@ -35,7 +34,7 @@ class AuthDataSourceRemote(private val service: TvdbService) {
 }
 
 
-class AuthDataSourceLocal(private val dao: TrendingShowsDAO) {
+class AuthDataSourceLocal(private val dao: ShowDao) {
     fun insertAuthToken(authTokenDB: AuthTokenDB) {
         dao.insertAuthToken(authTokenDB)
     }

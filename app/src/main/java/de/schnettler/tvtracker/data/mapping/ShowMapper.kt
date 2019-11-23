@@ -1,22 +1,15 @@
 package de.schnettler.tvtracker.data.mapping
 
-import de.schnettler.tvtracker.data.show.model.*
-import de.schnettler.tvtracker.data.show.model.episode.EpisodeDomain
-import de.schnettler.tvtracker.data.show.model.episode.EpisodeEntity
-import de.schnettler.tvtracker.data.show.model.episode.EpisodeResponse
-import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
-import de.schnettler.tvtracker.data.show.model.season.SeasonEntity
-import de.schnettler.tvtracker.data.show.model.season.SeasonResponse
-import de.schnettler.tvtracker.data.show.model.season.SeasonWithEpisodes
+import de.schnettler.tvtracker.data.models.*
 import java.util.*
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
-object TrendingShowMapper : IndexedMapper<TrendingShowRemote, ShowTrendingDB, Show> {
+object TrendingShowMapper : IndexedMapper<TrendingResponse, TrendingWithShow, ShowDomain> {
 
-    override fun mapToDatabase(input: TrendingShowRemote, index: Int): ShowTrendingDB {
-        return ShowTrendingDB(
-            TrendingDB(
+    override fun mapToDatabase(input: TrendingResponse, index: Int): TrendingWithShow {
+        return TrendingWithShow(
+            TrendingEntity(
                 index = index,
                 showId = input.show.ids.trakt,
                 watcher = input.watchers
@@ -25,16 +18,16 @@ object TrendingShowMapper : IndexedMapper<TrendingShowRemote, ShowTrendingDB, Sh
         )
     }
 
-    override fun mapToDomain(input: ShowTrendingDB): Show {
+    override fun mapToDomain(input: TrendingWithShow): ShowDomain {
         return ShowMapper.mapToDomain(input.show)
     }
 }
 
 
-object PopularShowMapper : IndexedMapper<ShowRemote, ShowPopularDB, Show> {
-    override fun mapToDatabase(input: ShowRemote, index: Int): ShowPopularDB {
-        return ShowPopularDB(
-            PopularDB(
+object PopularShowMapper : IndexedMapper<ShowResponse, PopularWithShow, ShowDomain> {
+    override fun mapToDatabase(input: ShowResponse, index: Int): PopularWithShow {
+        return PopularWithShow(
+            PopularEntity(
                 index = index,
                 showId = input.ids.trakt
             ),
@@ -42,15 +35,15 @@ object PopularShowMapper : IndexedMapper<ShowRemote, ShowPopularDB, Show> {
         )
     }
 
-    override fun mapToDomain(input: ShowPopularDB): Show {
+    override fun mapToDomain(input: PopularWithShow): ShowDomain {
         return ShowMapper.mapToDomain(input.show)
     }
 }
 
-object AnticipatedShowMapper : IndexedMapper<AnticipatedShowRemote, AnticipatedShowDB, Show> {
-    override fun mapToDatabase(input: AnticipatedShowRemote, index: Int): AnticipatedShowDB {
-        return AnticipatedShowDB(
-            AnticipatedDB(
+object AnticipatedShowMapper : IndexedMapper<AnticipatedResponse, AnticipatedWithShow, ShowDomain> {
+    override fun mapToDatabase(input: AnticipatedResponse, index: Int): AnticipatedWithShow {
+        return AnticipatedWithShow(
+            AnticipatedEntity(
                 index = index,
                 showId = input.show.ids.trakt,
                 lists = input.listCount
@@ -60,15 +53,15 @@ object AnticipatedShowMapper : IndexedMapper<AnticipatedShowRemote, AnticipatedS
         )
     }
 
-    override fun mapToDomain(input: AnticipatedShowDB): Show {
+    override fun mapToDomain(input: AnticipatedWithShow): ShowDomain {
         return ShowMapper.mapToDomain(input.show)
     }
 }
 
 
-object ShowMapper : Mapper<ShowRemote, ShowDB, Show> {
-    override fun mapToDomain(input: ShowDB): Show {
-        return Show(
+object ShowMapper : Mapper<ShowResponse, ShowEntity, ShowDomain> {
+    override fun mapToDomain(input: ShowEntity): ShowDomain {
+        return ShowDomain(
             id = input.id,
             tvdbId = input.tvdbId,
             tmdbId = input.tmdbId,
@@ -78,8 +71,8 @@ object ShowMapper : Mapper<ShowRemote, ShowDB, Show> {
         )
     }
 
-    override fun mapToDatabase(input: ShowRemote): ShowDB {
-        return ShowDB(
+    override fun mapToDatabase(input: ShowResponse): ShowEntity {
+        return ShowEntity(
             id = input.ids.trakt,
             title = input.title,
             tvdbId = input.ids.tvdb,
@@ -91,9 +84,9 @@ object ShowMapper : Mapper<ShowRemote, ShowDB, Show> {
 }
 
 
-object ShowDetailsMapper : Mapper<ShowDetailsRemote, ShowDetailsDB, ShowDetails> {
-    override fun mapToDatabase(input: ShowDetailsRemote): ShowDetailsDB {
-        return ShowDetailsDB(
+object ShowDetailsMapper : Mapper<ShowDetailResponse, ShowDetailEntity, ShowDetailDomain> {
+    override fun mapToDatabase(input: ShowDetailResponse): ShowDetailEntity {
+        return ShowDetailEntity(
             showId = input.ids.trakt,
             overview = input.overview,
             firstAired = input.firstAired,
@@ -106,8 +99,8 @@ object ShowDetailsMapper : Mapper<ShowDetailsRemote, ShowDetailsDB, ShowDetails>
         )
     }
 
-    override fun mapToDomain(input: ShowDetailsDB): ShowDetails {
-        return ShowDetails(
+    override fun mapToDomain(input: ShowDetailEntity): ShowDetailDomain {
+        return ShowDetailDomain(
             showId = input.showId,
             overview = input.overview,
             firstAired = input.firstAired,
@@ -121,9 +114,9 @@ object ShowDetailsMapper : Mapper<ShowDetailsRemote, ShowDetailsDB, ShowDetails>
     }
 }
 
-object ShowRelatedMapper : IndexedMapperWithId<ShowRemote, ShowRelationEntity, Show> {
-    override fun mapToDatabase(input: ShowRemote, index: Int, id: Long): ShowRelationEntity {
-        return ShowRelationEntity(
+object ShowRelatedMapper : IndexedMapperWithId<ShowResponse, RelationWithShow, ShowDomain> {
+    override fun mapToDatabase(input: ShowResponse, index: Int, id: Long): RelationWithShow {
+        return RelationWithShow(
             RelationEntity(
                 index = index,
                 sourceId = id,
@@ -133,35 +126,37 @@ object ShowRelatedMapper : IndexedMapperWithId<ShowRemote, ShowRelationEntity, S
         )
     }
 
-    override fun mapToDomain(input: ShowRelationEntity): Show {
+    override fun mapToDomain(input: RelationWithShow): ShowDomain {
         return ShowMapper.mapToDomain(input.relatedShow)
     }
 }
 
-object SeasonSummaryMapper: IndexedMapperWithId<SeasonResponse, SeasonEntity, SeasonDomain> {
-    override fun mapToDatabase(input: SeasonResponse, index: Int, id: Long)= SeasonEntity(
-        id = input.ids.trakt,
-        rating = input.rating.times(10).roundToLong(),
-        firstAired = input.firstAired,
-        overview = input.overview,
-        title = input.title,
-        number = input.number,
-        showId = id,
-        episodeCount = input.episodeCount
-    )
+object SeasonSummaryMapper : IndexedMapperWithId<SeasonResponse, SeasonEntity, SeasonDomain> {
+    override fun mapToDatabase(input: SeasonResponse, index: Int, id: Long) =
+        SeasonEntity(
+            id = input.ids.trakt,
+            rating = input.rating.times(10).roundToLong(),
+            firstAired = input.firstAired,
+            overview = input.overview,
+            title = input.title,
+            number = input.number,
+            showId = id,
+            episodeCount = input.episodeCount
+        )
 
-    override fun mapToDomain(input: SeasonEntity)= SeasonDomain(
-        id = input.id,
-        rating = input.rating,
-        firstAired = input.firstAired,
-        overview = input.overview,
-        title = input.title,
-        number = input.number,
-        episodeCount = input.episodeCount
-    )
+    override fun mapToDomain(input: SeasonEntity) =
+        SeasonDomain(
+            id = input.id,
+            rating = input.rating,
+            firstAired = input.firstAired,
+            overview = input.overview,
+            title = input.title,
+            number = input.number,
+            episodeCount = input.episodeCount
+        )
 }
 
-object EpisodeMapper: IndexedMapperWithId<EpisodeResponse, EpisodeEntity, EpisodeDomain> {
+object EpisodeMapper : IndexedMapperWithId<EpisodeResponse, EpisodeEntity, EpisodeDomain> {
     override fun mapToDatabase(input: EpisodeResponse, index: Int, id: Long): EpisodeEntity {
         val translation = input.translations.find {
             it.language == Locale.getDefault().language
@@ -176,17 +171,18 @@ object EpisodeMapper: IndexedMapperWithId<EpisodeResponse, EpisodeEntity, Episod
         )
     }
 
-    override fun mapToDomain(input: EpisodeEntity): EpisodeDomain = EpisodeDomain(
-        id = input.id,
-        seasonId = input.seasonId,
-        number = input.number,
-        title = input.title,
-        overview = input.overview,
-        season = input.season
-    )
+    override fun mapToDomain(input: EpisodeEntity): EpisodeDomain =
+        EpisodeDomain(
+            id = input.id,
+            seasonId = input.seasonId,
+            number = input.number,
+            title = input.title,
+            overview = input.overview,
+            season = input.season
+        )
 }
 
-object SeasonWithEpisodeMapper: IndexedMapper<Any, SeasonWithEpisodes, SeasonDomain> {
+object SeasonWithEpisodeMapper : IndexedMapper<Any, SeasonWithEpisodes, SeasonDomain> {
     override fun mapToDatabase(input: Any, index: Int): SeasonWithEpisodes {
         TODO("not implemented")
     }
