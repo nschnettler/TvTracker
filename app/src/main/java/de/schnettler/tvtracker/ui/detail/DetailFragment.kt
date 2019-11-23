@@ -11,8 +11,8 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
 import de.schnettler.tvtracker.MainActivity
-import de.schnettler.tvtracker.data.show.model.Show
-import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
+import de.schnettler.tvtracker.data.models.ShowDomain
+import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
 import de.schnettler.tvtracker.util.*
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
@@ -75,11 +75,15 @@ class DetailFragment : Fragment() {
 
         //Click Listener Callback
         controller.callbacks = object: DetailTypedController.Callbacks {
+            override fun onEpisodeClicked(episodeId: Long) {
+                findNavController().navigate(DetailFragmentDirections.actionDetailFragmentToEpisodeFragment(episodeId))
+            }
+
             override fun onSeasonClicked(season: SeasonDomain, isExpanded: Boolean) {
                 viewModel.onChangeSeasonExpansion(season, !isExpanded)
             }
 
-            override fun onItemClicked(view: View, item: Show) {
+            override fun onShowClicked(view: View, item: ShowDomain) {
                 val extras = FragmentNavigatorExtras(
                     view to "showPoster"
                 )

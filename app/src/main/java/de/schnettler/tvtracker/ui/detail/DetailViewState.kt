@@ -1,18 +1,18 @@
 package de.schnettler.tvtracker.ui.detail
 
 import com.etiennelenhart.eiffel.state.ViewState
-import de.schnettler.tvtracker.data.auth.model.AuthTokenDB
-import de.schnettler.tvtracker.data.show.model.Show
-import de.schnettler.tvtracker.data.show.model.ShowDetails
-import de.schnettler.tvtracker.data.show.model.cast.CastEntry
-import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
+import de.schnettler.tvtracker.data.models.AuthTokenDB
+import de.schnettler.tvtracker.data.models.ShowDomain
+import de.schnettler.tvtracker.data.models.ShowDetailDomain
+import de.schnettler.tvtracker.data.models.CastEntity
+import de.schnettler.tvtracker.data.models.SeasonDomain
 
 data class DetailViewState(
-    val show: Show,
-    val details: ShowDetails? = null,
+    val show: ShowDomain,
+    val details: ShowDetailDomain? = null,
     val tvdbAuth: AuthTokenDB? = null,
-    val cast: List<CastEntry>? = null,
-    val relatedShows: List<Show>? = null,
+    val cast: List<CastEntity>? = null,
+    val relatedShows: List<ShowDomain>? = null,
     val seasons: List<SeasonDomain>? = null,
     val expandedSeasons: Set<Long> = setOf()
 ): ViewState

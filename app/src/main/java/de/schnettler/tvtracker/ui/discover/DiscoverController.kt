@@ -4,16 +4,16 @@ import android.view.View
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.carousel
 import de.schnettler.tvtracker.ShowSmallBindingModel_
-import de.schnettler.tvtracker.data.show.model.Show
+import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.header
 import de.schnettler.tvtracker.util.withModelsFrom
 import timber.log.Timber
 
-class DiscoverController(var trendingShows: List<Show>? = null, var popularShows: List<Show>? = null, var anticipatedShows: List<Show>? = null): EpoxyController(){
+class DiscoverController(var trendingShows: List<ShowDomain>? = null, var popularShows: List<ShowDomain>? = null, var anticipatedShows: List<ShowDomain>? = null): EpoxyController(){
 
     var callbacks: Callbacks? = null
     interface Callbacks {
-        fun onItemClicked(view: View, item: Show)
+        fun onItemClicked(view: View, item: ShowDomain)
     }
 
     override fun buildModels() {

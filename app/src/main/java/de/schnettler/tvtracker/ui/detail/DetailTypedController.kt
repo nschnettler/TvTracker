@@ -5,8 +5,8 @@ import com.airbnb.epoxy.Carousel
 import com.airbnb.epoxy.TypedEpoxyController
 import com.airbnb.epoxy.carousel
 import de.schnettler.tvtracker.*
-import de.schnettler.tvtracker.data.show.model.Show
-import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
+import de.schnettler.tvtracker.data.models.ShowDomain
+import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.util.getEmoji
 import de.schnettler.tvtracker.util.isoToDate
 import de.schnettler.tvtracker.util.withModelsFrom
@@ -15,8 +15,9 @@ import timber.log.Timber
 class DetailTypedController: TypedEpoxyController<DetailViewState>() {
     var callbacks: Callbacks? = null
     interface Callbacks {
-        fun onItemClicked(view: View, item: Show)
+        fun onShowClicked(view: View, item: ShowDomain)
         fun onSeasonClicked(season: SeasonDomain, isExpanded: Boolean)
+        fun onEpisodeClicked(episodeId: Long)
     }
 
     override fun buildModels(data: DetailViewState?) {
@@ -105,6 +106,9 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                                 id(episode.id)
                                 title(episode.title)
                                 imageText("#${episode.number}")
+                                onClickListener { _, _, _, _ ->
+                                    callbacks?.onEpisodeClicked(episode.id)
+                                }
                             }
                         }
                     }
@@ -127,7 +131,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                             .transitionName("related_${it.id}")
                             .onClickListener{ _, _, view, _ ->
                                 Timber.i("Clicked on ${it.title}")
-                                callbacks?.onItemClicked(view, it)
+                                callbacks?.onShowClicked(view, it)
                             }
                     }
                     padding(Carousel.Padding.dp(16,8,16,16,8))

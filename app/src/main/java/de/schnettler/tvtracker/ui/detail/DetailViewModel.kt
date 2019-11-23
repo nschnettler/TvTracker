@@ -4,23 +4,22 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
 import de.schnettler.tvtracker.data.db.getDatabase
-import de.schnettler.tvtracker.data.show.model.Show
+import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.api.RetrofitClient
-import de.schnettler.tvtracker.data.auth.AuthDataSourceLocal
-import de.schnettler.tvtracker.data.auth.AuthDataSourceRemote
-import de.schnettler.tvtracker.data.auth.AuthRepository
-import de.schnettler.tvtracker.data.auth.model.AuthTokenType
-import de.schnettler.tvtracker.data.show.ShowDataSourceLocal
-import de.schnettler.tvtracker.data.show.ShowDataSourceRemote
-import de.schnettler.tvtracker.data.show.ShowRepository
-import de.schnettler.tvtracker.data.show.model.season.SeasonDomain
+import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceLocal
+import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceRemote
+import de.schnettler.tvtracker.data.repository.auth.AuthRepository
+import de.schnettler.tvtracker.data.models.AuthTokenType
+import de.schnettler.tvtracker.data.repository.show.ShowDataSourceLocal
+import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
+import de.schnettler.tvtracker.data.repository.show.ShowRepository
+import de.schnettler.tvtracker.data.models.SeasonDomain
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class DetailViewModel(var show: Show, val context: Application) : StateViewModel<DetailViewState>() {
+class DetailViewModel(var show: ShowDomain, val context: Application) : StateViewModel<DetailViewState>() {
     override val state = MediatorLiveData<DetailViewState>()
     private val showRepository = ShowRepository(
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
@@ -154,7 +153,7 @@ class DetailViewModel(var show: Show, val context: Application) : StateViewModel
     /**
      * Factory for constructing DevByteViewModel with parameter
      */
-    class Factory(val show: Show, val app: Application ) : ViewModelProvider.Factory {
+    class Factory(val show: ShowDomain, val app: Application ) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")

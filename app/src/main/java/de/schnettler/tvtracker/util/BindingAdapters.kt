@@ -5,7 +5,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import coil.api.load
 import de.schnettler.tvtracker.R
-import de.schnettler.tvtracker.data.api.tvdb.TvdbService
+import de.schnettler.tvtracker.data.api.TVDB
 
 
 @BindingAdapter(value = ["imageUrl", "imageQuality"], requireAll = true)
@@ -18,7 +18,7 @@ fun bindImage(imgView: ImageView, imageUrl: String?, imageQuality: ImageQuality)
 @BindingAdapter("tvdbUrl")
 fun bindTvdbImage(imageView: ImageView, url: String?) {
     val suffix = if (url.isNullOrBlank()) "/person/actor.jpg" else url
-    val prefix = if (suffix.startsWith("/person")) TvdbService.IMAGE_ENDPOINT_SHORT else TvdbService.IMAGE_ENDPOINT
+    val prefix = if (suffix.startsWith("/person")) TVDB.IMAGE_ENDPOINT_SHORT else TVDB.IMAGE_ENDPOINT
     bindImageFromUrl(imageView, prefix + suffix)
 }
 

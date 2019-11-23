@@ -10,11 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import de.schnettler.tvtracker.data.show.model.Show
+import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.databinding.DiscoverFragmentBinding
 import de.schnettler.tvtracker.util.ViewModelFactory
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import timber.log.Timber
 
 class DiscoverFragment : Fragment() {
 
@@ -58,7 +57,7 @@ class DiscoverFragment : Fragment() {
 
         //Click Listener Callback
         controller.callbacks = object: DiscoverController.Callbacks {
-            override fun onItemClicked(view: View, item: Show) {
+            override fun onItemClicked(view: View, item: ShowDomain) {
                 val extras = FragmentNavigatorExtras(
                     view to "showPoster"
                 )
@@ -73,6 +72,8 @@ class DiscoverFragment : Fragment() {
     //Only gets called on Configuration Change (Activity Recreation)
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        controller.onSaveInstanceState(outState)
+        if (this::controller.isInitialized) {
+            controller.onSaveInstanceState(outState)
+        }
     }
 }

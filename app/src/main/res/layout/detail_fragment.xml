@@ -9,7 +9,7 @@
             type="de.schnettler.tvtracker.ui.detail.DetailViewModel" />
         <variable
             name="showDetails"
-            type="de.schnettler.tvtracker.data.show.model.ShowDetails" />
+            type="de.schnettler.tvtracker.data.models.ShowDetailDomain" />
         <import type="de.schnettler.tvtracker.util.ImageQuality"/>
     </data>
 

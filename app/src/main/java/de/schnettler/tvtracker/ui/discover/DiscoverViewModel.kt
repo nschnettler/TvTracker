@@ -4,10 +4,9 @@ import android.app.Application
 import androidx.lifecycle.*
 import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.db.getDatabase
-import de.schnettler.tvtracker.data.show.ShowDataSourceLocal
-import de.schnettler.tvtracker.data.show.ShowDataSourceRemote
-import de.schnettler.tvtracker.data.show.ShowRepository
-import de.schnettler.tvtracker.util.ShowListType
+import de.schnettler.tvtracker.data.repository.show.ShowDataSourceLocal
+import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
+import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import kotlinx.coroutines.launch
 
 
