@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.*
 import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.db.getDatabase
-import de.schnettler.tvtracker.data.repository.show.ShowDataSourceLocal
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import kotlinx.coroutines.launch
@@ -14,7 +13,7 @@ import timber.log.Timber
 class MainViewModel(val context: Application) : AndroidViewModel(context) {
     private val showRepository = ShowRepository(
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
-        ShowDataSourceLocal(getDatabase(context).trendingShowsDao)
+        getDatabase(context).trendingShowsDao
     )
 
     fun onAuthResponse(code: String) {

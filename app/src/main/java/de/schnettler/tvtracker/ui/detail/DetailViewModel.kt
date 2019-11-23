@@ -11,7 +11,6 @@ import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceRemote
 import de.schnettler.tvtracker.data.repository.auth.AuthRepository
 import de.schnettler.tvtracker.data.models.AuthTokenType
 import de.schnettler.tvtracker.data.models.EpisodeDomain
-import de.schnettler.tvtracker.data.repository.show.ShowDataSourceLocal
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import de.schnettler.tvtracker.data.models.SeasonDomain
@@ -24,7 +23,7 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
     override val state = MediatorLiveData<DetailViewState>()
     private val showRepository = ShowRepository(
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
-        ShowDataSourceLocal(getDatabase(context).trendingShowsDao)
+        getDatabase(context).trendingShowsDao
     )
     private val authRepository = AuthRepository(
         AuthDataSourceRemote(RetrofitClient.tvdbNetworkService),
@@ -34,6 +33,10 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
     private val _episode = MutableLiveData<EpisodeDomain>()
     val episode: LiveData<EpisodeDomain>
         get() = _episode
+
+//    val episodeDetail = Transformations.switchMap(episode) { episode ->
+//        //repository.getDataForUser(user)
+//    }
 
     private val showDetails = showRepository.getShowDetails(show.id)
     private val tvdbAuth = authRepository.getAuthToken(AuthTokenType.TVDB)

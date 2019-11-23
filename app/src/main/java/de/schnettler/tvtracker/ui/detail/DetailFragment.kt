@@ -17,10 +17,7 @@ import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
-import de.schnettler.tvtracker.util.AppBarStateChangedListener
-import de.schnettler.tvtracker.util.clearLightStatusBar
-import de.schnettler.tvtracker.util.isDarkTheme
-import de.schnettler.tvtracker.util.setLightStatusBar
+import de.schnettler.tvtracker.util.*
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 
 

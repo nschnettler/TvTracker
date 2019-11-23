@@ -3,9 +3,9 @@ package de.schnettler.tvtracker.data.repository.show
 import androidx.lifecycle.Transformations
 import de.schnettler.tvtracker.data.Result
 import de.schnettler.tvtracker.data.api.Trakt
+import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.mapping.*
-import de.schnettler.tvtracker.data.models.ShowEntity
-import de.schnettler.tvtracker.data.models.asCastEntryList
+import de.schnettler.tvtracker.data.models.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -13,7 +13,7 @@ import timber.log.Timber
 /**
  * Class that knows how to get and store Shows
  */
-class ShowRepository(private val remoteService: ShowDataSourceRemote, private val localDao: ShowDataSourceLocal) {
+class ShowRepository(private val remoteService: ShowDataSourceRemote, private val localDao: ShowDao) {
     private val relatedMapper = ListMapperWithId(ShowRelatedMapper)
     private val trendingMapper = ListMapper(TrendingShowMapper)
     private val popularMapper = ListMapper(PopularShowMapper)
@@ -35,7 +35,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         }
     }
     fun getShowDetails(showId: Long) =
-        Transformations.map(localDao.getShowDetail(showId)) {
+        Transformations.map(localDao.getShowDetails(showId)) {
             it?.let { ShowDetailsMapper.mapToDomain(it) }
         }
 
@@ -48,12 +48,12 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         val result = remoteService.getCast(showId, token)
         if (result is Result.Success) {
             //Insert in DB
-            localDao.insertShowCast(result.data.data.asCastEntryList())
+            localDao.insertCast(result.data.data.asCastEntryList())
         } else {
             (result as Result.Error).exception.printStackTrace()
         }
     }
-    fun getShowCast(showId: Long) = localDao.getShowCast(showId)
+    fun getShowCast(showId: Long) = localDao.getCast(showId)
 
 
     /*
@@ -64,7 +64,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         if (result is Result.Success) {
             //Insert in DB
             val showEntities = relatedMapper.mapToDatabase(result.data, id = showId)
-            localDao.insertRelatedShows(showEntities)
+            showEntities?.let { localDao.insertShowRelations(showEntities) }
 
             //Refresh Poster
             showEntities?.let {
@@ -72,10 +72,9 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
             }
         }
     }
-    fun getRelatedShows(showId: Long) = Transformations.map(localDao.getRelatedShows(showId)) {
+    fun getRelatedShows(showId: Long) = Transformations.map(localDao.getShowRelations(showId)) {
         relatedMapper.mapToDomain(it)
     }
-
 
     /*
      * Trending Shows
@@ -85,7 +84,8 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         if (result is Result.Success) {
             //Insert in DB
             val entities = trendingMapper.mapToDatabase(result.data)
-            localDao.insertTrending(entities)
+            entities?.let { localDao.insertTrendingShows(it) }
+
 
             //Refresh Poster
             entities?.let {
@@ -106,7 +106,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         if (result is Result.Success) {
             //Insert in DB
             val entities = popularMapper.mapToDatabase(result.data)
-            localDao.insertPopular(entities)
+            entities?.let { localDao.insertPopularShows(it) }
 
             //Refresh Poster
             entities?.let {
@@ -127,7 +127,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         if (result is Result.Success) {
             //Insert in DB
             val entities = anticipatedMapper.mapToDatabase(result.data)
-            localDao.insertAnticipated(entities)
+            entities?.let { localDao.insertAnticipatedShows(it) }
 
             //Refresh Poster
             entities?.let {
@@ -146,7 +146,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         when(val result = remoteService.getSeasonsOfShow(showId)) {
             is Result.Success -> {
                 //Insert in DB
-                localDao.insertSeasons(seasonMapper.mapToDatabase(result.data, showId))
+                seasonMapper.mapToDatabase(result.data, showId)?.let { localDao.insertSeasons(it) }
             }
             is Result.Error -> {
                 Timber.e(result.exception)
@@ -165,7 +165,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         when(val result = remoteService.getEpisodesOfSeason(showId, seasonNumber)) {
             is Result.Success -> {
                 //Insert in DB
-                localDao.insertEpisodes(episodeMapper.mapToDatabase(result.data, seasonId))
+                episodeMapper.mapToDatabase(result.data, seasonId)?.let { localDao.insertEpisodes(it) }
             }
             is Result.Error -> {
                 Timber.e(result.exception)
