@@ -11,6 +11,7 @@ interface TMDb {
     companion object {
         const val ENDPOINT = "https://api.themoviedb.org/"
         const val API_KEY = "***TMDB_API_KEY***"
+        const val IMAGE_ENDPOINT = "https://image.tmdb.org/t/p/"
     }
 
     @GET("/3/tv/{tv_id}")

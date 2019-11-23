@@ -32,31 +32,6 @@ import java.util.*
 import kotlin.math.abs
 
 
-const val TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/"
-const val SHOW_LIST_PAGE_SIZE = 10
-const val SHOW_LIST_PAGE_MAX = 5
-const val TRAKT_BASE_URL = "https://trakt.tv/"
-const val TRAKT_CLIENT_ID = "***TRAKT_CLIENT_ID***"
-const val TRAKT_REDIRECT_URI = "de.schnettler.tvtrack://auth"
-const val RC_AUTH = 100
-
-enum class ImageQuality(val quality: String) {
-    LOW("w185"),
-    MEDIUM("w300"),
-    HIGH("w1280"),
-    ORIGINAL("original")
-}
-
-enum class StatusCodes(val code: Int) {
-    SUCCESS(200),
-    SUCCESS_NEW_SOURCE(201)
-}
-
-enum class ShowListType() {
-    TRENDING,
-    POPULAR
-}
-
 fun Context.makeToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
 class SwipeRefreshLayout(context: Context, attrs: AttributeSet? = null) : SwipeRefreshLayout(context, attrs) {

@@ -5,13 +5,15 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import coil.api.load
 import de.schnettler.tvtracker.R
+import de.schnettler.tvtracker.data.api.ImageQuality
+import de.schnettler.tvtracker.data.api.TMDb
 import de.schnettler.tvtracker.data.api.TVDB
 
 
 @BindingAdapter(value = ["imageUrl", "imageQuality"], requireAll = true)
 fun bindImage(imgView: ImageView, imageUrl: String?, imageQuality: ImageQuality) {
     imageUrl?.let {
-        bindImageFromUrl(imgView, TMDB_IMAGE_BASE_URL + imageQuality.quality +  imageUrl)
+        bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + imageQuality.quality +  imageUrl)
     }
 }
 

@@ -18,7 +18,7 @@ private val traktHttpClient = OkHttpClient.Builder()
             .addHeader("Content-type", "application/json")
             .addHeader(
                 "trakt-api-key",
-                "***TRAKT_CLIENT_ID***"
+                Trakt.CLIENT_ID
             )
             .addHeader("trakt-api-version", "2")
             .build()
@@ -50,7 +50,7 @@ private val tvdbHttpClient = OkHttpClient.Builder()
 private val tmdbHttpClient = OkHttpClient.Builder()
     .addInterceptor {
         val request = it.request().newBuilder()
-            .addHeader("api_key", "***TMDB_API_KEY***")
+            .addHeader("api_key", TMDb.API_KEY)
             .build()
         it.proceed(request)
     }.build()

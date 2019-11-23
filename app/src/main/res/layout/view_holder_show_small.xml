@@ -10,7 +10,7 @@
         <variable
             name="posterUrl"
             type="String" />
-        <import type="de.schnettler.tvtracker.util.ImageQuality"/>
+        <import type="de.schnettler.tvtracker.data.api.ImageQuality"/>
         <variable
             name="onClickListener"
             type="android.view.View.OnClickListener" />

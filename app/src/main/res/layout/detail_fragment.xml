@@ -10,7 +10,7 @@
         <variable
             name="showDetails"
             type="de.schnettler.tvtracker.data.models.ShowDetailDomain" />
-        <import type="de.schnettler.tvtracker.util.ImageQuality"/>
+        <import type="de.schnettler.tvtracker.data.api.ImageQuality"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
