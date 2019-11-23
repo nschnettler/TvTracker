@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
                     clearLightStatusBar(window.decorView)
                     setStatusBarColor(resources, android.R.color.transparent, window, theme)
                 }
+                R.id.episodeFragment -> binding.bottomNavigation.visibility = View.GONE
                 else -> {
                     binding.bottomNavigation.visibility = View.VISIBLE
                     if (!isDarkTheme(resources)) {

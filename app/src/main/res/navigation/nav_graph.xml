@@ -31,12 +31,24 @@
         tools:layout="@layout/detail_fragment" >
         <argument
             android:name="show"
-            app:argType="de.schnettler.tvtracker.data.show.model.Show" />
+            app:argType="de.schnettler.tvtracker.data.models.ShowDomain" />
         <argument
             android:name="transitionName"
             app:argType="string" />
         <action
             android:id="@+id/action_detailFragment_self"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_detailFragment_to_episodeFragment"
+            app:destination="@id/episodeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/episodeFragment"
+        android:name="de.schnettler.tvtracker.ui.episode.EpisodeFragment"
+        android:label="EpisodeFragment"
+        tools:layout="@layout/episode_fragment">
+        <argument
+            android:name="episodeId"
+            app:argType="long" />
     </fragment>
 </navigation>
