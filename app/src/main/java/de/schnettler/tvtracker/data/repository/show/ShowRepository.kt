@@ -174,6 +174,25 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
     }
 
     /*
+     * Episode Details
+     */
+    suspend fun refreshEpisodeDetails(showId: String, seasonNumber: Long, episodeNumber: Long, episodeId: Long) {
+        when(val result = remoteService.getEpisodeDetail(showId, seasonNumber, episodeNumber)) {
+            is Result.Success -> {
+                localDao.insertEpisodeDetail(EpisodeDetailMapper.mapToDatabase(result.data, episodeId))
+            }
+            is Result.Error -> {
+                Timber.e(result.exception)
+            }
+        }
+    }
+    fun getEpisodeDetails(episodeId: Long) = Transformations.map(localDao.getEpisodeDetails(episodeId)) {
+        it?.let {entity ->
+            EpisodeDetailMapper.mapToDomain(entity)
+        }
+    }
+
+    /*
      * Show Poster
      */
     suspend fun refreshPosters(showsDB: List<ShowEntity>) {

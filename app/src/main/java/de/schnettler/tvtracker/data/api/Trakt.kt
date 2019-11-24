@@ -1,12 +1,6 @@
 package de.schnettler.tvtracker.data.api
 
-import de.schnettler.tvtracker.data.models.OAuthToken
-import de.schnettler.tvtracker.data.models.AnticipatedResponse
-import de.schnettler.tvtracker.data.models.ShowDetailResponse
-import de.schnettler.tvtracker.data.models.ShowResponse
-import de.schnettler.tvtracker.data.models.TrendingResponse
-import de.schnettler.tvtracker.data.models.EpisodeResponse
-import de.schnettler.tvtracker.data.models.SeasonResponse
+import de.schnettler.tvtracker.data.models.*
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.POST

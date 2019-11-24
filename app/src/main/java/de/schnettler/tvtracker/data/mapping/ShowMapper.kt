@@ -193,3 +193,22 @@ object SeasonWithEpisodeMapper : IndexedMapper<Any, SeasonWithEpisodes, SeasonDo
         return season
     }
 }
+
+object EpisodeDetailMapper: MapperWithId<EpisodeDetailResponse, EpisodeDetailEntity, EpisodeDetailDomain> {
+    override fun mapToDatabase(
+        input: EpisodeDetailResponse,
+        id: Long
+    ) =  EpisodeDetailEntity(
+        episodeId = id,
+        airDate = input.airDate,
+        stillPath = input.stillPath,
+        voteAverage = input.voteAverage
+    )
+
+    override fun mapToDomain(input: EpisodeDetailEntity) = EpisodeDetailDomain(
+        episodeId = input.episodeId,
+        airDate = input.airDate,
+        stillPath = input.stillPath,
+        voteAverage = input.voteAverage
+    )
+}

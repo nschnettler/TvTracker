@@ -1,5 +1,6 @@
 package de.schnettler.tvtracker.data.api
 
+import de.schnettler.tvtracker.data.models.EpisodeDetailResponse
 import de.schnettler.tvtracker.data.models.PersonImageResponse
 import de.schnettler.tvtracker.data.models.ShowImageResponse
 import retrofit2.Response
@@ -25,4 +26,12 @@ interface TMDb {
         @Path("person_id") id: String,
         @Query("api_key") apiKey: String
     ): Response<PersonImageResponse>
+
+    @GET("/3/tv/{tv_id}/season/{season_number}/episode/{episode_number}")
+    suspend fun getEpisodeDetail(
+        @Path("tv_id") showId: String,
+        @Path("season_number") seasonNumber: Long,
+        @Path("episode_number") episodeNumber: Long,
+        @Query("api_key") apiKey: String
+    ): Response<EpisodeDetailResponse>
 }

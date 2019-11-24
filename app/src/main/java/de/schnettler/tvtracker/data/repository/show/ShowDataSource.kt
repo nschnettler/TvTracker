@@ -172,4 +172,24 @@ class ShowDataSourceRemote(val traktService: Trakt, val tvdbService: TVDB, val t
         }
         return Result.Error(IOException("Error getting seasons: ${response.code()} ${response.message()}"))
     }
+
+
+    //Episode Details
+    //Episode Details
+    suspend fun getEpisodeDetail(showID: String, seasonNumber: Long, episodeNumber: Long) = safeApiCall(
+        call = { requestEpisodeDetails(showID, seasonNumber, episodeNumber) },
+        errorMessage = "Error getting Episode Details"
+    )
+
+    private suspend fun requestEpisodeDetails(showID: String, seasonNumber: Long, episodeNumber: Long): Result<EpisodeDetailResponse> {
+        val response = tmdbService.getEpisodeDetail(showID, seasonNumber, episodeNumber, TMDb.API_KEY)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return Result.Success(it)
+            }
+        }
+        return Result.Error(
+            IOException("Error getting Episode details: ${response.code()} ${response.message()}")
+        )
+    }
 }

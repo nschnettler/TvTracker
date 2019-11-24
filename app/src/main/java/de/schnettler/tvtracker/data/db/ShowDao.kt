@@ -125,5 +125,16 @@ interface ShowDao {
             insertEpisodes(it.episodes)
         }
     }
+
+    /*
+     * Episode Details
+     *
+     */
+    @Transaction
+    @Query("SELECT * FROM table_episode_details WHERE episodeId = :episodeId")
+    fun getEpisodeDetails(episodeId: Long): LiveData<EpisodeDetailEntity?>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertEpisodeDetail(detail: EpisodeDetailEntity)
 }
 

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -19,6 +20,7 @@ import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
 import de.schnettler.tvtracker.util.*
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
+import timber.log.Timber
 
 
 class DetailFragment : Fragment() {

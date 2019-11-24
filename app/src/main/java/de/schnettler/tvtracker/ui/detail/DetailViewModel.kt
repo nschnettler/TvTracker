@@ -4,20 +4,19 @@ import android.app.Application
 import androidx.lifecycle.*
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
 import de.schnettler.tvtracker.data.db.getDatabase
-import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceLocal
 import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceRemote
 import de.schnettler.tvtracker.data.repository.auth.AuthRepository
-import de.schnettler.tvtracker.data.models.AuthTokenType
-import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
-import de.schnettler.tvtracker.data.models.SeasonDomain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import androidx.lifecycle.Transformations
+import de.schnettler.tvtracker.data.models.*
+
 
 class DetailViewModel(var show: ShowDomain, val context: Application) : StateViewModel<DetailViewState>() {
     override val state = MediatorLiveData<DetailViewState>()
@@ -33,6 +32,10 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
     private val _episode = MutableLiveData<EpisodeDomain>()
     val episode: LiveData<EpisodeDomain>
         get() = _episode
+
+    val episodeDetails = Transformations.switchMap(episode) { it->
+        showRepository.getEpisodeDetails(it.id)
+    };
 
 //    val episodeDetail = Transformations.switchMap(episode) { episode ->
 //        //repository.getDataForUser(user)
@@ -160,6 +163,11 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
 
     fun onEpisodeSelected(episode: EpisodeDomain) {
         _episode.value = episode
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                showRepository.refreshEpisodeDetails(showId = show.tmdbId, seasonNumber = episode.season, episodeNumber = episode.number, episodeId = episode.id)
+            }
+        }
     }
 
     /**
