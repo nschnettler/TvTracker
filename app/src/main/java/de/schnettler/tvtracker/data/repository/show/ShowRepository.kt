@@ -196,20 +196,25 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
      * Show Poster
      */
     suspend fun refreshPosters(showsDB: List<ShowEntity>) {
-        for (showDB in showsDB) {
-            val result = remoteService.getImages(showDB.tmdbId)
-            if (result is Result.Success) {
-                var changed = false
-                result.data.poster_path?.let {
-                    showDB.posterUrl = it
-                    changed = true
-                }
-                result.data.backdrop_path?.let {
-                    showDB.backdropUrl = it
-                    changed = true
-                }
-                if (changed) {
-                    localDao.updateShow(showDB)
+        showsDB.forEach {
+            //Check if Show already in DB
+            localDao.getShow(it.id)?.let {entity ->
+                if (entity.posterUrl.isBlank()) {
+                    val result = remoteService.getImages(entity.tmdbId)
+                    if (result is Result.Success) {
+                        var changed = false
+                        result.data.poster_path?.let {
+                            entity.posterUrl = it
+                            changed = true
+                        }
+                        result.data.backdrop_path?.let {
+                            entity.backdropUrl = it
+                            changed = true
+                        }
+                        if (changed) {
+                            localDao.updateShow(entity)
+                        }
+                    }
                 }
             }
         }

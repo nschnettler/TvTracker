@@ -25,6 +25,9 @@ interface ShowDao {
     @Query("SELECT * FROM table_show_details WHERE showId = :id")
     fun getShowDetails(id: Long): LiveData<ShowDetailEntity?>
 
+    @Query("SELECT * FROM table_show WHERE id = :id")
+    suspend fun getShow(id: Long): ShowEntity?
+
     /**
      * Insert a new Shows in table_shows
      */
