@@ -53,7 +53,9 @@ private val tmdbHttpClient = OkHttpClient.Builder()
             .addHeader("api_key", TMDb.API_KEY)
             .build()
         it.proceed(request)
-    }.build()
+    }.addInterceptor(HttpLoggingInterceptor().apply {
+        this.level = HttpLoggingInterceptor.Level.BODY
+    }).build()
 
 
 object RetrofitClient {
