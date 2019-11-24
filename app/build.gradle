@@ -112,8 +112,13 @@ dependencies {
     implementation "com.airbnb.android:epoxy-paging:$version_epoxy"
     kapt "com.airbnb.android:epoxy-processor:$version_epoxy"
 
-    //OkHttp Logging
-    implementation "com.squareup.okhttp3:logging-interceptor:$version_okhttp"
+    //Eiffel
     implementation "com.github.etiennelenhart:eiffel:$version_eiffel"
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
+
+    //Three Ten
+    implementation "com.jakewharton.threetenabp:threetenabp:$version_threeten"
+
+    //Stetho
+    implementation "com.facebook.stetho:stetho:$version_stetho"
+    implementation "com.facebook.stetho:stetho-okhttp3:$version_stetho"
 }

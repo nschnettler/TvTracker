@@ -25,6 +25,8 @@ buildscript {
         version_epoxy = "3.8.0"
         version_okhttp = "4.2.1"
         version_eiffel = "4.1.0"
+        version_threeten = "1.2.1"
+        version_stetho = "1.5.1"
     }
     repositories {
         google()

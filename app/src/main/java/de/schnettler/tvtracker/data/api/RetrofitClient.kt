@@ -1,5 +1,6 @@
 package de.schnettler.tvtracker.data.api
 
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
@@ -31,9 +32,7 @@ private val traktHttpClient = OkHttpClient.Builder()
         request = request.newBuilder().url(url).build()
         it.proceed(request)
 
-    }.addInterceptor(HttpLoggingInterceptor().apply {
-        this.level = HttpLoggingInterceptor.Level.BODY
-    })
+    }.addNetworkInterceptor(StethoInterceptor())
     .build()
 
 
@@ -42,9 +41,7 @@ private val tvdbHttpClient = OkHttpClient.Builder()
         val request = it.request().newBuilder()
             .build()
         it.proceed(request)
-    }.addInterceptor(HttpLoggingInterceptor().apply {
-        this.level = HttpLoggingInterceptor.Level.BODY
-    })
+    }.addNetworkInterceptor(StethoInterceptor())
     .build()
 
 private val tmdbHttpClient = OkHttpClient.Builder()
@@ -53,9 +50,8 @@ private val tmdbHttpClient = OkHttpClient.Builder()
             .addHeader("api_key", TMDb.API_KEY)
             .build()
         it.proceed(request)
-    }.addInterceptor(HttpLoggingInterceptor().apply {
-        this.level = HttpLoggingInterceptor.Level.BODY
-    }).build()
+    }.addNetworkInterceptor(StethoInterceptor())
+    .build()
 
 
 object RetrofitClient {
