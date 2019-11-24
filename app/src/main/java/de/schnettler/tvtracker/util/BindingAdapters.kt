@@ -38,13 +38,12 @@ fun bindBottomSheetHeader(imgView: ImageView, imageUrl: String?) {
     imageUrl?.let {
         bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + ImageQuality.HIGH.quality +  imageUrl)
     }
-    Timber.i(TMDb.IMAGE_ENDPOINT + ImageQuality.HIGH.quality +  imageUrl)
 }
 
 fun bindImageFromUrl(imageView: ImageView, fullUrl: String) {
     imageView.clipToOutline = true
     imageView.load(fullUrl) {
-        placeholder(R.drawable.loading_animation)
+        crossfade(true)
     }
 }
 
