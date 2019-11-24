@@ -121,4 +121,7 @@ dependencies {
     //Stetho
     implementation "com.facebook.stetho:stetho:$version_stetho"
     implementation "com.facebook.stetho:stetho-okhttp3:$version_stetho"
+
+    //OkHttp
+    implementation "com.squareup.okhttp3:okhttp:$version_okhttp"
 }
