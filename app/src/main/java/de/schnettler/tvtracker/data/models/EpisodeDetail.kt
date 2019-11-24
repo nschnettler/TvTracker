@@ -17,14 +17,14 @@ data class EpisodeDetailEntity(
     @PrimaryKey val episodeId: Long,
     val airDate: String,
     val stillPath: String?,
-    val voteAverage: Float
+    val voteAverage: Int
 )
 
 data class EpisodeDetailDomain(
     val episodeId: Long,
     val airDate: String,
     val stillPath: String?,
-    val voteAverage: Float
+    val voteAverage: Int
 )
 
 class EpisodeWithDetails(

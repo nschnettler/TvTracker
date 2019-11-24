@@ -7,11 +7,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import coil.api.load
-import de.schnettler.tvtracker.R
 import de.schnettler.tvtracker.data.api.ImageQuality
 import de.schnettler.tvtracker.data.api.TMDb
 import de.schnettler.tvtracker.data.api.TVDB
-import timber.log.Timber
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 @BindingAdapter(value = ["imageUrl", "imageQuality"], requireAll = true)
@@ -54,5 +55,19 @@ fun maxLinesClickListener(view: TextView, oldCollapsedMaxLines: Int, newCollapse
         view.maxLines = newCollapsedMaxLines
         // Now set click listener
         view.setOnClickListener(MaxLinesToggleClickListener(newCollapsedMaxLines))
+    }
+}
+
+@BindingAdapter("date")
+fun bindDate(view: TextView, date: String?) {
+    date?.let {dateString ->
+        val formatIn = SimpleDateFormat("yyyy-mm-dd")
+        val dateIn = formatIn.parse(dateString)
+        val formatOut = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
+
+        dateIn?.let {
+            val dateOut = formatOut.format(it)
+            view.text = dateOut
+        }
     }
 }

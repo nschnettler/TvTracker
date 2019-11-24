@@ -202,7 +202,7 @@ object EpisodeDetailMapper: MapperWithId<EpisodeDetailResponse, EpisodeDetailEnt
         episodeId = id,
         airDate = input.airDate,
         stillPath = input.stillPath,
-        voteAverage = input.voteAverage
+        voteAverage = input.voteAverage.times(10).roundToInt()
     )
 
     override fun mapToDomain(input: EpisodeDetailEntity) = EpisodeDetailDomain(

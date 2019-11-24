@@ -79,21 +79,32 @@
             app:layout_anchor="@+id/appbar"
             app:layout_anchorGravity="bottom|right|end" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/sheet"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/sheet"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="5dp"
             android:background="@drawable/bottomsheet_background"
             android:clickable="true"
+            android:elevation="5dp"
             android:focusable="true"
             android:minHeight="500dp"
             android:paddingBottom="16dp"
             app:behavior_hideable="true"
             app:behavior_peekHeight="500dp"
-            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="left"
+                tools:layout_editor_absoluteX="411dp" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/seasonepisode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -105,7 +116,7 @@
                 tools:text="Season 1 • Episode 1" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/episodeTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -113,12 +124,12 @@
                 android:text="@{viewModel.episode.title}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textView4"
-                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                app:layout_constraintStart_toStartOf="@+id/seasonepisode"
+                app:layout_constraintTop_toBottomOf="@+id/seasonepisode"
                 tools:text="Episode Title" />
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/summary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -126,16 +137,16 @@
                 android:text="@{viewModel.episode.overview}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textView5"
-                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                app:layout_constraintStart_toStartOf="@+id/episodeTitle"
+                app:layout_constraintTop_toBottomOf="@+id/episodeTitle"
                 tools:text="Summary" />
 
             <ImageView
                 android:id="@+id/imageView4"
+                headerUrl="@{viewModel.episodeDetails.stillPath}"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
                 android:scaleType="centerCrop"
-                headerUrl="@{viewModel.episodeDetails.stillPath}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -161,33 +172,72 @@
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                app:layout_constraintTop_toBottomOf="@+id/summary" />
 
             <TextView
-                android:id="@+id/textView9"
-                android:layout_width="0dp"
+                android:id="@+id/date"
+                date="@{viewModel.episodeDetails.airDate}"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView5"
+                tools:text="12.01.2019" />
+
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@{viewModel.episodeDetails.voteAverage + ` %`}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toTopOf="@+id/date"
+                tools:text="5.5" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider"
+                app:srcCompat="@drawable/ic_calendar_normal" />
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/divider"
+                app:srcCompat="@drawable/ic_star_normal" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:text="@{`Release • ` + viewModel.episodeDetails.airDate}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider"
-                tools:text="Air Date • 2019-07-26" />
+                app:layout_constraintTop_toBottomOf="@+id/date" />
 
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@{`Rating • ` + String.valueOf(viewModel.episodeDetails.voteAverage)}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                app:layout_constraintEnd_toEndOf="@+id/textView9"
-                app:layout_constraintStart_toStartOf="@+id/textView9"
-                app:layout_constraintTop_toBottomOf="@+id/textView9"
-                tools:text="Rating • 5.5" />
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

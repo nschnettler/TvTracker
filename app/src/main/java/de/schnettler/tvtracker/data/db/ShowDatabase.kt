@@ -12,7 +12,14 @@ import de.schnettler.tvtracker.util.TypeConverter
 class DataBaseShows {
 
     @TypeConverters(TypeConverter::class)
-    @Database(entities = [TrendingEntity::class, PopularEntity::class, ShowEntity::class, ShowDetailEntity::class, CastEntity::class, AuthTokenDB::class, RelationEntity::class, AnticipatedEntity::class, SeasonEntity::class, EpisodeEntity::class, EpisodeDetailEntity::class], version = 13)
+    @Database(entities = [TrendingEntity::class,
+        PopularEntity::class, ShowEntity::class,
+        ShowDetailEntity::class, CastEntity::class,
+        AuthTokenDB::class, RelationEntity::class,
+        AnticipatedEntity::class, SeasonEntity::class,
+        EpisodeEntity::class,
+        EpisodeDetailEntity::class],
+        version = 14)
     abstract class ShowsDatabase : RoomDatabase() {
         //abstract val showDao: ShowDao
         abstract val trendingShowsDao: ShowDao
