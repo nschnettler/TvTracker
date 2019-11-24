@@ -1,23 +1,24 @@
 package de.schnettler.tvtracker
 
 import android.content.Intent
-import android.content.res.Configuration
-import android.content.res.Resources
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.databinding.DataBindingUtil
-import de.schnettler.tvtracker.databinding.MainActivityBinding
+import android.view.MotionEvent
 import android.view.View
-import android.view.View.*
-import android.view.Window
-import android.view.WindowManager
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+import android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.airbnb.epoxy.Carousel
+import de.schnettler.tvtracker.databinding.MainActivityBinding
+import de.schnettler.tvtracker.ui.detail.DetailFragment
 import de.schnettler.tvtracker.util.*
+import timber.log.Timber
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,5 +61,31 @@ class MainActivity : AppCompatActivity() {
         intent?.data?.getQueryParameter("code")?.let {
             viewModel.onAuthResponse(it)
         }
+    }
+
+    override fun onBackPressed() {
+        val fragment = getCurrentFragment()
+        if (fragment is DetailFragment) {
+            if (!fragment.handleBottomSheet()) {
+                super.onBackPressed()
+            }
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        val fragment = getCurrentFragment()
+        if (fragment is DetailFragment && ev?.action == MotionEvent.ACTION_DOWN) {
+            if (fragment.interceptTouchEvent(ev)) {
+                return true
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    private fun getCurrentFragment(): Fragment? {
+        val navHost = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+        return navHost?.childFragmentManager?.primaryNavigationFragment
     }
 }
