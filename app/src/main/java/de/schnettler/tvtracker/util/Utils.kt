@@ -9,9 +9,12 @@ import android.util.AttributeSet
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
@@ -22,13 +25,9 @@ import com.airbnb.epoxy.EpoxyModel
 import com.google.android.material.appbar.AppBarLayout
 import de.schnettler.tvtracker.MainViewModel
 import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
-import org.threeten.bp.Instant
-import org.threeten.bp.LocalDate
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.DateTimeFormatterBuilder
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.math.abs
 
 
@@ -75,6 +74,26 @@ class ViewModelFactory(val app: Application) : ViewModelProvider.Factory {
         }
         throw IllegalArgumentException("Unable to construct viewmodel")
     }
+}
+class BaseViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
+        return creator() as T
+    }
+}
+
+inline fun <reified T : ViewModel> Fragment.getViewModel(noinline creator: (() -> T)? = null): T {
+    return if (creator == null)
+        ViewModelProviders.of(this).get(T::class.java)
+    else
+        ViewModelProviders.of(this, BaseViewModelFactory(creator)).get(T::class.java)
+}
+
+inline fun <reified T : ViewModel> FragmentActivity.getViewModel(noinline creator: (() -> T)? = null): T {
+    return if (creator == null)
+        ViewModelProviders.of(this).get(T::class.java)
+    else
+        ViewModelProviders.of(this, BaseViewModelFactory(creator)).get(T::class.java)
 }
 
 class MaxLinesToggleClickListener(private val collapsedLines: Int) : View.OnClickListener {
