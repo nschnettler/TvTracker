@@ -11,18 +11,23 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import de.schnettler.tvtracker.data.api.Trakt
 import de.schnettler.tvtracker.databinding.AccountFragmentBinding
+import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
+import de.schnettler.tvtracker.util.ViewModelFactory
+import de.schnettler.tvtracker.util.getViewModel
+import de.schnettler.tvtracker.util.makeToast
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 
 class AccountFragment : Fragment() {
 
-    private lateinit var viewModel: AccountViewModel
+    val viewModel: AccountViewModel by lazy {
+        getViewModel { AccountViewModel(requireNotNull(this.activity).application) }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         val binding = AccountFragmentBinding.inflate(inflater)
-        viewModel = ViewModelProviders.of(this).get(AccountViewModel::class.java)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
@@ -42,6 +47,10 @@ class AccountFragment : Fragment() {
                 viewModel.onLoginHandled()
             }
 
+        })
+
+        viewModel.userAuthenticated.observe(this, Observer {
+            context?.makeToast("Login: $it")
         })
         return binding.root
     }
