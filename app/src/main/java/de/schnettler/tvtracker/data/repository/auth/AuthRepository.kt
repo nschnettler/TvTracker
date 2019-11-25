@@ -1,25 +1,31 @@
 package de.schnettler.tvtracker.data.repository.auth
 
 import de.schnettler.tvtracker.data.Result
+import de.schnettler.tvtracker.data.api.Trakt
+import de.schnettler.tvtracker.data.db.AuthDao
+import de.schnettler.tvtracker.data.mapping.AuthMapper
 import de.schnettler.tvtracker.data.models.AuthTokenType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
-class AuthRepository(private val remoteService: AuthDataSourceRemote, private val localDao: AuthDataSourceLocal) {
+class AuthRepository(private val remoteService: AuthDataSourceRemote, private val authDao: AuthDao) {
 
     /*
      * Get the [ShowDetailsRemote] corresponding to [showId]
      */
     suspend fun refreshTvdbAuthToken(login: Boolean, oldToken: String) {
-        //Refresh  from Network
-        val result = remoteService.getRefreshToken(login, oldToken)
-
-        if (result is Result.Success) {
-            //Insert in DB
-            localDao.insertAuthToken(result.data.toAuthTokenDB(AuthTokenType.TVDB))
-        } else {
-            val resultError = result as Result.Error
-            resultError.exception.printStackTrace()
+        when (val result = remoteService.getTvdbRefreshToken(login, oldToken)) {
+            is Result.Success -> authDao.insertAuthToken(AuthMapper.mapToDatabase(result.data))
+            is Result.Error -> Timber.e(result.exception)
+        }
+    }
+    suspend fun refreshTraktAccessToken(code: String) {
+        when(val result = remoteService.getTraktToken(code)) {
+            is Result.Success -> authDao.insertAuthToken(AuthMapper.mapToDatabase(result.data))
+            is Result.Error -> Timber.e(result.exception)
         }
     }
 
-    fun getAuthToken(type: AuthTokenType) = localDao.getAuthToken(type)
+    fun getAuthToken(type: AuthTokenType) = authDao.getAuthToken(type.value)
 }

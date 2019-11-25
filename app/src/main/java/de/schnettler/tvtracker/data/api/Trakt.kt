@@ -79,5 +79,5 @@ interface Trakt {
         @Query("client_secret") secret: String,
         @Query("redirect_uri") uri: String,
         @Query("grant_type") type: String
-    ): Response<OAuthToken>
+    ): Response<TraktAuthTokenResponse>
 }

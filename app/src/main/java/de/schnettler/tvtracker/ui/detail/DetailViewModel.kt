@@ -5,7 +5,6 @@ import androidx.lifecycle.*
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
 import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.api.RetrofitClient
-import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceLocal
 import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceRemote
 import de.schnettler.tvtracker.data.repository.auth.AuthRepository
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
@@ -25,8 +24,8 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
         getDatabase(context).trendingShowsDao
     )
     private val authRepository = AuthRepository(
-        AuthDataSourceRemote(RetrofitClient.tvdbNetworkService),
-        AuthDataSourceLocal(getDatabase(context).trendingShowsDao)
+        AuthDataSourceRemote(RetrofitClient.tvdbNetworkService, RetrofitClient.showsNetworkService),
+        getDatabase(context).authDao
     )
 
     private val _episode = MutableLiveData<EpisodeDomain>()

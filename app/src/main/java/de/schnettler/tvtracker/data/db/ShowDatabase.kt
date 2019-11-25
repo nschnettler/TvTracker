@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import de.schnettler.tvtracker.data.models.AuthTokenDB
+import de.schnettler.tvtracker.data.models.AuthTokenEntity
 import de.schnettler.tvtracker.data.models.*
 import de.schnettler.tvtracker.util.TypeConverter
 
@@ -15,7 +15,7 @@ class DataBaseShows {
     @Database(entities = [TrendingEntity::class,
         PopularEntity::class, ShowEntity::class,
         ShowDetailEntity::class, CastEntity::class,
-        AuthTokenDB::class, RelationEntity::class,
+        AuthTokenEntity::class, RelationEntity::class,
         AnticipatedEntity::class, SeasonEntity::class,
         EpisodeEntity::class,
         EpisodeDetailEntity::class],
@@ -23,6 +23,7 @@ class DataBaseShows {
     abstract class ShowsDatabase : RoomDatabase() {
         //abstract val showDao: ShowDao
         abstract val trendingShowsDao: ShowDao
+        abstract val authDao: AuthDao
     }
 }
 private lateinit var INSTANCE: DataBaseShows.ShowsDatabase

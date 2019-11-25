@@ -219,8 +219,4 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
             }
         }
     }
-
-    suspend fun retrieveAccessToken(code: String) = withContext(Dispatchers.IO) {
-        remoteService.traktService.getToken(code = code, clientId = Trakt.CLIENT_ID, uri = Trakt.REDIRECT_URI, type = "authorization_code", secret = Trakt.SECRET)
-    }
 }

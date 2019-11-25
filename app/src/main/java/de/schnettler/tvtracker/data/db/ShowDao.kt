@@ -2,7 +2,6 @@ package de.schnettler.tvtracker.data.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import de.schnettler.tvtracker.data.models.AuthTokenDB
 import de.schnettler.tvtracker.data.models.*
 
 @Dao
@@ -75,16 +74,6 @@ interface ShowDao {
 
     @Query("SELECT * FROM table_cast WHERE showId = :id ORDER BY id ASC LIMIT 10")
     fun getCast(id: Long): LiveData<List<CastEntity>?>
-
-    /*
-     * Auth
-     */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAuthToken(authTokenDB: AuthTokenDB)
-
-    @Query("SELECT * FROM table_auth WHERE tokenName = :type")
-    fun getAuthToken(type: String): LiveData<AuthTokenDB?>
-
 
     /*
      * Related Shows
