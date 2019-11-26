@@ -27,5 +27,12 @@ class AuthRepository(private val remoteService: AuthDataSourceRemote, private va
         }
     }
 
+    suspend fun revokeTraktToken(token: String) {
+        when(val result = remoteService.logoutTrakt(token)) {
+            is Result.Success -> authDao.deleteAuthToken(AuthTokenType.TRAKT.value)
+            is Result.Error -> Timber.e(result.exception)
+        }
+    }
+
     fun getAuthToken(type: AuthTokenType) = authDao.getAuthToken(type.value)
 }

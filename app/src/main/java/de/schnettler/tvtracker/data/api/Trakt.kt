@@ -80,4 +80,11 @@ interface Trakt {
         @Query("redirect_uri") uri: String,
         @Query("grant_type") type: String
     ): Response<TraktAuthTokenResponse>
+
+    @POST("oauth/revoke")
+    suspend fun revokeToken(
+        @Query("token") token: String,
+        @Query("client_id") clientId: String,
+        @Query("client_secret") secret: String
+    ): Response<Any>
 }

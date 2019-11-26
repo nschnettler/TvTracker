@@ -48,10 +48,6 @@ class AccountFragment : Fragment() {
             }
 
         })
-
-        viewModel.userAuthenticated.observe(this, Observer {
-            context?.makeToast("Login: $it")
-        })
         return binding.root
     }
 }

@@ -8,6 +8,7 @@ import de.schnettler.tvtracker.data.models.AuthTokenDomain
 import de.schnettler.tvtracker.data.models.AuthTokenType
 import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceRemote
 import de.schnettler.tvtracker.data.repository.auth.AuthRepository
+import kotlinx.coroutines.launch
 
 
 class AccountViewModel(val context: Application) :ViewModel() {
@@ -31,6 +32,17 @@ class AccountViewModel(val context: Application) :ViewModel() {
 
 
 
-    fun onLoginClicked() { _startAuthentication.value = true }
+    fun onLoginClicked() {
+        when(userAuthenticated.value) {
+            true -> {
+                traktAuthToken.value?.let {
+                    viewModelScope.launch {
+                        authRepository.revokeTraktToken(it.token)
+                    }
+                }
+            }
+            false -> _startAuthentication.value = true
+        }
+    }
     fun onLoginHandled() { _startAuthentication.value = false }
 }

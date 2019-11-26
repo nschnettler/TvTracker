@@ -51,4 +51,22 @@ class AuthDataSourceRemote(private val tvdbService: TVDB, private val traktServi
         }
         return Result.Error(IOException("Error getting trakt Token: ${response.code()} ${response.errorBody()?.string()}"))
     }
+
+
+    /*
+     * Revoke Trakt Token
+     */
+    suspend fun logoutTrakt(token: String) = safeApiCall(
+        call = { revokeTraktToken(token) },
+        errorMessage = "Error revoking Trakt Token"
+    )
+
+    private suspend fun revokeTraktToken(token: String) : Result<Boolean> {
+        val response = traktService.revokeToken(token = token, clientId = Trakt.CLIENT_ID, secret = Trakt.SECRET)
+
+        if (response.isSuccessful) {
+            return Result.Success(true)
+        }
+        return Result.Error(IOException("Error logging out: ${response.code()} ${response.errorBody()?.string()}"))
+    }
 }
