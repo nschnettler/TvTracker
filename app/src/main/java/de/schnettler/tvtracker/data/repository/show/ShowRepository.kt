@@ -82,10 +82,14 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
             is Result.Success -> {
                 val entities = listedShowMapper.mapToDatabase(result.data)
                 entities?.let {entityList ->
-                    when (type) {
-                        ShowListType.TRENDING -> localDao.insertTrendingShows(entityList as List<TrendingWithShow>)
-                        ShowListType.POPULAR -> localDao.insertPopularShows(entityList as List<PopularWithShow>)
-                        ShowListType.ANTICIPATED -> localDao.insertAnticipatedShows(entityList as List<AnticipatedWithShow>)
+                    //Insert Shows
+                    localDao.insertShows(entityList.map { it.show })
+
+                    //Insert Listings
+                    when(type) {
+                        ShowListType.TRENDING -> localDao.insertTrending(entityList.map { it.listing as TrendingEntity })
+                        ShowListType.POPULAR -> localDao.insertPopular(entityList.map { it.listing as PopularEntity })
+                        ShowListType.ANTICIPATED -> localDao.insertAnticipated(entityList.map { it.listing as AnticipatedEntity })
                     }
 
                     //Refresh Poster

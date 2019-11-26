@@ -8,34 +8,22 @@ import kotlin.math.roundToLong
 object ListedSHowMapper: IndexedMapper<ShowListResponse, ListingWithShow, ShowDomain> {
     override fun mapToDatabase(input: ShowListResponse, index: Int): ListingWithShow {
         val show = ShowMapper.mapToDatabase(input.show)
-        return when(input) {
-            is TrendingResponse -> {
-                TrendingWithShow(
-                    TrendingEntity(
-                        index = index,
-                        showId = input.show.ids.trakt,
-                        watcher = input.watchers),
-                    show)
-
-            }
-            is PopularResponse -> {
-                PopularWithShow(
-                    PopularEntity(
-                        index = index,
-                        showId = input.show.ids.trakt),
-                    show
-                )
-            }
-            is AnticipatedResponse -> {
-                AnticipatedWithShow(
-                    AnticipatedEntity(
-                        index = index,
-                        showId = input.show.ids.trakt,
-                        lists = input.listCount),
-                    show
-                )
-            }
+        val listing = when(input) {
+            is TrendingResponse -> TrendingEntity(
+                index = index,
+                showId = input.show.ids.trakt,
+                watcher = input.watchers)
+            is PopularResponse -> PopularEntity(
+                index = index,
+                showId = input.show.ids.trakt
+            )
+            is AnticipatedResponse -> AnticipatedEntity(
+                index = index,
+                showId = input.show.ids.trakt,
+                lists = input.listCount
+            )
         }
+        return ListingWithShow(listing, show)
     }
 
     override fun mapToDomain(input: ListingWithShow) = ShowMapper.mapToDomain(input.show)

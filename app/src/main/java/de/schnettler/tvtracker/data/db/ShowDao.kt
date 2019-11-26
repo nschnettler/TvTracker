@@ -31,7 +31,7 @@ interface ShowDao {
      * Insert a new Shows in table_shows
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertShows(shows: List<ShowEntity>)
+    suspend fun insertShows(shows: List<ShowEntity>)
 
     @Update
     suspend fun updateShow(show: ShowEntity)
@@ -40,34 +40,16 @@ interface ShowDao {
      * Insert new Trendings in table_trending
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTrending(trending: List<TrendingEntity>)
+    suspend fun insertTrending(trending: List<TrendingEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPopular(popular: List<PopularEntity>)
+    suspend fun insertPopular(popular: List<PopularEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAnticipated(popular: List<AnticipatedEntity>)
+    suspend fun insertAnticipated(popular: List<AnticipatedEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertShowDetails(showDetails: ShowDetailEntity)
-
-    @Transaction
-    suspend fun insertTrendingShows(shows: List<TrendingWithShow>) {
-        insertShows(shows.map { it.show })
-        insertTrending(shows.map { it.trending })
-    }
-
-    @Transaction
-    suspend fun insertPopularShows(shows: List<PopularWithShow>) {
-        insertShows(shows.map { it.show })
-        insertPopular(shows.map { it.popular })
-    }
-
-    @Transaction
-    suspend fun insertAnticipatedShows(shows: List<AnticipatedWithShow>) {
-        insertShows(shows.map { it.show })
-        insertAnticipated(shows.map { it.anticipated })
-    }
+    suspend fun insertShowDetails(showDetails: ShowDetailEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCast(castEntry: List<CastEntity>)

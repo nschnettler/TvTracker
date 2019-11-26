@@ -42,6 +42,12 @@ interface Trakt {
     suspend fun getAnticipated(): Response<List<AnticipatedResponse>>
 
     /*
+     * Anticipated Shows
+     */
+    @GET("recommendations/shows?ignore_collected=false")
+    suspend fun getRecomendated(): Response<List<AnticipatedResponse>>
+
+    /*
      * Show Details
      */
     @GET("shows/{tv_id}?extended=full")

@@ -35,30 +35,34 @@ data class AnticipatedResponse(
 /*
  * DataBase
  */
-sealed class ShowListEntity
+open class ShowListEntity(
+    @Ignore open val index: Int,
+    @Ignore open val showId: Long,
+    @Ignore open val ranking: Long? = null
+)
 
 //Trending
 @Entity(tableName = "table_trending")
 data class TrendingEntity(
-    @PrimaryKey val index: Int,
-    val showId: Long,
+    @PrimaryKey override val index: Int,
+    override val showId: Long,
     val watcher: Long
-): ShowListEntity()
+): ShowListEntity(index, showId, watcher)
 
 //Popular
 @Entity(tableName = "table_popular")
 data class PopularEntity(
-    val showId: Long,
-    @PrimaryKey val index: Int
-): ShowListEntity()
+    override val showId: Long,
+    @PrimaryKey override val index: Int
+): ShowListEntity(index, showId)
 
 //Anticipated
 @Entity(tableName = "table_anticipated")
 data class AnticipatedEntity(
-    val showId: Long,
-    @PrimaryKey val index: Int,
+    override val showId: Long,
+    @PrimaryKey override val index: Int,
     val lists: Long
-): ShowListEntity()
+): ShowListEntity(index, showId, lists)
 
 
 
@@ -66,6 +70,7 @@ data class AnticipatedEntity(
  DataBase Relations
  */
 open class ListingWithShow(
+    @Ignore open val listing: ShowListEntity,
     @Ignore open val show: ShowEntity
 )
 class TrendingWithShow(
@@ -75,7 +80,7 @@ class TrendingWithShow(
         entityColumn = "id"
     )
     override val show: ShowEntity
-): ListingWithShow(show)
+): ListingWithShow(trending, show)
 class PopularWithShow(
     @Embedded val popular: PopularEntity,
     @Relation(
@@ -83,7 +88,7 @@ class PopularWithShow(
         entityColumn = "id"
     )
     override val show: ShowEntity
-): ListingWithShow(show)
+): ListingWithShow(popular, show)
 class AnticipatedWithShow(
     @Embedded val anticipated: AnticipatedEntity,
     @Relation(
@@ -91,4 +96,4 @@ class AnticipatedWithShow(
         entityColumn = "id"
     )
     override val show: ShowEntity
-): ListingWithShow(show)
+): ListingWithShow(anticipated, show)
