@@ -35,15 +35,15 @@ class DiscoverFragment : Fragment() {
         recycler.adapter = controller.adapter
 
         //Recyclerviews
-        viewModel.trendingShows.observe(this, Observer{
+        viewModel.trendingShows.observe(viewLifecycleOwner, Observer{
             controller.trendingShows = it
             controller.requestModelBuild()
         })
-        viewModel.popularShows.observe(this, Observer {
+        viewModel.popularShows.observe(viewLifecycleOwner, Observer {
             controller.popularShows = it
             controller.requestModelBuild()
         })
-        viewModel.anticipatedShows.observe(this, Observer {
+        viewModel.anticipatedShows.observe(viewLifecycleOwner, Observer {
             controller.anticipatedShows = it
             controller.requestModelBuild()
         })

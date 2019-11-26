@@ -34,7 +34,7 @@ class AccountFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = authViewModel
 
-        authViewModel.startAuthentication.observe(this, Observer {
+        authViewModel.startAuthentication.observe(viewLifecycleOwner, Observer {
             if (it == true) {
                 val authorizeUrl = (Trakt.BASE_URL + "oauth/authorize").toHttpUrlOrNull()
                     ?.newBuilder()

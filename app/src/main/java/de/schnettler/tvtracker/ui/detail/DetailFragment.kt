@@ -52,7 +52,7 @@ class DetailFragment : Fragment() {
         bottomSheetBehavior = BottomSheetBehavior.from(binding.sheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-        viewModel.observeState(this) {
+        viewModel.observeState(viewLifecycleOwner) {
             controller.setData(it)
         }
 
