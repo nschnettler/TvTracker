@@ -17,20 +17,19 @@ import com.airbnb.epoxy.Carousel
 import de.schnettler.tvtracker.databinding.MainActivityBinding
 import de.schnettler.tvtracker.ui.detail.DetailFragment
 import de.schnettler.tvtracker.util.*
-import timber.log.Timber
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: MainActivityBinding
     lateinit var navController: NavController
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: AuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.main_activity)
         viewModel = ViewModelProviders.of(this, ViewModelFactory(application))
-            .get(MainViewModel::class.java)
+            .get(AuthViewModel::class.java)
         binding.root.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or SYSTEM_UI_FLAG_LAYOUT_STABLE
         navController = this.findNavController(R.id.nav_host_fragment)
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController)

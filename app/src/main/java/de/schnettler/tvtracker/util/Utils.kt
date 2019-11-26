@@ -23,7 +23,7 @@ import com.airbnb.epoxy.CarouselModel_
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyModel
 import com.google.android.material.appbar.AppBarLayout
-import de.schnettler.tvtracker.MainViewModel
+import de.schnettler.tvtracker.AuthViewModel
 import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -69,8 +69,8 @@ class ViewModelFactory(val app: Application) : ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(DiscoverViewModel::class.java)) {
             return DiscoverViewModel(app) as T
         }
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(app) as T
+        if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
+            return AuthViewModel(app) as T
         }
         throw IllegalArgumentException("Unable to construct viewmodel")
     }
