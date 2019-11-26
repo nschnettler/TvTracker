@@ -1,69 +1,94 @@
 package de.schnettler.tvtracker.data.models
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Relation
+import androidx.room.*
 import com.squareup.moshi.Json
+
+/*
+ * Network
+ */
+sealed class ShowListResponse(
+    open val show: ShowResponse,
+    val ranking: Long? = null
+)
 
 //Trending
 data class TrendingResponse(
     val watchers: Long,
-    val show: ShowResponse
-)
+    override val show: ShowResponse
+): ShowListResponse (show, watchers)
 
+//Popular
+data class PopularResponse(
+    val title: String,
+    val year: Long,
+    val ids: ShowIdRemote
+): ShowListResponse(ShowResponse(title, year, ids))
+
+//Anticipated
+data class AnticipatedResponse(
+    @Json(name = "list_count") val listCount: Long,
+    override val show: ShowResponse
+): ShowListResponse(show, listCount)
+
+
+
+/*
+ * DataBase
+ */
+sealed class ShowListEntity
+
+//Trending
 @Entity(tableName = "table_trending")
 data class TrendingEntity(
     @PrimaryKey val index: Int,
     val showId: Long,
     val watcher: Long
-)
-
-class TrendingWithShow(
-    @Embedded val trending: TrendingEntity,
-    @Relation(
-        parentColumn = "showId",
-        entityColumn = "id"
-    )
-    val show: ShowEntity
-)
-
+): ShowListEntity()
 
 //Popular
 @Entity(tableName = "table_popular")
 data class PopularEntity(
     val showId: Long,
     @PrimaryKey val index: Int
-)
+): ShowListEntity()
 
+//Anticipated
+@Entity(tableName = "table_anticipated")
+data class AnticipatedEntity(
+    val showId: Long,
+    @PrimaryKey val index: Int,
+    val lists: Long
+): ShowListEntity()
+
+
+
+/*
+ DataBase Relations
+ */
+open class ListingWithShow(
+    @Ignore open val show: ShowEntity
+)
+class TrendingWithShow(
+    @Embedded val trending: TrendingEntity,
+    @Relation(
+        parentColumn = "showId",
+        entityColumn = "id"
+    )
+    override val show: ShowEntity
+): ListingWithShow(show)
 class PopularWithShow(
     @Embedded val popular: PopularEntity,
     @Relation(
         parentColumn = "showId",
         entityColumn = "id"
     )
-    val show: ShowEntity
-)
-
-
-//Anticipated
-data class AnticipatedResponse(
-    @Json(name = "list_count") val listCount: Long,
-    val show: ShowResponse
-)
-
-@Entity(tableName = "table_anticipated")
-data class AnticipatedEntity(
-    val showId: Long,
-    @PrimaryKey val index: Int,
-    val lists: Long
-)
-
+    override val show: ShowEntity
+): ListingWithShow(show)
 class AnticipatedWithShow(
     @Embedded val anticipated: AnticipatedEntity,
     @Relation(
         parentColumn = "showId",
         entityColumn = "id"
     )
-    val show: ShowEntity
-)
+    override val show: ShowEntity
+): ListingWithShow(show)

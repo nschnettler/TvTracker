@@ -33,7 +33,7 @@ interface Trakt {
     suspend fun getPopularShows(
         @Query("page") page: Int,
         @Query("limit") limit: Int
-    ): Response<List<ShowResponse>>
+    ): Response<List<PopularResponse>>
 
     /*
      * Anticipated Shows

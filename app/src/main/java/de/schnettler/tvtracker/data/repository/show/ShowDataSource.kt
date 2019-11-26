@@ -110,7 +110,7 @@ class ShowDataSourceRemote(val traktService: Trakt, val tvdbService: TVDB, val t
         errorMessage = "Error loading Popular Shows"
     )
 
-    private suspend fun requestPopularShows(): Result<List<ShowResponse>> {
+    private suspend fun requestPopularShows(): Result<List<PopularResponse>> {
         val response = traktService.getPopularShows(0, Trakt.DISCOVER_AMOUNT)
         if (response.isSuccessful) {
             response.body()?.let {

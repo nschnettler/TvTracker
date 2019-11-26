@@ -6,6 +6,7 @@ import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
+import de.schnettler.tvtracker.util.ShowListType
 import kotlinx.coroutines.launch
 
 
@@ -16,9 +17,9 @@ class DiscoverViewModel(val context: Application) : AndroidViewModel(context) {
     )
 
     //Trending Shows
-    val trendingShows = showRepository.getTrending()
-    val popularShows = showRepository.getPopular()
-    val anticipatedShows = showRepository.getAnticipated()
+    val trendingShows = showRepository.getShowList(ShowListType.TRENDING)
+    val popularShows = showRepository.getShowList(ShowListType.POPULAR)
+    val anticipatedShows = showRepository.getShowList(ShowListType.ANTICIPATED)
 
     private val _isRefreshing = MutableLiveData<Boolean>()
     val isRefreshing: LiveData<Boolean>
@@ -31,9 +32,9 @@ class DiscoverViewModel(val context: Application) : AndroidViewModel(context) {
      fun onRefresh() {
          _isRefreshing.value = true
          viewModelScope.launch {
-             showRepository.refreshTrendingShows()
-             showRepository.refreshPopularShows()
-             showRepository.refreshAnticipatedShows()
+             showRepository.refreshShowList(ShowListType.TRENDING)
+             showRepository.refreshShowList(ShowListType.POPULAR)
+             showRepository.refreshShowList(ShowListType.ANTICIPATED)
          }
          _isRefreshing.value = false
     }

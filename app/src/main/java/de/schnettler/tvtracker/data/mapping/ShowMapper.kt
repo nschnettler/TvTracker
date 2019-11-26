@@ -5,57 +5,40 @@ import java.util.*
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
-object TrendingShowMapper : IndexedMapper<TrendingResponse, TrendingWithShow, ShowDomain> {
+object ListedSHowMapper: IndexedMapper<ShowListResponse, ListingWithShow, ShowDomain> {
+    override fun mapToDatabase(input: ShowListResponse, index: Int): ListingWithShow {
+        val show = ShowMapper.mapToDatabase(input.show)
+        return when(input) {
+            is TrendingResponse -> {
+                TrendingWithShow(
+                    TrendingEntity(
+                        index = index,
+                        showId = input.show.ids.trakt,
+                        watcher = input.watchers),
+                    show)
 
-    override fun mapToDatabase(input: TrendingResponse, index: Int): TrendingWithShow {
-        return TrendingWithShow(
-            TrendingEntity(
-                index = index,
-                showId = input.show.ids.trakt,
-                watcher = input.watchers
-            ),
-            ShowMapper.mapToDatabase(input.show)
-        )
+            }
+            is PopularResponse -> {
+                PopularWithShow(
+                    PopularEntity(
+                        index = index,
+                        showId = input.show.ids.trakt),
+                    show
+                )
+            }
+            is AnticipatedResponse -> {
+                AnticipatedWithShow(
+                    AnticipatedEntity(
+                        index = index,
+                        showId = input.show.ids.trakt,
+                        lists = input.listCount),
+                    show
+                )
+            }
+        }
     }
 
-    override fun mapToDomain(input: TrendingWithShow): ShowDomain {
-        return ShowMapper.mapToDomain(input.show)
-    }
-}
-
-
-object PopularShowMapper : IndexedMapper<ShowResponse, PopularWithShow, ShowDomain> {
-    override fun mapToDatabase(input: ShowResponse, index: Int): PopularWithShow {
-        return PopularWithShow(
-            PopularEntity(
-                index = index,
-                showId = input.ids.trakt
-            ),
-            ShowMapper.mapToDatabase(input)
-        )
-    }
-
-    override fun mapToDomain(input: PopularWithShow): ShowDomain {
-        return ShowMapper.mapToDomain(input.show)
-    }
-}
-
-object AnticipatedShowMapper : IndexedMapper<AnticipatedResponse, AnticipatedWithShow, ShowDomain> {
-    override fun mapToDatabase(input: AnticipatedResponse, index: Int): AnticipatedWithShow {
-        return AnticipatedWithShow(
-            AnticipatedEntity(
-                index = index,
-                showId = input.show.ids.trakt,
-                lists = input.listCount
-            ),
-            ShowMapper.mapToDatabase(input.show)
-
-        )
-    }
-
-    override fun mapToDomain(input: AnticipatedWithShow): ShowDomain {
-        return ShowMapper.mapToDomain(input.show)
-    }
+    override fun mapToDomain(input: ListingWithShow) = ShowMapper.mapToDomain(input.show)
 }
 
 
