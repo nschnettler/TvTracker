@@ -1,15 +1,11 @@
 package de.schnettler.tvtracker.data.repository.show
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import de.schnettler.tvtracker.data.Result
-import de.schnettler.tvtracker.data.api.Trakt
 import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.mapping.*
 import de.schnettler.tvtracker.data.models.*
-import de.schnettler.tvtracker.util.ShowListType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import de.schnettler.tvtracker.util.TopListType
 import timber.log.Timber
 
 /**
@@ -72,43 +68,27 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         relatedMapper.mapToDomain(it)
     }
 
-    suspend fun refreshShowList(type: ShowListType) {
+    suspend fun refreshShowList(type: TopListType) {
         val result = when(type) {
-            ShowListType.TRENDING -> remoteService.getTrendingShows()
-            ShowListType.POPULAR -> remoteService.getPopularShows()
-            ShowListType.ANTICIPATED -> remoteService.getAnticipated()
+            TopListType.TRENDING -> remoteService.getTrendingShows()
+            TopListType.POPULAR -> remoteService.getPopularShows()
+            TopListType.ANTICIPATED -> remoteService.getAnticipated()
         }
         when (result) {
             is Result.Success -> {
                 val entities = listedShowMapper.mapToDatabase(result.data)
-                entities?.let {entityList ->
-                    //Insert Shows
-                    localDao.insertShows(entityList.map { it.show })
-
-                    //Insert Listings
-                    when(type) {
-                        ShowListType.TRENDING -> localDao.insertTrending(entityList.map { it.listing as TrendingEntity })
-                        ShowListType.POPULAR -> localDao.insertPopular(entityList.map { it.listing as PopularEntity })
-                        ShowListType.ANTICIPATED -> localDao.insertAnticipated(entityList.map { it.listing as AnticipatedEntity })
-                    }
-
-                    //Refresh Poster
+                entities?.let {
+                    localDao.insertShows(entities.map { it.show })
+                    localDao.insertTopList(entities.map { it.listing })
                     refreshPosters(entities.map { it.show })
                 }
-
             }
         }
     }
-    fun getShowList(type: ShowListType): LiveData<List<ShowDomain>?> {
-        val list = when(type) {
-            ShowListType.TRENDING -> localDao.getTrending()
-            ShowListType.POPULAR -> localDao.getPopular()
-            ShowListType.ANTICIPATED -> localDao.getAnticipated()
-        }
-        return Transformations.map(list) {
+    fun getTopList(type: TopListType) =
+        Transformations.map(localDao.getTopList(type.name)) {
             listedShowMapper.mapToDomain(it)
         }
-    }
 
     /*
      * Seasons

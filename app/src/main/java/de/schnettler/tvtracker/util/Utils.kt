@@ -208,7 +208,7 @@ fun isoToDate(iso: String): String? {
     return date.format(formaterNice)
 }
 
-enum class ShowListType {
+enum class TopListType {
     POPULAR,
     TRENDING,
     ANTICIPATED

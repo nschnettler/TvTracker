@@ -7,55 +7,48 @@ import de.schnettler.tvtracker.data.models.*
 @Dao
 interface ShowDao {
     /**
-     * Get all Trending Shows. Creates Inner Join of Trending and Shows Table
+     * Top Lists for Discover Tab
      */
     @Transaction
-    @Query("SELECT * FROM table_trending ORDER BY `index` ASC")
-    fun getTrending(): LiveData<List<TrendingWithShow>?>
+    @Query("SELECT * FROM table_discover WHERE type = :type ORDER BY `index` ASC")
+    fun getTopList(type: String): LiveData<List<TopListWithShow>?>
 
-    @Transaction
-    @Query("SELECT * FROM table_popular ORDER BY `index` ASC")
-    fun getPopular(): LiveData<List<PopularWithShow>?>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTopList(shows: List<TopListEntity>)
 
-    @Transaction
-    @Query("SELECT * FROM table_anticipated ORDER BY `index` ASC")
-    fun getAnticipated(): LiveData<List<AnticipatedWithShow>?>
 
+    /*
+     * Show Details
+     */
     @Query("SELECT * FROM table_show_details WHERE showId = :id")
     fun getShowDetails(id: Long): LiveData<ShowDetailEntity?>
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertShowDetails(showDetails: ShowDetailEntity)
+
+
+    /*
+     * Show
+     */
     @Query("SELECT * FROM table_show WHERE id = :id")
     suspend fun getShow(id: Long): ShowEntity?
 
-    /**
-     * Insert a new Shows in table_shows
-     */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertShows(shows: List<ShowEntity>)
 
     @Update
     suspend fun updateShow(show: ShowEntity)
 
-    /**
-     * Insert new Trendings in table_trending
+
+    /*
+     Cast
      */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrending(trending: List<TrendingEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPopular(popular: List<PopularEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAnticipated(popular: List<AnticipatedEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertShowDetails(showDetails: ShowDetailEntity)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCast(castEntry: List<CastEntity>)
 
     @Query("SELECT * FROM table_cast WHERE showId = :id ORDER BY id ASC LIMIT 10")
     fun getCast(id: Long): LiveData<List<CastEntity>?>
+
 
     /*
      * Related Shows
@@ -82,6 +75,7 @@ interface ShowDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEpisodes(episodes: List<EpisodeEntity>)
+
 
     /*
      * Season with Episodes
@@ -111,4 +105,3 @@ interface ShowDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEpisodeDetail(detail: EpisodeDetailEntity)
 }
-
