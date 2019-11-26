@@ -211,5 +211,6 @@ fun isoToDate(iso: String): String? {
 enum class TopListType {
     POPULAR,
     TRENDING,
-    ANTICIPATED
+    ANTICIPATED,
+    RECOMMENDED
 }

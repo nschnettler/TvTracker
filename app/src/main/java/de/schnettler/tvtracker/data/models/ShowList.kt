@@ -31,6 +31,13 @@ data class AnticipatedResponse(
 ): ShowListResponse(show, listCount)
 
 
+//Popular
+data class RecommendedResponse(
+    val title: String,
+    val year: Long,
+    val ids: ShowIdRemote
+): ShowListResponse(ShowResponse(title, year, ids))
+
 /*
  * DataBase
  */

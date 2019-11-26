@@ -88,16 +88,17 @@ class ShowDataSourceRemote(val traktService: Trakt, val tvdbService: TVDB, val t
     }
 
 
-    suspend fun getTopList(type: TopListType) = safeApiCall(
-        call = { refreshTopList(type) },
+    suspend fun getTopList(type: TopListType, token: String) = safeApiCall(
+        call = { refreshTopList(type, token) },
         errorMessage = "Error requesting TopList"
     )
 
-    private suspend fun refreshTopList(type: TopListType): Result<List<ShowListResponse>> {
+    private suspend fun refreshTopList(type: TopListType, token: String): Result<List<ShowListResponse>> {
         val response = when(type) {
             TopListType.TRENDING -> traktService.getTrendingShows(0, Trakt.DISCOVER_AMOUNT)
             TopListType.POPULAR -> traktService.getPopularShows(0, Trakt.DISCOVER_AMOUNT)
             TopListType.ANTICIPATED -> traktService.getAnticipated()
+            TopListType.RECOMMENDED -> traktService.getRecommended("Bearer $token")
         }
         if (response.isSuccessful) {
             response.body()?.let {

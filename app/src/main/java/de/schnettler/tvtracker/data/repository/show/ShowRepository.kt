@@ -68,8 +68,8 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         relatedMapper.mapToDomain(it)
     }
 
-    suspend fun refreshShowList(type: TopListType) {
-        when (val result = remoteService.getTopList(type)) {
+    suspend fun refreshShowList(type: TopListType, token: String = "") {
+        when (val result = remoteService.getTopList(type, token)) {
             is Result.Success -> {
                 val entities = listedShowMapper.mapToDatabase(result.data)
                 entities?.let {

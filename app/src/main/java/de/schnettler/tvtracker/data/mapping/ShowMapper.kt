@@ -13,6 +13,7 @@ object ListedSHowMapper: IndexedMapper<ShowListResponse, TopListWithShow, ShowDo
                 is TrendingResponse -> TopListType.TRENDING.name
                 is PopularResponse -> TopListType.POPULAR.name
                 is AnticipatedResponse -> TopListType.ANTICIPATED.name
+                is RecommendedResponse -> TopListType.RECOMMENDED.name
             },
             index = index,
             showId = input.show.ids.trakt,
