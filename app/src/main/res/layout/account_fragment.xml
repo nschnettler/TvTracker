@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@{viewModel.userAuthenticated ? `Logout` : `Login`}"
+            android:text="@{viewModel.traktLoginStatus ? `Logout` : `Login`}"
             android:textColor="?android:textColorPrimary"
             android:onClick="@{() -> viewModel.onLoginClicked()}"
             app:layout_constraintEnd_toEndOf="@+id/message"

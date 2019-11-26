@@ -7,7 +7,10 @@ import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.models.AuthTokenType
 import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceRemote
 import de.schnettler.tvtracker.data.repository.auth.AuthRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 
 class AuthViewModel(val context: Application) : ViewModel() {
@@ -22,12 +25,37 @@ class AuthViewModel(val context: Application) : ViewModel() {
 
     //Trakt Authentication
     val traktAuthToken = authRepository.getAuthToken(AuthTokenType.TRAKT)
-    val userAuthenticated = MediatorLiveData<Boolean>()
+    val traktLoginStatus = MediatorLiveData<Boolean>()
+    val tvdbAuthToken = authRepository.getAuthToken(AuthTokenType.TVDB)
+    val tvdbLoginStatus = MediatorLiveData<Boolean>()
 
     //Init
     init {
-        userAuthenticated.addSource(traktAuthToken) {
-            userAuthenticated.value = it != null
+        traktLoginStatus.addSource(traktAuthToken) {
+            traktLoginStatus.value = it != null
+        }
+        tvdbLoginStatus.addSource(tvdbAuthToken) {
+            val currentTime = System.currentTimeMillis()  / 1000L
+            var result = false
+            if (it == null || it.createdAtMillis + 86400 <= currentTime) {
+                startTvdbAuthentication(true)
+            } else {
+                if(it.createdAtMillis >= currentTime + 72000) {
+                    startTvdbAuthentication(false)
+                } else {
+                    result = true
+                }
+            }
+            tvdbLoginStatus.value = result
+        }
+    }
+
+    private fun startTvdbAuthentication(loginNeeded: Boolean) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                Timber.i("Refreshing Auth Token (is login $loginNeeded)")
+                authRepository.refreshTvdbAuthToken(loginNeeded, tvdbAuthToken.value?.token ?: "")
+            }
         }
     }
 
@@ -39,7 +67,7 @@ class AuthViewModel(val context: Application) : ViewModel() {
 
     //Handle Login & Logout Clicks
     fun onLoginClicked() {
-        when(userAuthenticated.value) {
+        when(traktLoginStatus.value) {
             true -> {
                 traktAuthToken.value?.let {
                     viewModelScope.launch {
