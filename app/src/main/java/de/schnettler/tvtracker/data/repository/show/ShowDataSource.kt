@@ -6,6 +6,7 @@ import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.api.Trakt
 import de.schnettler.tvtracker.data.api.TVDB
 import de.schnettler.tvtracker.data.models.*
+import de.schnettler.tvtracker.util.TopListType
 import de.schnettler.tvtracker.util.safeApiCall
 import timber.log.Timber
 import java.io.IOException
@@ -87,53 +88,23 @@ class ShowDataSourceRemote(val traktService: Trakt, val tvdbService: TVDB, val t
     }
 
 
-    //Trending Shows
-    suspend fun getTrendingShows() = safeApiCall(
-        call = { requestTrendingShows() },
-        errorMessage = "Error loading Trending Shows"
+    suspend fun getTopList(type: TopListType) = safeApiCall(
+        call = { refreshTopList(type) },
+        errorMessage = "Error requesting TopList"
     )
 
-    private suspend fun requestTrendingShows(): Result<List<TrendingResponse>> {
-        val response = traktService.getTrendingShows(0, Trakt.DISCOVER_AMOUNT)
+    private suspend fun refreshTopList(type: TopListType): Result<List<ShowListResponse>> {
+        val response = when(type) {
+            TopListType.TRENDING -> traktService.getTrendingShows(0, Trakt.DISCOVER_AMOUNT)
+            TopListType.POPULAR -> traktService.getPopularShows(0, Trakt.DISCOVER_AMOUNT)
+            TopListType.ANTICIPATED -> traktService.getAnticipated()
+        }
         if (response.isSuccessful) {
             response.body()?.let {
                 return Result.Success(it)
             }
         }
-        return Result.Error(IOException("Error getting trending shows: ${response.code()} ${response.message()}"))
-    }
-
-
-    //Popular Shows
-    suspend fun getPopularShows() = safeApiCall(
-        call = { requestPopularShows() },
-        errorMessage = "Error loading Popular Shows"
-    )
-
-    private suspend fun requestPopularShows(): Result<List<PopularResponse>> {
-        val response = traktService.getPopularShows(0, Trakt.DISCOVER_AMOUNT)
-        if (response.isSuccessful) {
-            response.body()?.let {
-                return Result.Success(it)
-            }
-        }
-        return Result.Error(IOException("Error getting popular shows: ${response.code()} ${response.message()}"))
-    }
-
-    //Anticipated Shows
-    suspend fun getAnticipated() = safeApiCall(
-        call = { refreshAnticipated() },
-        errorMessage = "Error loading anticipated Shows"
-    )
-
-    private suspend fun refreshAnticipated(): Result<List<AnticipatedResponse>> {
-        val response = traktService.getAnticipated()
-        if (response.isSuccessful) {
-            response.body()?.let {
-                return Result.Success(it)
-            }
-        }
-        return Result.Error(IOException("Error getting anticipated shows: ${response.code()} ${response.message()}"))
+        return Result.Error(IOException("Error getting ${type.name} shows: ${response.code()} ${response.message()}"))
     }
 
 

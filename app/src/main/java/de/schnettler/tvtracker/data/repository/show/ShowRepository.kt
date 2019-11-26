@@ -69,12 +69,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
     }
 
     suspend fun refreshShowList(type: TopListType) {
-        val result = when(type) {
-            TopListType.TRENDING -> remoteService.getTrendingShows()
-            TopListType.POPULAR -> remoteService.getPopularShows()
-            TopListType.ANTICIPATED -> remoteService.getAnticipated()
-        }
-        when (result) {
+        when (val result = remoteService.getTopList(type)) {
             is Result.Success -> {
                 val entities = listedShowMapper.mapToDatabase(result.data)
                 entities?.let {
