@@ -10,22 +10,25 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import de.schnettler.tvtracker.AuthViewModel
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.databinding.DiscoverFragmentBinding
 import de.schnettler.tvtracker.util.ViewModelFactory
+import de.schnettler.tvtracker.util.getViewModel
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
 
 class DiscoverFragment : Fragment() {
 
     private lateinit var viewModel: DiscoverViewModel
+    private lateinit var authViewModel: AuthViewModel
     private lateinit var controller: DiscoverController
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         val binding = DiscoverFragmentBinding.inflate(inflater)
         val application = requireNotNull(this.activity).application
-        viewModel = ViewModelProviders.of(this, ViewModelFactory(application))
-            .get(DiscoverViewModel::class.java)
+        viewModel = getViewModel {DiscoverViewModel(activity!!.application)}
+        authViewModel = getViewModel { AuthViewModel(activity!!.application) }
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
 
@@ -46,6 +49,17 @@ class DiscoverFragment : Fragment() {
         viewModel.anticipatedShows.observe(viewLifecycleOwner, Observer {
             controller.anticipatedShows = it
             controller.requestModelBuild()
+        })
+        viewModel.recommendedShows.observe(viewLifecycleOwner, Observer {
+            controller.recommendedShows = it
+            controller.requestModelBuild()
+        })
+
+        authViewModel.traktLoginStatus.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                viewModel.onLoginChanged(it, authViewModel.traktAuthToken.value!!.token)
+            }
+
         })
 
         //WindowInsets
