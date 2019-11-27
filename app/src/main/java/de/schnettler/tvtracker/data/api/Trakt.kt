@@ -41,7 +41,7 @@ interface Trakt {
     /*
      * Recommended Shows
      */
-    @GET("recommendations/shows?ignore_collected=false")
+    @GET("recommendations/shows?ignore_collected=true")
     suspend fun getRecommended(@Header("Authorization") authToken: String): Response<List<RecommendedResponse>>
 
     /*
