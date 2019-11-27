@@ -10,6 +10,7 @@ import coil.api.load
 import de.schnettler.tvtracker.data.api.ImageQuality
 import de.schnettler.tvtracker.data.api.TMDb
 import de.schnettler.tvtracker.data.api.TVDB
+import timber.log.Timber
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,13 +62,8 @@ fun maxLinesClickListener(view: TextView, oldCollapsedMaxLines: Int, newCollapse
 @BindingAdapter("date")
 fun bindDate(view: TextView, date: String?) {
     date?.let {dateString ->
-        val formatIn = SimpleDateFormat("yyyy-mm-dd")
-        val dateIn = formatIn.parse(dateString)
-        val formatOut = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
-
-        dateIn?.let {
-            val dateOut = formatOut.format(it)
-            view.text = dateOut
+        SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(dateString)?.let {
+            view.text = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(it)
         }
     }
 }
