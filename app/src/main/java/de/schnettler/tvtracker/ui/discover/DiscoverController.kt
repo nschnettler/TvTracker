@@ -9,7 +9,11 @@ import de.schnettler.tvtracker.header
 import de.schnettler.tvtracker.util.withModelsFrom
 import timber.log.Timber
 
-class DiscoverController(var trendingShows: List<ShowDomain>? = null, var popularShows: List<ShowDomain>? = null, var anticipatedShows: List<ShowDomain>? = null): EpoxyController(){
+class DiscoverController(
+    var trendingShows: List<ShowDomain>? = null,
+    var popularShows: List<ShowDomain>? = null,
+    var anticipatedShows: List<ShowDomain>? = null,
+    var recommendedShows: List<ShowDomain>? = null): EpoxyController(){
 
     var callbacks: Callbacks? = null
     interface Callbacks {
@@ -32,6 +36,30 @@ class DiscoverController(var trendingShows: List<ShowDomain>? = null, var popula
                         .title(it.title)
                         .posterUrl(it.posterUrl)
                         .transitionName("trending_${it.id}")
+                        .onClickListener{ _, _, view, _ ->
+                            Timber.i("Clicked on ${it.title}")
+                            callbacks?.onItemClicked(view, it)
+                        }
+                }
+            }
+        }
+
+        if (!recommendedShows.isNullOrEmpty()) {
+            header {
+                id("header_recommended")
+                title("For you")
+                showExpand(true)
+            }
+        }
+        recommendedShows?.let {
+            carousel {
+                id("recommended")
+                withModelsFrom(it) {
+                    ShowSmallBindingModel_()
+                        .id(it.id)
+                        .title(it.title)
+                        .posterUrl(it.posterUrl)
+                        .transitionName("recommended_${it.id}")
                         .onClickListener{ _, _, view, _ ->
                             Timber.i("Clicked on ${it.title}")
                             callbacks?.onItemClicked(view, it)

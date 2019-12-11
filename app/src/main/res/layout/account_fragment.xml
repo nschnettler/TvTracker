@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="de.schnettler.tvtracker.ui.account.AccountViewModel" />
+            type="de.schnettler.tvtracker.AuthViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Login"
+            android:text="@{viewModel.traktLoginStatus ? `Logout` : `Login`}"
             android:textColor="?android:textColorPrimary"
             android:onClick="@{() -> viewModel.onLoginClicked()}"
             app:layout_constraintEnd_toEndOf="@+id/message"

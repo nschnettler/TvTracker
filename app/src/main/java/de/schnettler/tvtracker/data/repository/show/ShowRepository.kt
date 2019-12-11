@@ -2,12 +2,10 @@ package de.schnettler.tvtracker.data.repository.show
 
 import androidx.lifecycle.Transformations
 import de.schnettler.tvtracker.data.Result
-import de.schnettler.tvtracker.data.api.Trakt
 import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.mapping.*
 import de.schnettler.tvtracker.data.models.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import de.schnettler.tvtracker.util.TopListType
 import timber.log.Timber
 
 /**
@@ -15,9 +13,7 @@ import timber.log.Timber
  */
 class ShowRepository(private val remoteService: ShowDataSourceRemote, private val localDao: ShowDao) {
     private val relatedMapper = ListMapperWithId(ShowRelatedMapper)
-    private val trendingMapper = ListMapper(TrendingShowMapper)
-    private val popularMapper = ListMapper(PopularShowMapper)
-    private val anticipatedMapper = ListMapper(AnticipatedShowMapper)
+    private val listedShowMapper = ListMapper(ListedSHowMapper)
     private val seasonMapper = ListMapperWithId(SeasonSummaryMapper)
     private val episodeMapper = ListMapperWithId(EpisodeMapper)
     private val seasonWithEpisodeMapper = ListMapper(SeasonWithEpisodeMapper)
@@ -44,13 +40,9 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
      * Show Cast
      */
     suspend fun refreshCast(showId: Long, token: String) {
-        //Refresh Details from Network
-        val result = remoteService.getCast(showId, token)
-        if (result is Result.Success) {
-            //Insert in DB
-            localDao.insertCast(result.data.data.asCastEntryList())
-        } else {
-            (result as Result.Error).exception.printStackTrace()
+        when (val result = remoteService.getCast(showId, token)) {
+            is Result.Success ->  localDao.insertCast(result.data.data.asCastEntryList())
+            is Result.Error -> Timber.e(result.exception)
         }
     }
     fun getShowCast(showId: Long) = localDao.getCast(showId)
@@ -76,68 +68,22 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         relatedMapper.mapToDomain(it)
     }
 
-    /*
-     * Trending Shows
-     */
-    suspend fun refreshTrendingShows() {
-        val result = remoteService.getTrendingShows()
-        if (result is Result.Success) {
-            //Insert in DB
-            val entities = trendingMapper.mapToDatabase(result.data)
-            entities?.let { localDao.insertTrendingShows(it) }
-
-
-            //Refresh Poster
-            entities?.let {
-                refreshPosters(entities.map { it.show })
+    suspend fun refreshShowList(type: TopListType, token: String = "") {
+        when (val result = remoteService.getTopList(type, token)) {
+            is Result.Success -> {
+                val entities = listedShowMapper.mapToDatabase(result.data)
+                entities?.let {
+                    localDao.insertShows(entities.map { it.show })
+                    localDao.insertTopList(entities.map { it.listing })
+                    refreshPosters(entities.map { it.show })
+                }
             }
         }
     }
-    fun getTrending() = Transformations.map(localDao.getTrending()) {
-        trendingMapper.mapToDomain(it)
-    }
-
-
-    /*
-    * Popular Shows
-    */
-    suspend fun refreshPopularShows() {
-        val result = remoteService.getPopularShows()
-        if (result is Result.Success) {
-            //Insert in DB
-            val entities = popularMapper.mapToDatabase(result.data)
-            entities?.let { localDao.insertPopularShows(it) }
-
-            //Refresh Poster
-            entities?.let {
-                refreshPosters(entities.map { it.show })
-            }
+    fun getTopList(type: TopListType) =
+        Transformations.map(localDao.getTopList(type.name)) {
+            listedShowMapper.mapToDomain(it)
         }
-    }
-    fun getPopular() = Transformations.map(localDao.getPopular()) {
-        popularMapper.mapToDomain(it)
-    }
-
-
-    /*
-   * Anticipated Shows
-   */
-    suspend fun refreshAnticipatedShows() {
-        val result = remoteService.getAnticipated()
-        if (result is Result.Success) {
-            //Insert in DB
-            val entities = anticipatedMapper.mapToDatabase(result.data)
-            entities?.let { localDao.insertAnticipatedShows(it) }
-
-            //Refresh Poster
-            entities?.let {
-                refreshPosters(entities.map { it.show })
-            }
-        }
-    }
-    fun getAnticipated() = Transformations.map(localDao.getAnticipated()) {
-        anticipatedMapper.mapToDomain(it)
-    }
 
     /*
      * Seasons
@@ -218,9 +164,5 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
                 }
             }
         }
-    }
-
-    suspend fun retrieveAccessToken(code: String) = withContext(Dispatchers.IO) {
-        remoteService.traktService.getToken(code = code, clientId = Trakt.CLIENT_ID, uri = Trakt.REDIRECT_URI, type = "authorization_code", secret = Trakt.SECRET)
     }
 }

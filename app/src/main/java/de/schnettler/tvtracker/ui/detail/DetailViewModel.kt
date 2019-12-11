@@ -3,19 +3,17 @@ package de.schnettler.tvtracker.ui.detail
 import android.app.Application
 import androidx.lifecycle.*
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
-import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.api.RetrofitClient
-import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceLocal
-import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceRemote
-import de.schnettler.tvtracker.data.repository.auth.AuthRepository
+import de.schnettler.tvtracker.data.db.getDatabase
+import de.schnettler.tvtracker.data.models.EpisodeDomain
+import de.schnettler.tvtracker.data.models.SeasonDomain
+import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import androidx.lifecycle.Transformations
-import de.schnettler.tvtracker.data.models.*
 
 
 class DetailViewModel(var show: ShowDomain, val context: Application) : StateViewModel<DetailViewState>() {
@@ -23,10 +21,6 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
     private val showRepository = ShowRepository(
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
         getDatabase(context).trendingShowsDao
-    )
-    private val authRepository = AuthRepository(
-        AuthDataSourceRemote(RetrofitClient.tvdbNetworkService),
-        AuthDataSourceLocal(getDatabase(context).trendingShowsDao)
     )
 
     private val _episode = MutableLiveData<EpisodeDomain>()
@@ -37,12 +31,7 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
         showRepository.getEpisodeDetails(it.id)
     };
 
-//    val episodeDetail = Transformations.switchMap(episode) { episode ->
-//        //repository.getDataForUser(user)
-//    }
-
     private val showDetails = showRepository.getShowDetails(show.id)
-    private val tvdbAuth = authRepository.getAuthToken(AuthTokenType.TVDB)
     private val showCast = showRepository.getShowCast(show.tvdbId!!)
     private val relatedShows = showRepository.getRelatedShows(show.id)
     private val seasons = showRepository.getSeasonsWithEpisodes(show.id)
@@ -58,32 +47,6 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
             updateState {state ->
                 state.copy(details = it)
             }
-        }
-
-        //Observe Auth State
-        state.addSource(tvdbAuth) {
-            val authState: String
-            val currentTime = System.currentTimeMillis()  / 1000L
-            if (it == null || it.createdAtMillis + 86400 <= currentTime) {
-                //Login Needed
-                authState = "Login Needed"
-                startAuthentication(true)
-            } else {
-                val threshold = currentTime + 72000
-                if(it.createdAtMillis >= threshold) {
-                    authState = "Authorization expiring"
-                    startAuthentication(false)
-                } else {
-                    authState = "Authorized"
-                    show.tvdbId?.let {id ->
-                        if (showCast.value.isNullOrEmpty()) {
-                            refreshCast(id, it.token)
-                        }
-                    }
-
-                }
-            }
-            Timber.i("Auth State Changed: $authState")
         }
 
         //Observe Cast
@@ -120,20 +83,13 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
         }
     }
 
-    private fun startAuthentication(loginNeeded: Boolean) {
+    fun refreshCast(token: String) {
+        Timber.i("Refreshing Cast with $token")
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                Timber.i("Refreshing Auth Token (is login $loginNeeded)")
-                authRepository.refreshTvdbAuthToken(loginNeeded, tvdbAuth.value?.token ?: "")
-            }
-        }
-    }
-
-    private fun refreshCast(showId: Long, token: String) {
-        Timber.i("Refreshing Cast")
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                showRepository.refreshCast(showId, token)
+                show.tvdbId?.let {
+                    showRepository.refreshCast(it, token)
+                }
             }
         }
     }

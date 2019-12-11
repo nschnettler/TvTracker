@@ -2,10 +2,7 @@ package de.schnettler.tvtracker.data.api
 
 import de.schnettler.tvtracker.data.models.*
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface Trakt {
     companion object {
@@ -33,13 +30,19 @@ interface Trakt {
     suspend fun getPopularShows(
         @Query("page") page: Int,
         @Query("limit") limit: Int
-    ): Response<List<ShowResponse>>
+    ): Response<List<PopularResponse>>
 
     /*
      * Anticipated Shows
      */
     @GET("shows/anticipated")
     suspend fun getAnticipated(): Response<List<AnticipatedResponse>>
+
+    /*
+     * Recommended Shows
+     */
+    @GET("recommendations/shows?ignore_collected=false")
+    suspend fun getRecommended(@Header("Authorization") authToken: String): Response<List<RecommendedResponse>>
 
     /*
      * Show Details
@@ -79,5 +82,12 @@ interface Trakt {
         @Query("client_secret") secret: String,
         @Query("redirect_uri") uri: String,
         @Query("grant_type") type: String
-    ): Response<OAuthToken>
+    ): Response<TraktAuthTokenResponse>
+
+    @POST("oauth/revoke")
+    suspend fun revokeToken(
+        @Query("token") token: String,
+        @Query("client_id") clientId: String,
+        @Query("client_secret") secret: String
+    ): Response<Any>
 }

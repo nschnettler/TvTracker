@@ -9,11 +9,13 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import de.schnettler.tvtracker.AuthViewModel
 import de.schnettler.tvtracker.MainActivity
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
@@ -26,7 +28,8 @@ import timber.log.Timber
 
 class DetailFragment : Fragment() {
 
-    private lateinit var viewModel: DetailViewModel
+    private lateinit var detailViewModel: DetailViewModel
+    private lateinit var authViewModel: AuthViewModel
     private lateinit var binding: DetailFragmentBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
@@ -42,8 +45,9 @@ class DetailFragment : Fragment() {
 
         val args = DetailFragmentArgs.fromBundle(arguments!!)
         val show = args.show
-        viewModel = ViewModelProviders.of(this, DetailViewModel.Factory(show, this.activity!!.application)).get(DetailViewModel::class.java)
-        binding.viewModel = viewModel
+        detailViewModel = ViewModelProviders.of(this, DetailViewModel.Factory(show, this.activity!!.application)).get(DetailViewModel::class.java)
+        authViewModel = getViewModel {AuthViewModel(activity!!.application)}
+        binding.viewModel = detailViewModel
 
         val controller = DetailTypedController()
         val recycler = binding.recyclerView
@@ -52,9 +56,16 @@ class DetailFragment : Fragment() {
         bottomSheetBehavior = BottomSheetBehavior.from(binding.sheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-        viewModel.observeState(this) {
+        detailViewModel.observeState(viewLifecycleOwner) {
             controller.setData(it)
         }
+        authViewModel.tvdbLoginStatus.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                authViewModel.tvdbAuthToken.value?.let {authToken ->
+                    detailViewModel.refreshCast(authToken.token)
+                }
+            }
+        })
 
         //StatusBar Icon Color
         binding.appbar.addOnOffsetChangedListener(object : AppBarStateChangedListener() {
@@ -86,12 +97,12 @@ class DetailFragment : Fragment() {
         //Click Listener Callback
         controller.callbacks = object: DetailTypedController.Callbacks {
             override fun onEpisodeClicked(episode: EpisodeDomain) {
-                viewModel.onEpisodeSelected(episode)
+                detailViewModel.onEpisodeSelected(episode)
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
 
             override fun onSeasonClicked(season: SeasonDomain, isExpanded: Boolean) {
-                viewModel.onChangeSeasonExpansion(season, !isExpanded)
+                detailViewModel.onChangeSeasonExpansion(season, !isExpanded)
             }
 
             override fun onShowClicked(view: View, item: ShowDomain) {

@@ -9,24 +9,32 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import de.schnettler.tvtracker.AuthViewModel
 import de.schnettler.tvtracker.data.api.Trakt
 import de.schnettler.tvtracker.databinding.AccountFragmentBinding
+import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
+import de.schnettler.tvtracker.util.ViewModelFactory
+import de.schnettler.tvtracker.util.getViewModel
+import de.schnettler.tvtracker.util.makeToast
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 
 class AccountFragment : Fragment() {
 
-    private lateinit var viewModel: AccountViewModel
+    private lateinit var authViewModel: AuthViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        val binding = AccountFragmentBinding.inflate(inflater)
-        viewModel = ViewModelProviders.of(this).get(AccountViewModel::class.java)
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
 
-        viewModel.startAuthentication.observe(this, Observer {
+        val parentActivity = requireNotNull(this.activity)
+        authViewModel = parentActivity.getViewModel { AuthViewModel(parentActivity.application) }
+
+        val binding = AccountFragmentBinding.inflate(inflater)
+        binding.lifecycleOwner = this
+        binding.viewModel = authViewModel
+
+        authViewModel.startAuthentication.observe(viewLifecycleOwner, Observer {
             if (it == true) {
                 val authorizeUrl = (Trakt.BASE_URL + "oauth/authorize").toHttpUrlOrNull()
                     ?.newBuilder()
@@ -39,7 +47,7 @@ class AccountFragment : Fragment() {
                 val customTabsIntent = builder.build()
                 customTabsIntent.launchUrl(
                     context, Uri.parse(authorizeUrl?.toUri().toString()))
-                viewModel.onLoginHandled()
+                authViewModel.onLoginHandled()
             }
 
         })
