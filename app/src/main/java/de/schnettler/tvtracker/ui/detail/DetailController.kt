@@ -9,11 +9,12 @@ import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.util.getEmoji
+import de.schnettler.tvtracker.util.horizontalCarousel
 import de.schnettler.tvtracker.util.isoToDate
 import de.schnettler.tvtracker.util.withModelsFrom
 import timber.log.Timber
 
-class DetailTypedController: TypedEpoxyController<DetailViewState>() {
+class DetailController: TypedEpoxyController<DetailViewState>() {
     var callbacks: Callbacks? = null
     interface Callbacks {
         fun onShowClicked(view: View, item: ShowDomain)
@@ -56,7 +57,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                 }
 
                 //Genres
-                carousel {
+                horizontalCarousel {
                     id("genres")
                     withModelsFrom(it.genres) {
                         ShowGenreBindingModel_()
@@ -74,7 +75,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                     title("Cast")
                     showExpand(false)
                 }
-                carousel {
+                horizontalCarousel {
                     id("cast")
                     withModelsFrom(showCast) {
                         CastBindingModel_()

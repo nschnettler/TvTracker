@@ -49,7 +49,7 @@ class DetailFragment : Fragment() {
         authViewModel = getViewModel {AuthViewModel(activity!!.application)}
         binding.viewModel = detailViewModel
 
-        val controller = DetailTypedController()
+        val controller = DetailController()
         val recycler = binding.recyclerView
         recycler.adapter = controller.adapter
 
@@ -95,7 +95,7 @@ class DetailFragment : Fragment() {
         }
 
         //Click Listener Callback
-        controller.callbacks = object: DetailTypedController.Callbacks {
+        controller.callbacks = object: DetailController.Callbacks {
             override fun onEpisodeClicked(episode: EpisodeDomain) {
                 detailViewModel.onEpisodeSelected(episode)
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED

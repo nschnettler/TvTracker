@@ -15,13 +15,12 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
-import com.airbnb.epoxy.CarouselModelBuilder
-import com.airbnb.epoxy.CarouselModel_
-import com.airbnb.epoxy.EpoxyController
-import com.airbnb.epoxy.EpoxyModel
+import com.airbnb.epoxy.*
 import com.google.android.material.appbar.AppBarLayout
 import de.schnettler.tvtracker.AuthViewModel
 import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
@@ -175,22 +174,18 @@ fun getEmoji(genre: String): String = when (genre) {
     else -> ""
 }
 
-
-/** For use in the buildModels method of EpoxyController. A shortcut for creating a Carousel model, initializing it, and adding it to the controller.
- *
- */
-inline fun EpoxyController.carousel(modelInitializer: CarouselModelBuilder.() -> Unit) {
-    CarouselModel_().apply {
-        modelInitializer()
-    }.addTo(this)
-}
-
 /** Add models to a CarouselModel_ by transforming a list of items into EpoxyModels.
  *
  * @param items The items to transform to models
  * @param modelBuilder A function that take an item and returns a new EpoxyModel for that item.
  */
 inline fun <T> CarouselModelBuilder.withModelsFrom(
+    items: List<T>,
+    modelBuilder: (T) -> EpoxyModel<*>
+) {
+    models(items.map { modelBuilder(it) })
+}
+inline fun <T> HorizontalCarouselModelBuilder.withModelsFrom(
     items: List<T>,
     modelBuilder: (T) -> EpoxyModel<*>
 ) {
@@ -213,4 +208,17 @@ enum class TopListType {
     TRENDING,
     ANTICIPATED,
     RECOMMENDED
+}
+
+@ModelView(saveViewState = true, autoLayout = ModelView.Size.MATCH_WIDTH_WRAP_HEIGHT)
+class HorizontalCarousel(context: Context) : Carousel(context) {
+
+    init {
+        isNestedScrollingEnabled = false
+    }
+
+    override fun createLayoutManager(): RecyclerView.LayoutManager {
+        return LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    }
+
 }
