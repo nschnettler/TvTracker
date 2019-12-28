@@ -36,8 +36,6 @@ class EpisodeFragment : BottomSheetDialogFragment() {
         val recycler = binding.viewpager
         recycler.adapter = controller.adapter
 
-        binding.pageIndicator.attachTo(recycler)
-
         viewModel.episodeList.observe(viewLifecycleOwner, Observer {
             controller.submitList(it)
         })

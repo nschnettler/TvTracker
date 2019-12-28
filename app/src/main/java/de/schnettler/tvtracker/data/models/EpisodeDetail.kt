@@ -27,6 +27,11 @@ data class EpisodeDetailDomain(
     val voteAverage: Int
 )
 
+data class EpisodeWithDetailsDomain(
+    val episode: EpisodeDomain,
+    val details: EpisodeDetailDomain
+)
+
 class EpisodeWithDetails(
     @Embedded val episode: EpisodeEntity,
     @Relation(

@@ -108,5 +108,5 @@ interface ShowDao {
 
     @Transaction
     @Query("SELECT * FROM table_episode WHERE seasonId = :seasonId")
-    fun getEpisodes(seasonId: Long): DataSource.Factory<Int, EpisodeEntity>
+    fun getEpisodes(seasonId: Long): DataSource.Factory<Int, EpisodeWithDetails>
 }

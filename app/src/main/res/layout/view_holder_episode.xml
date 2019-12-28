@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="de.schnettler.tvtracker.ui.detail.EpisodeViewModel" />
+            name="detail"
+            type="de.schnettler.tvtracker.data.models.EpisodeDetailDomain" />
         <variable
             name="episode"
             type="de.schnettler.tvtracker.data.models.EpisodeDomain" />
@@ -64,7 +64,8 @@
 
         <ImageView
             android:id="@+id/imageView4"
-
+            imageUrl="@{detail.stillPath}"
+            imageQuality="@{ImageQuality.HIGH}"
             android:layout_width="0dp"
             android:layout_height="250dp"
             android:scaleType="centerCrop"
@@ -97,7 +98,7 @@
 
         <TextView
             android:id="@+id/date"
-
+            date="@{detail.airDate}"
             tools:text="12.01.2019"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -114,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-
+            android:text="@{detail.voteAverage + ` %`}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"
