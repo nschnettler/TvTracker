@@ -1,6 +1,10 @@
 package de.schnettler.tvtracker.data.repository.show
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.paging.Config
+import androidx.paging.PagedList
+import androidx.paging.toLiveData
 import de.schnettler.tvtracker.data.Result
 import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.mapping.*
@@ -165,4 +169,8 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
             }
         }
     }
+
+    fun getSeasonEpisodes(seasonId: Long) = localDao.getEpisodes(seasonId).map {
+        EpisodeMapper.mapToDomain(it)
+    }.toLiveData(Config(1, enablePlaceholders = true))
 }

@@ -1,12 +1,15 @@
 package de.schnettler.tvtracker.ui.detail
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagedList
 import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
+import de.schnettler.tvtracker.data.models.ShowEntity
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +22,7 @@ class EpisodeViewModel(var episode: EpisodeDomain, var show: ShowDomain, val con
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
         getDatabase(context).trendingShowsDao
     )
-    val episodeDetails = showRepository.getEpisodeDetails(episode.id)
+    val episodeList = showRepository.getSeasonEpisodes(episode.seasonId)
 
     init {
         viewModelScope.launch {

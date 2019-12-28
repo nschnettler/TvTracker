@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import de.schnettler.tvtracker.R
 import de.schnettler.tvtracker.databinding.EpisodeBottomSheetBinding
 import de.schnettler.tvtracker.util.getViewModel
-import timber.log.Timber
+
 
 class EpisodeFragment : BottomSheetDialogFragment() {
 
@@ -29,13 +30,20 @@ class EpisodeFragment : BottomSheetDialogFragment() {
 
         //Binding & ViewModel
         binding = EpisodeBottomSheetBinding.inflate(inflater)
-        binding.lifecycleOwner = this
         viewModel = getViewModel { EpisodeViewModel(args.episode, args.show, activity!!.application) }
-        binding.viewModel = viewModel
 
-        viewModel.episodeDetails.observe(viewLifecycleOwner, Observer {
-            Timber.i(it?.stillPath)
+        val controller = EpisodeController()
+        val recycler = binding.viewpager
+        recycler.adapter = controller.adapter
+
+        binding.pageIndicator.attachTo(recycler)
+
+        viewModel.episodeList.observe(viewLifecycleOwner, Observer {
+            controller.submitList(it)
         })
+
+        val snapHelper: SnapHelper = PagerSnapHelper()
+        snapHelper.attachToRecyclerView(recycler)
 
         return binding.root
     }

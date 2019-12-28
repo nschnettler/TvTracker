@@ -1,6 +1,7 @@
 package de.schnettler.tvtracker.data.db
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.*
 import de.schnettler.tvtracker.data.models.*
 
@@ -104,4 +105,8 @@ interface ShowDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEpisodeDetail(detail: EpisodeDetailEntity)
+
+    @Transaction
+    @Query("SELECT * FROM table_episode WHERE seasonId = :seasonId")
+    fun getEpisodes(seasonId: Long): DataSource.Factory<Int, EpisodeEntity>
 }
