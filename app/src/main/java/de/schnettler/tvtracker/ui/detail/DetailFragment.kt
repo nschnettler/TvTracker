@@ -1,12 +1,9 @@
 package de.schnettler.tvtracker.ui.detail
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -14,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import de.schnettler.tvtracker.AuthViewModel
 import de.schnettler.tvtracker.MainActivity
 import de.schnettler.tvtracker.data.models.EpisodeDomain
@@ -23,7 +19,6 @@ import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
 import de.schnettler.tvtracker.util.*
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import timber.log.Timber
 
 
 class DetailFragment : Fragment() {
@@ -31,7 +26,6 @@ class DetailFragment : Fragment() {
     private lateinit var detailViewModel: DetailViewModel
     private lateinit var authViewModel: AuthViewModel
     private lateinit var binding: DetailFragmentBinding
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,9 +46,6 @@ class DetailFragment : Fragment() {
         val controller = DetailController()
         val recycler = binding.recyclerView
         recycler.adapter = controller.adapter
-
-        bottomSheetBehavior = BottomSheetBehavior.from(binding.sheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         detailViewModel.observeState(viewLifecycleOwner) {
             controller.setData(it)
@@ -97,8 +88,7 @@ class DetailFragment : Fragment() {
         //Click Listener Callback
         controller.callbacks = object: DetailController.Callbacks {
             override fun onEpisodeClicked(episode: EpisodeDomain) {
-                detailViewModel.onEpisodeSelected(episode)
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                findNavController().navigate(DetailFragmentDirections.actionDetailFragmentToEpisodeFragment(episode, show))
             }
 
             override fun onSeasonClicked(season: SeasonDomain, isExpanded: Boolean) {
@@ -114,27 +104,5 @@ class DetailFragment : Fragment() {
 
         }
         return binding.root
-    }
-
-    fun handleBottomSheet(): Boolean {
-        Timber.i(bottomSheetBehavior.state.toString())
-        val bottomSheetVisible = (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) or (bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
-        if (bottomSheetVisible) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        }
-        return bottomSheetVisible
-    }
-
-    fun interceptTouchEvent(event: MotionEvent?): Boolean {
-        if ((bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) or (bottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)) {
-            val outRect = Rect()
-            binding.sheet.getGlobalVisibleRect(outRect)
-
-            if (!outRect.contains(event?.rawX?.toInt() as Int, event.rawY.toInt())) {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                return true
-            }
-        }
-        return false
     }
 }

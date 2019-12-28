@@ -42,13 +42,17 @@
             android:id="@+id/action_detailFragment_to_episodeFragment"
             app:destination="@id/episodeFragment" />
     </fragment>
-    <fragment
+
+    <dialog
         android:id="@+id/episodeFragment"
-        android:name="de.schnettler.tvtracker.ui.episode.EpisodeFragment"
+        android:name="de.schnettler.tvtracker.ui.detail.EpisodeFragment"
         android:label="EpisodeFragment"
-        tools:layout="@layout/episode_fragment">
+        tools:layout="@layout/episode_bottom_sheet">
         <argument
-            android:name="episodeId"
-            app:argType="long" />
-    </fragment>
+            android:name="episode"
+            app:argType="de.schnettler.tvtracker.data.models.EpisodeDomain" />
+        <argument
+            android:name="show"
+            app:argType="de.schnettler.tvtracker.data.models.ShowDomain" />
+    </dialog>
 </navigation>

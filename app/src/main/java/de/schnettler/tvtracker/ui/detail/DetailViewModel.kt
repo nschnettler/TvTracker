@@ -1,11 +1,13 @@
 package de.schnettler.tvtracker.ui.detail
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
 import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.db.getDatabase
-import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
@@ -22,14 +24,6 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
         getDatabase(context).trendingShowsDao
     )
-
-    private val _episode = MutableLiveData<EpisodeDomain>()
-    val episode: LiveData<EpisodeDomain>
-        get() = _episode
-
-    val episodeDetails = Transformations.switchMap(episode) { it->
-        showRepository.getEpisodeDetails(it.id)
-    };
 
     private val showDetails = showRepository.getShowDetails(show.id)
     private val showCast = showRepository.getShowCast(show.tvdbId!!)
@@ -113,15 +107,6 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
                 updateState {
                     it.copy(expandedSeasons = it.expandedSeasons - season.id)
                 }
-            }
-        }
-    }
-
-    fun onEpisodeSelected(episode: EpisodeDomain) {
-        _episode.value = episode
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                showRepository.refreshEpisodeDetails(showId = show.tmdbId, seasonNumber = episode.season, episodeNumber = episode.number, episodeId = episode.id)
             }
         }
     }
