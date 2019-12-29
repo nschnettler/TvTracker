@@ -116,7 +116,7 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
         when (expand) {
             true -> {
                 updateState {
-                    it.copy(expandedSeasons = it.expandedSeasons + season.id)
+                    it.copy(expandedSeasons = it.expandedSeasons + season.number)
                 }
 
                 //Refresh Episodes
@@ -128,7 +128,7 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
             }
             false -> {
                 updateState {
-                    it.copy(expandedSeasons = it.expandedSeasons - season.id)
+                    it.copy(expandedSeasons = it.expandedSeasons - season.number)
                 }
             }
         }

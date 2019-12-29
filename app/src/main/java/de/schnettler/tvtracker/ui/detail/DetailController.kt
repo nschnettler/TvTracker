@@ -99,10 +99,10 @@ class DetailController: TypedEpoxyController<DetailViewState>() {
                         description("${season.episodeCount} Episodes • ${season.rating}% Rating")
                         imageText("${season.number}")
                         onClickListener { _, _, _, _ ->
-                            callbacks?.onSeasonClicked(season, expandedSeasons.contains(season.id))
+                            callbacks?.onSeasonClicked(season, expandedSeasons.contains(season.number))
                         }
                     }
-                    if (expandedSeasons.contains(season.id)) {
+                    if (expandedSeasons.contains(season.number)) {
                         season.episodes?.forEach {episode ->
                             episodeItem {
                                 id(episode.id)

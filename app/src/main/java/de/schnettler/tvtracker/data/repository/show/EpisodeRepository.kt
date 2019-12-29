@@ -42,12 +42,9 @@ class EpisodeRepository(
         when(val result = remoteService.getEpisodesOfSeason(showId, seasonNumber)) {
             is Result.Success -> {
                 //Get Season Id
-                val seasonId = localDao.getSeasonId(showId, seasonNumber)
-                episodeMapper.mapToDatabase(result.data, showId, seasonId)?.let { localDao.insertEpisodes(it) }
+                episodeMapper.mapToDatabase(result.data, showId)?.let { localDao.insertEpisodes(it) }
             }
             is Result.Error -> Timber.e(result.exception)
         }
     }
-
-    suspend fun getSeasonId(showId: Long, seasonNumber: Long) = localDao.getSeasonId(showId, seasonNumber)
 }

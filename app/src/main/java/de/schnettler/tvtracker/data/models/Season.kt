@@ -25,7 +25,7 @@ data class SeasonIdResponse(
 data class SeasonEntity(
     val number: Long,
     val showId: Long,
-    val id: Long,
+    val id: String,
     val rating: Long,
     val title: String,
     val overview: String?,
@@ -45,7 +45,7 @@ data class SeasonWithEpisodes(
 
 data class SeasonDomain(
     val number: Long,
-    val id: Long,
+    val id: String,
     val rating: Long,
     val title: String,
     val overview: String?,

@@ -105,7 +105,7 @@ object ShowRelatedMapper : IndexedMapperWithId<ShowResponse, RelationWithShow, S
 object SeasonSummaryMapper : IndexedMapperWithId<SeasonResponse, SeasonEntity, SeasonDomain> {
     override fun mapToDatabase(input: SeasonResponse, index: Int, vararg ids: Long): SeasonEntity =
         SeasonEntity(
-            id = input.ids.trakt,
+            id = "${ids[0]}_${input.number}",
             rating = input.rating.times(10).roundToLong(),
             firstAired = input.firstAired,
             overview = input.overview,
@@ -139,7 +139,7 @@ object EpisodeMapper : IndexedMapperWithId<EpisodeResponse, EpisodeEntity, Episo
         return EpisodeEntity(
             id = input.ids.trakt,
             showId = ids[0],
-            seasonId = ids[1],
+            seasonId = "${ids[0]}_${input.season}",
             number = input.number,
             title = translation?.title ?: input.title,
             overview = translation?.overview ?: input.overview,

@@ -18,7 +18,7 @@ data class EpisodeResponse(
 data class EpisodeEntity(
     @PrimaryKey val id: Long,
     val showId: Long,
-    val seasonId: Long,
+    val seasonId: String,
     val season: Long,
     val number: Long,
     val title: String?,
@@ -29,7 +29,7 @@ data class EpisodeEntity(
 data class EpisodeDomain(
     val id: Long,
     val showId: Long,
-    val seasonId: Long,
+    val seasonId: String,
     val season: Long,
     val number: Long,
     val title: String?,
