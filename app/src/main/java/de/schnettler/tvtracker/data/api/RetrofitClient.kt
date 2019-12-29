@@ -26,8 +26,7 @@ private val traktHttpClient = OkHttpClient.Builder()
     }.addInterceptor {
         var request = it.request()
         val url =
-            request.url.newBuilder().addQueryParameter("translations", Locale.getDefault().language)
-                .build()
+            request.url.newBuilder().build()
         request = request.newBuilder().url(url).build()
         it.proceed(request)
 
