@@ -82,11 +82,15 @@ object ShowDetailsMapper : Mapper<ShowDetailResponse, ShowDetailEntity, ShowDeta
 }
 
 object ShowRelatedMapper : IndexedMapperWithId<ShowResponse, RelationWithShow, ShowDomain> {
-    override fun mapToDatabase(input: ShowResponse, index: Int, id: Long): RelationWithShow {
+    override fun mapToDatabase(
+        input: ShowResponse,
+        index: Int,
+        vararg ids: Long
+    ): RelationWithShow {
         return RelationWithShow(
             RelationEntity(
                 index = index,
-                sourceId = id,
+                sourceId = ids[0],
                 targetId = input.ids.trakt
             ),
             ShowMapper.mapToDatabase(input)
@@ -99,7 +103,7 @@ object ShowRelatedMapper : IndexedMapperWithId<ShowResponse, RelationWithShow, S
 }
 
 object SeasonSummaryMapper : IndexedMapperWithId<SeasonResponse, SeasonEntity, SeasonDomain> {
-    override fun mapToDatabase(input: SeasonResponse, index: Int, id: Long) =
+    override fun mapToDatabase(input: SeasonResponse, index: Int, vararg ids: Long): SeasonEntity =
         SeasonEntity(
             id = input.ids.trakt,
             rating = input.rating.times(10).roundToLong(),
@@ -107,7 +111,7 @@ object SeasonSummaryMapper : IndexedMapperWithId<SeasonResponse, SeasonEntity, S
             overview = input.overview,
             title = input.title,
             number = input.number,
-            showId = id,
+            showId = ids[0],
             episodeCount = input.episodeCount
         )
 
@@ -124,13 +128,18 @@ object SeasonSummaryMapper : IndexedMapperWithId<SeasonResponse, SeasonEntity, S
 }
 
 object EpisodeMapper : IndexedMapperWithId<EpisodeResponse, EpisodeEntity, EpisodeDomain> {
-    override fun mapToDatabase(input: EpisodeResponse, index: Int, id: Long): EpisodeEntity {
+    override fun mapToDatabase(
+        input: EpisodeResponse,
+        index: Int,
+        vararg ids: Long
+    ): EpisodeEntity {
         val translation = input.translations.find {
             it.language == Locale.getDefault().language
         }
         return EpisodeEntity(
             id = input.ids.trakt,
-            seasonId = id,
+            showId = ids[0],
+            seasonId = ids[1],
             number = input.number,
             title = translation?.title ?: input.title,
             overview = translation?.overview ?: input.overview,
@@ -141,6 +150,7 @@ object EpisodeMapper : IndexedMapperWithId<EpisodeResponse, EpisodeEntity, Episo
     override fun mapToDomain(input: EpisodeEntity): EpisodeDomain =
         EpisodeDomain(
             id = input.id,
+            showId = input.showId,
             seasonId = input.seasonId,
             number = input.number,
             title = input.title,

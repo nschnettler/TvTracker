@@ -17,6 +17,7 @@ data class EpisodeResponse(
 @Entity(tableName = "table_episode")
 data class EpisodeEntity(
     @PrimaryKey val id: Long,
+    val showId: Long,
     val seasonId: Long,
     val season: Long,
     val number: Long,
@@ -27,6 +28,7 @@ data class EpisodeEntity(
 @Parcelize
 data class EpisodeDomain(
     val id: Long,
+    val showId: Long,
     val seasonId: Long,
     val season: Long,
     val number: Long,

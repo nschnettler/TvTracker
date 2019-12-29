@@ -59,7 +59,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         val result = remoteService.getRelated(showId)
         if (result is Result.Success) {
             //Insert in DB
-            val showEntities = relatedMapper.mapToDatabase(result.data, id = showId)
+            val showEntities = relatedMapper.mapToDatabase(result.data, showId)
             showEntities?.let { localDao.insertShowRelations(showEntities) }
 
             //Refresh Poster
@@ -115,7 +115,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         when(val result = remoteService.getEpisodesOfSeason(showId, seasonNumber)) {
             is Result.Success -> {
                 //Insert in DB
-                episodeMapper.mapToDatabase(result.data, seasonId)?.let { localDao.insertEpisodes(it) }
+                episodeMapper.mapToDatabase(result.data, showId, seasonId)?.let { localDao.insertEpisodes(it) }
             }
             is Result.Error -> {
                 Timber.e(result.exception)
