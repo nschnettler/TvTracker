@@ -124,20 +124,6 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
     }
 
     /*
-     * Episode Details
-     */
-    suspend fun refreshEpisodeDetails(showId: String, seasonNumber: Long, episodeNumber: Long, episodeId: Long) {
-        when(val result = remoteService.getEpisodeDetail(showId, seasonNumber, episodeNumber)) {
-            is Result.Success -> {
-                localDao.insertEpisodeDetail(EpisodeDetailMapper.mapToDatabase(result.data, episodeId))
-            }
-            is Result.Error -> {
-                Timber.e(result.exception)
-            }
-        }
-    }
-
-    /*
      * Show Poster
      */
     suspend fun refreshPosters(showsDB: List<ShowEntity>) {
@@ -164,8 +150,4 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
             }
         }
     }
-
-    fun getSeasonEpisodes(seasonId: Long) = localDao.getEpisodes(seasonId).map {
-        EpisodeFullMapper.mapToDomain(it)
-    }.toLiveData(Config(1))
 }
