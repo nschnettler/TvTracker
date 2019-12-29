@@ -1,5 +1,8 @@
 package de.schnettler.tvtracker.util
 
+import android.graphics.Outline
+import android.view.View
+import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -15,11 +18,7 @@ import java.util.*
 
 @BindingAdapter(value = ["imageUrl", "imageQuality"], requireAll = true)
 fun bindImage(imgView: ImageView, imageUrl: String?, imageQuality: ImageQuality) {
-    if (imageUrl.isNullOrEmpty()) {
-        imgView.clear()
-    } else {
-        bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + imageQuality.quality +  imageUrl)
-    }
+    bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + imageQuality.quality +  imageUrl)
 }
 
 @BindingAdapter("tvdbUrl")
@@ -29,10 +28,24 @@ fun bindTvdbImage(imageView: ImageView, url: String?) {
     bindImageFromUrl(imageView, prefix + suffix)
 }
 
-fun bindImageFromUrl(imageView: ImageView, fullUrl: String) {
+@BindingAdapter("headerUrl")
+fun bindBottomSheetHeader(imgView: ImageView, imageUrl: String?) {
+    imgView.outlineProvider = object : ViewOutlineProvider() {
+        override fun getOutline(view: View?, outline: Outline?) {
+            outline?.setRoundRect(0, 0, view!!.width, (view.height+ 54F).toInt(), 54F)
+        }
+    }
+    bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + ImageQuality.HIGH.quality +  imageUrl)
+}
+
+fun bindImageFromUrl(imageView: ImageView, fullUrl: String?) {
     imageView.clipToOutline = true
-    imageView.load(fullUrl) {
-        crossfade(true)
+    if (fullUrl.isNullOrEmpty()) {
+        imageView.clear()
+    } else {
+        imageView.load(fullUrl) {
+            crossfade(true)
+        }
     }
 }
 

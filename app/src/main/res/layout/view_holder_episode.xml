@@ -12,7 +12,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/bottomsheet_background">
 
 
         <androidx.constraintlayout.widget.Barrier
@@ -61,8 +62,7 @@
 
         <ImageView
             android:id="@+id/imageView4"
-            imageUrl="@{episode.stillPath}"
-            imageQuality="@{ImageQuality.HIGH}"
+            headerUrl="@{episode.stillPath}"
             android:layout_width="0dp"
             android:layout_height="250dp"
             android:scaleType="centerCrop"
