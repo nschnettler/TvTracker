@@ -1,11 +1,9 @@
 package de.schnettler.tvtracker.util
 
-import android.graphics.Outline
-import android.view.View
-import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import coil.api.clear
 import coil.api.load
 import de.schnettler.tvtracker.data.api.ImageQuality
 import de.schnettler.tvtracker.data.api.TMDb
@@ -17,7 +15,9 @@ import java.util.*
 
 @BindingAdapter(value = ["imageUrl", "imageQuality"], requireAll = true)
 fun bindImage(imgView: ImageView, imageUrl: String?, imageQuality: ImageQuality) {
-    imageUrl?.let {
+    if (imageUrl.isNullOrEmpty()) {
+        imgView.clear()
+    } else {
         bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + imageQuality.quality +  imageUrl)
     }
 }
@@ -48,14 +48,16 @@ fun maxLinesClickListener(view: TextView, oldCollapsedMaxLines: Int, newCollapse
 
 @BindingAdapter("date")
 fun bindDate(view: TextView, date: String?) {
-    date?.let {dateString ->
-        val formatIn = SimpleDateFormat("yyyy-mm-dd")
-        val dateIn = formatIn.parse(dateString)
-        val formatOut = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
+   if (date.isNullOrEmpty()) {
+       view.text = ""
+   } else {
+       val formatIn = SimpleDateFormat("yyyy-mm-dd")
+       val dateIn = formatIn.parse(date)
+       val formatOut = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
 
-        dateIn?.let {
-            val dateOut = formatOut.format(it)
-            view.text = dateOut
-        }
-    }
+       dateIn?.let {
+           val dateOut = formatOut.format(it)
+           view.text = dateOut
+       }
+   }
 }

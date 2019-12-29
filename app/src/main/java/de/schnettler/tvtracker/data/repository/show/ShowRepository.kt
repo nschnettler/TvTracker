@@ -166,6 +166,6 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
     }
 
     fun getSeasonEpisodes(seasonId: Long) = localDao.getEpisodes(seasonId).map {
-        EpisodeWithDetailsDomain(EpisodeMapper.mapToDomain(it.episode), EpisodeDetailMapper.mapToDomain(it.details))
+        EpisodeFullMapper.mapToDomain(it)
     }.toLiveData(Config(1))
 }

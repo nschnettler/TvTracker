@@ -27,9 +27,16 @@ data class EpisodeDetailDomain(
     val voteAverage: Int
 )
 
-data class EpisodeWithDetailsDomain(
-    val episode: EpisodeDomain,
-    val details: EpisodeDetailDomain
+data class EpisodeFullDomain(
+    val id: Long,
+    val seasonId: Long,
+    val season: Long,
+    val number: Long,
+    val title: String?,
+    val overview: String?,
+    val airDate: String?,
+    val stillPath: String?,
+    val voteAverage: Int?
 )
 
 class EpisodeWithDetails(
@@ -38,5 +45,5 @@ class EpisodeWithDetails(
         parentColumn = "id",
         entityColumn = "episodeId"
     )
-    val details: EpisodeDetailEntity
+    val details: EpisodeDetailEntity?
 )

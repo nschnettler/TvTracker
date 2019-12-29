@@ -179,3 +179,21 @@ object EpisodeDetailMapper: MapperWithId<EpisodeDetailResponse, EpisodeDetailEnt
         voteAverage = input.voteAverage
     )
 }
+
+object EpisodeFullMapper: Mapper<Any, EpisodeWithDetails, EpisodeFullDomain> {
+    override fun mapToDatabase(input: Any): EpisodeWithDetails {
+        TODO("not implemented")
+    }
+
+    override fun mapToDomain(input: EpisodeWithDetails) = EpisodeFullDomain(
+            id = input.episode.id,
+            seasonId = input.episode.seasonId,
+            season = input.episode.season,
+            number = input.episode.number,
+            title = input.episode.title,
+            overview = input.episode.overview,
+            airDate = input.details?.airDate ,
+            stillPath = input.details?.stillPath,
+            voteAverage = input.details?.voteAverage
+        )
+}
