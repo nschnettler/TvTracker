@@ -19,6 +19,7 @@ import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
 import de.schnettler.tvtracker.util.*
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
+import timber.log.Timber
 
 
 class DetailFragment : Fragment() {
@@ -88,7 +89,7 @@ class DetailFragment : Fragment() {
         //Click Listener Callback
         controller.callbacks = object: DetailController.Callbacks {
             override fun onEpisodeClicked(episode: EpisodeDomain) {
-                findNavController().navigate(DetailFragmentDirections.actionDetailFragmentToEpisodeFragment(episode, show))
+                findNavController().navigate(DetailFragmentDirections.actionDetailFragmentToEpisodeFragment(episode, show, detailViewModel.getIndexOfEpisode(episode)))
             }
 
             override fun onSeasonClicked(season: SeasonDomain, isExpanded: Boolean) {

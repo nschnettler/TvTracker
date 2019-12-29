@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
 import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.db.getDatabase
+import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
@@ -29,6 +30,22 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
     private val showCast = showRepository.getShowCast(show.tvdbId!!)
     private val relatedShows = showRepository.getRelatedShows(show.id)
     private val seasons = showRepository.getSeasonsWithEpisodes(show.id)
+
+    fun getIndexOfEpisode(episode: EpisodeDomain): Int {
+        Timber.i("Getting Index of Season ${episode.season} Episode ${episode.number}")
+        var result = 0
+
+        //Lower Seasons
+        seasons.value?.forEach {
+            if (it.number < episode.season) {
+                Timber.i("Season ${it.number} Episodes ${it.episodeCount}")
+                result += it.episodeCount?.toInt() ?: 0
+            }
+        }
+        result += episode.number.toInt() - 1
+        Timber.i("Index: $result")
+        return result
+    }
 
     init {
         initState { DetailViewState(show) }

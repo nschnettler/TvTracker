@@ -54,5 +54,8 @@
         <argument
             android:name="show"
             app:argType="de.schnettler.tvtracker.data.models.ShowDomain" />
+        <argument
+            android:name="episodeIndex"
+            app:argType="integer" />
     </dialog>
 </navigation>

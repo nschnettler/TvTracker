@@ -39,7 +39,7 @@ class EpisodeFragment : BottomSheetDialogFragment() {
         val recycler = binding.viewpager
         recycler.adapter = controller.adapter
         if (savedInstanceState == null) {
-            recycler.post { recycler.scrollToPosition(args.episode.number.toInt() - 1) }
+            recycler.post { recycler.scrollToPosition(args.episodeIndex) }
         }
 
         viewModel.episodeList.observe(viewLifecycleOwner, Observer {

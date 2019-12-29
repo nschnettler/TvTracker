@@ -107,6 +107,6 @@ interface ShowDao {
     suspend fun insertEpisodeDetail(detail: EpisodeDetailEntity)
 
     @Transaction
-    @Query("SELECT * FROM table_episode WHERE seasonId = :seasonId")
-    fun getEpisodes(seasonId: Long): DataSource.Factory<Int, EpisodeWithDetails>
+    @Query("SELECT * FROM table_episode WHERE showId = :showId ORDER BY season ASC")
+    fun getEpisodes(showId: Long): DataSource.Factory<Int, EpisodeWithDetails>
 }

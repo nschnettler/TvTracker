@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 
 class EpisodeRepository(private val remoteService: ShowDataSourceRemote, private val localDao: ShowDao) {
-    fun getSeasonEpisodes(episode: EpisodeDomain) = localDao.getEpisodes(episode.seasonId).map {
+    fun getEpisodes(showID: Long) = localDao.getEpisodes(showID).map {
         EpisodeFullMapper.mapToDomain(it)
     }.toLiveData(pageSize = 1)
 
