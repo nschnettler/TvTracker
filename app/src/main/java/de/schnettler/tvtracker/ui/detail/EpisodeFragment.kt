@@ -32,6 +32,7 @@ class EpisodeFragment : BottomSheetDialogFragment() {
         binding = EpisodeBottomSheetBinding.inflate(inflater)
         viewModel = getViewModel { EpisodeViewModel(args.episode, args.show, activity!!.application) }
 
+        //Epoxy
         val controller = EpisodeController()
         val recycler = binding.viewpager
         recycler.adapter = controller.adapter
@@ -40,8 +41,13 @@ class EpisodeFragment : BottomSheetDialogFragment() {
             controller.submitList(it)
         })
 
+        //Snap
         val snapHelper: SnapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(recycler)
+
+        //Indicator
+        val indicator = binding.recyclerviewPagerIndicator
+        indicator.attachToRecyclerView(recycler)
 
         return binding.root
     }

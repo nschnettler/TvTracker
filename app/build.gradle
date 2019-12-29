@@ -124,4 +124,6 @@ dependencies {
 
     //OkHttp
     implementation "com.squareup.okhttp3:okhttp:$version_okhttp"
+
+    implementation "com.ryanjeffreybrooks:indefinitepagerindicator:1.0.10"
 }
