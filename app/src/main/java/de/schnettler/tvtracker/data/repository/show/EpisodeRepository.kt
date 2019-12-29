@@ -1,22 +1,29 @@
 package de.schnettler.tvtracker.data.repository.show
 
+import androidx.lifecycle.Transformations
 import androidx.paging.toLiveData
 import de.schnettler.tvtracker.data.Result
 import de.schnettler.tvtracker.data.db.ShowDao
-import de.schnettler.tvtracker.data.mapping.EpisodeDetailMapper
-import de.schnettler.tvtracker.data.mapping.EpisodeFullMapper
+import de.schnettler.tvtracker.data.mapping.*
 import de.schnettler.tvtracker.data.models.EpisodeDomain
+import de.schnettler.tvtracker.data.models.SeasonDomain
 import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 
-class EpisodeRepository(private val remoteService: ShowDataSourceRemote, private val localDao: ShowDao) {
-    fun getEpisodes(showID: Long) = localDao.getEpisodes(showID).map {
-        EpisodeFullMapper.mapToDomain(it)
-    }.toLiveData(pageSize = 1)
+class EpisodeRepository(
+    private val remoteService: ShowDataSourceRemote,
+    private val localDao: ShowDao,
+    private val scope: CoroutineScope
+) {
+    private val episodeMapper = ListMapperWithId(EpisodeMapper)
 
     /*
      * Episode Details
      */
+    fun getEpisodes(showID: Long) = localDao.getEpisodes(showID).map {
+        EpisodeFullMapper.mapToDomain(it)
+    }.toLiveData(pageSize = 1, boundaryCallback = EpisodeBoundaryCallback(this, scope))
+
     suspend fun refreshEpisodeDetails(showId: String, seasonNumber: Long, episodeNumber: Long, episodeId: Long) {
         when(val result = remoteService.getEpisodeDetail(showId, seasonNumber, episodeNumber)) {
             is Result.Success -> {
@@ -27,4 +34,20 @@ class EpisodeRepository(private val remoteService: ShowDataSourceRemote, private
             }
         }
     }
+
+    /*
+    * Episodes
+    */
+    suspend fun refreshEpisodes(showId: Long, seasonNumber: Long) {
+        when(val result = remoteService.getEpisodesOfSeason(showId, seasonNumber)) {
+            is Result.Success -> {
+                //Get Season Id
+                val seasonId = localDao.getSeasonId(showId, seasonNumber)
+                episodeMapper.mapToDatabase(result.data, showId, seasonId)?.let { localDao.insertEpisodes(it) }
+            }
+            is Result.Error -> Timber.e(result.exception)
+        }
+    }
+
+    suspend fun getSeasonId(showId: Long, seasonNumber: Long) = localDao.getSeasonId(showId, seasonNumber)
 }

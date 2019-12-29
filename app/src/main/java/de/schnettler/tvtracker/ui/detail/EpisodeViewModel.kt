@@ -16,7 +16,8 @@ class EpisodeViewModel(var episode: EpisodeDomain, var showTmdbId: String, val c
 
     private val episodeRepository = EpisodeRepository(
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
-        getDatabase(context).trendingShowsDao
+        getDatabase(context).trendingShowsDao,
+        viewModelScope
     )
     val episodeList = episodeRepository.getEpisodes(episode.showId)
 

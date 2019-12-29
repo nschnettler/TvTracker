@@ -29,6 +29,7 @@ data class EpisodeDetailDomain(
 
 data class EpisodeFullDomain(
     val id: Long,
+    val showId: Long,
     val seasonId: Long,
     val season: Long,
     val number: Long,

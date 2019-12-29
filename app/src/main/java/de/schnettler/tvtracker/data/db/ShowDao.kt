@@ -77,6 +77,9 @@ interface ShowDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEpisodes(episodes: List<EpisodeEntity>)
 
+    @Query("SELECT id FROM table_seasons WHERE showId = :showId AND number = :seasonNumber")
+    suspend fun getSeasonId(showId: Long, seasonNumber: Long): Long
+
 
     /*
      * Season with Episodes

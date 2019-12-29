@@ -11,6 +11,7 @@ import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
+import de.schnettler.tvtracker.data.repository.show.EpisodeRepository
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +25,11 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
     private val showRepository = ShowRepository(
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
         getDatabase(context).trendingShowsDao
+    )
+    private val episodeRepository = EpisodeRepository(
+        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
+        getDatabase(context).trendingShowsDao,
+        viewModelScope
     )
 
     private val showDetails = showRepository.getShowDetails(show.id)
@@ -116,7 +122,7 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
                 //Refresh Episodes
                 viewModelScope.launch {
                     withContext(Dispatchers.IO) {
-                        showRepository.refreshEpisodes(show.id, season.number, season.id)
+                        episodeRepository.refreshEpisodes(show.id, season.number)
                     }
                 }
             }
