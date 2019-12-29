@@ -45,7 +45,7 @@
 
     <dialog
         android:id="@+id/episodeFragment"
-        android:name="de.schnettler.tvtracker.ui.detail.EpisodeFragment"
+        android:name="de.schnettler.tvtracker.ui.episode.EpisodeFragment"
         android:label="EpisodeFragment"
         tools:layout="@layout/episode_bottom_sheet">
         <argument

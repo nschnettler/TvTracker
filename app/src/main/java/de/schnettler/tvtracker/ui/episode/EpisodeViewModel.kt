@@ -1,4 +1,4 @@
-package de.schnettler.tvtracker.ui.detail
+package de.schnettler.tvtracker.ui.episode
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

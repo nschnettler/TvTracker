@@ -1,4 +1,4 @@
-package de.schnettler.tvtracker.ui.detail
+package de.schnettler.tvtracker.ui.episode
 
 import com.airbnb.epoxy.EpoxyModel
 import com.airbnb.epoxy.paging.PagedListEpoxyController

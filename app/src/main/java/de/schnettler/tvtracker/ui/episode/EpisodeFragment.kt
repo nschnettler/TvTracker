@@ -1,4 +1,4 @@
-package de.schnettler.tvtracker.ui.detail
+package de.schnettler.tvtracker.ui.episode
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -28,11 +28,20 @@ class EpisodeFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         //Args
-        val args = EpisodeFragmentArgs.fromBundle(arguments!!)
+        val args =
+            EpisodeFragmentArgs.fromBundle(
+                arguments!!
+            )
 
         //Binding & ViewModel
         binding = EpisodeBottomSheetBinding.inflate(inflater)
-        viewModel = getViewModel { EpisodeViewModel(args.episode, args.show.tmdbId, activity!!.application) }
+        viewModel = getViewModel {
+            EpisodeViewModel(
+                args.episode,
+                args.show.tmdbId,
+                activity!!.application
+            )
+        }
 
         //Epoxy
         val controller = EpisodeController()
