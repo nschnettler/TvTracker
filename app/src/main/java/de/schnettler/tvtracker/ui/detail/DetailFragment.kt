@@ -43,6 +43,7 @@ class DetailFragment : Fragment() {
         val show = args.show
         detailViewModel = getViewModel { parametersOf(show) }
         binding.viewModel = detailViewModel
+        binding.toolbar.title = detailViewModel.show.title
 
         val controller = DetailController()
         val recycler = binding.recyclerView

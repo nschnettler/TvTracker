@@ -28,7 +28,7 @@ class DiscoverFragment : Fragment() {
         binding.viewmodel = viewModel
 
         controller = DiscoverController(null)
-        controller.onRestoreInstanceState(savedInstanceState)
+        //controller.onRestoreInstanceState(savedInstanceState)
         val recycler = binding.recyclerView
         recycler.adapter = controller.adapter
 
