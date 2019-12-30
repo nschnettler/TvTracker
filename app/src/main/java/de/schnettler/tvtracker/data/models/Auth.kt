@@ -3,7 +3,7 @@ package de.schnettler.tvtracker.data.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.Json
-import de.schnettler.tvtracker.data.api.TVDB
+import de.schnettler.tvtracker.data.api.TvdbAPI
 
 /*
  * Generic Authentication Response
@@ -60,4 +60,4 @@ enum class AuthTokenType(val value: String) {
     TRAKT("trakt_token")
 }
 
-data class TvdbLoginData(val apikey: String = TVDB.API_KEY, val username: String = "", val userpass: String = "")
+data class TvdbLoginData(val apikey: String = TvdbAPI.API_KEY, val username: String = "", val userpass: String = "")

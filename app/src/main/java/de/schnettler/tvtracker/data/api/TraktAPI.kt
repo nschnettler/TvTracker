@@ -4,7 +4,7 @@ import de.schnettler.tvtracker.data.models.*
 import retrofit2.Response
 import retrofit2.http.*
 
-interface Trakt {
+interface TraktAPI {
     companion object {
         const val ENDPOINT = "https://api.trakt.tv/"
         const val DISCOVER_AMOUNT = 15

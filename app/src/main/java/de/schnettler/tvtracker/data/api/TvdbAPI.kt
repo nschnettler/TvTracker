@@ -6,7 +6,7 @@ import de.schnettler.tvtracker.data.models.CastListResponse
 import retrofit2.Response
 import retrofit2.http.*
 
-interface TVDB {
+interface TvdbAPI {
     companion object {
         const val ENDPOINT = "https://api.thetvdb.com/"
         const val IMAGE_ENDPOINT = "https://artworks.thetvdb.com/banners/"

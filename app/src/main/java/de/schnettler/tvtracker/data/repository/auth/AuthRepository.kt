@@ -1,12 +1,9 @@
 package de.schnettler.tvtracker.data.repository.auth
 
 import de.schnettler.tvtracker.data.Result
-import de.schnettler.tvtracker.data.api.Trakt
 import de.schnettler.tvtracker.data.db.AuthDao
 import de.schnettler.tvtracker.data.mapping.AuthMapper
 import de.schnettler.tvtracker.data.models.AuthTokenType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class AuthRepository(private val remoteService: AuthDataSourceRemote, private val authDao: AuthDao) {

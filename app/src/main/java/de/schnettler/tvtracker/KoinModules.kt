@@ -1,7 +1,7 @@
 package de.schnettler.tvtracker
 
 import androidx.room.Room
-import de.schnettler.tvtracker.data.api.RetrofitClient
+import de.schnettler.tvtracker.data.api.*
 import de.schnettler.tvtracker.data.db.Database
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
@@ -21,28 +21,35 @@ import org.koin.dsl.module
 
 //Database
 val databaseModule = module {
-    single { Room.databaseBuilder(androidContext(), Database::class.java, "shows").fallbackToDestructiveMigration().build() }
-    single {get<Database>().showDao}
-    single {get<Database>().authDao}
+    single {
+        Room.databaseBuilder(
+            androidContext(),
+            Database::class.java, "shows"
+        ).fallbackToDestructiveMigration().build()
+    }
+    single { get<Database>().showDao }
+    single { get<Database>().authDao }
 }
 
 //Repository
 val repositoryModule = module {
-    single<IShowRepository> { ShowRepository(
-        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
-        get()) }
-    single { AuthRepository(
-        AuthDataSourceRemote(RetrofitClient.tvdbNetworkService, RetrofitClient.showsNetworkService),
-        get()) }
-    single { EpisodeRepository(
-        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
-        get()) }
+    single { ShowDataSourceRemote(RetrofitService.traktService, RetrofitService.tvdbService, RetrofitService.tmdbService) }
+    single { AuthDataSourceRemote(RetrofitService.tvdbService, RetrofitService.traktService) }
+    single<IShowRepository> { ShowRepository(get(), get()) }
+    single { AuthRepository(get(), get()) }
+    single { EpisodeRepository(get(), get()) }
 }
 
 //ViewModel
 val viewModelModule = module {
     viewModel { DiscoverViewModel(get()) }
     viewModel { AuthViewModel(get()) }
-    viewModel { (show : ShowDomain) -> DetailViewModel(show, get(), get()) }
-    viewModel { (episode: EpisodeDomain, tmdbId: String) -> EpisodeViewModel(episode, tmdbId, get()) }
+    viewModel { (show: ShowDomain) -> DetailViewModel(show, get(), get()) }
+    viewModel { (episode: EpisodeDomain, tmdbId: String) ->
+        EpisodeViewModel(
+            episode,
+            tmdbId,
+            get()
+        )
+    }
 }

@@ -1,10 +1,9 @@
 package de.schnettler.tvtracker.data.repository.show
 
 import de.schnettler.tvtracker.data.Result
-import de.schnettler.tvtracker.data.api.TMDb
-import de.schnettler.tvtracker.data.db.ShowDao
-import de.schnettler.tvtracker.data.api.Trakt
-import de.schnettler.tvtracker.data.api.TVDB
+import de.schnettler.tvtracker.data.api.TmdbAPI
+import de.schnettler.tvtracker.data.api.TraktAPI
+import de.schnettler.tvtracker.data.api.TvdbAPI
 import de.schnettler.tvtracker.data.models.*
 import de.schnettler.tvtracker.util.TopListType
 import de.schnettler.tvtracker.util.safeApiCall
@@ -14,7 +13,7 @@ import java.io.IOException
 /**
  * Work with the Trakt API to get shows. The class knows how to construct the requests.
  */
-class ShowDataSourceRemote(val traktService: Trakt, val tvdbService: TVDB, val tmdbService: TMDb) {
+class ShowDataSourceRemote(val traktService: TraktAPI, val tvdbService: TvdbAPI, val tmdbService: TmdbAPI) {
     //Show Details
     suspend fun getShowDetails(showID: Long) = safeApiCall(
         call = { requestShowDetails(showID) },
@@ -41,7 +40,7 @@ class ShowDataSourceRemote(val traktService: Trakt, val tvdbService: TVDB, val t
     )
 
     private suspend fun requestCast(showID: Long, token: String): Result<CastListResponse> {
-        val response = tvdbService.getActors(TVDB.AUTH_PREFIX + token, showID)
+        val response = tvdbService.getActors(TvdbAPI.AUTH_PREFIX + token, showID)
         Timber.i("RESPONSE $response.toString()")
 
         if (response.isSuccessful) {
@@ -78,7 +77,7 @@ class ShowDataSourceRemote(val traktService: Trakt, val tvdbService: TVDB, val t
     )
 
     private suspend fun requestShowImages(tmdbId: String): Result<ShowImageResponse> {
-        val response = tmdbService.getShowPoster(tmdbId, TMDb.API_KEY)
+        val response = tmdbService.getShowPoster(tmdbId, TmdbAPI.API_KEY)
         if (response.isSuccessful) {
             response.body()?.let {
                 return Result.Success(it)
@@ -95,8 +94,8 @@ class ShowDataSourceRemote(val traktService: Trakt, val tvdbService: TVDB, val t
 
     private suspend fun refreshTopList(type: TopListType, token: String): Result<List<ShowListResponse>> {
         val response = when(type) {
-            TopListType.TRENDING -> traktService.getTrendingShows(0, Trakt.DISCOVER_AMOUNT)
-            TopListType.POPULAR -> traktService.getPopularShows(0, Trakt.DISCOVER_AMOUNT)
+            TopListType.TRENDING -> traktService.getTrendingShows(0, TraktAPI.DISCOVER_AMOUNT)
+            TopListType.POPULAR -> traktService.getPopularShows(0, TraktAPI.DISCOVER_AMOUNT)
             TopListType.ANTICIPATED -> traktService.getAnticipated()
             TopListType.RECOMMENDED -> traktService.getRecommended("Bearer $token")
         }
@@ -154,7 +153,7 @@ class ShowDataSourceRemote(val traktService: Trakt, val tvdbService: TVDB, val t
     )
 
     private suspend fun requestEpisodeDetails(showID: String, seasonNumber: Long, episodeNumber: Long): Result<EpisodeDetailResponse> {
-        val response = tmdbService.getEpisodeDetail(showID, seasonNumber, episodeNumber, TMDb.API_KEY)
+        val response = tmdbService.getEpisodeDetail(showID, seasonNumber, episodeNumber, TmdbAPI.API_KEY)
         if (response.isSuccessful) {
             response.body()?.let {
                 return Result.Success(it)

@@ -9,7 +9,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import de.schnettler.tvtracker.ui.AuthViewModel
-import de.schnettler.tvtracker.data.api.Trakt
+import de.schnettler.tvtracker.data.api.TraktAPI
 import de.schnettler.tvtracker.databinding.AccountFragmentBinding
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.koin.android.viewmodel.ext.android.sharedViewModel
@@ -29,7 +29,7 @@ class AccountFragment : Fragment() {
 
         authViewModel.startAuthentication.observe(viewLifecycleOwner, Observer {
             if (it == true) {
-                val authorizeUrl = (Trakt.BASE_URL + "oauth/authorize").toHttpUrlOrNull()
+                val authorizeUrl = (TraktAPI.BASE_URL + "oauth/authorize").toHttpUrlOrNull()
                     ?.newBuilder()
                     ?.addQueryParameter(
                         "client_id",

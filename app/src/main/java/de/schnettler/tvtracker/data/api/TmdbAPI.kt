@@ -8,7 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface TMDb {
+interface TmdbAPI {
     companion object {
         const val ENDPOINT = "https://api.themoviedb.org/"
         const val API_KEY = "***TMDB_API_KEY***"

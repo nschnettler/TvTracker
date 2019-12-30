@@ -9,8 +9,8 @@ import androidx.databinding.BindingAdapter
 import coil.api.clear
 import coil.api.load
 import de.schnettler.tvtracker.data.api.ImageQuality
-import de.schnettler.tvtracker.data.api.TMDb
-import de.schnettler.tvtracker.data.api.TVDB
+import de.schnettler.tvtracker.data.api.TmdbAPI
+import de.schnettler.tvtracker.data.api.TvdbAPI
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,13 +18,13 @@ import java.util.*
 
 @BindingAdapter(value = ["imageUrl", "imageQuality"], requireAll = true)
 fun bindImage(imgView: ImageView, imageUrl: String?, imageQuality: ImageQuality) {
-    bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + imageQuality.quality +  imageUrl)
+    bindImageFromUrl(imgView, TmdbAPI.IMAGE_ENDPOINT + imageQuality.quality +  imageUrl)
 }
 
 @BindingAdapter("tvdbUrl")
 fun bindTvdbImage(imageView: ImageView, url: String?) {
     val suffix = if (url.isNullOrBlank()) "/person/actor.jpg" else url
-    val prefix = if (suffix.startsWith("/person")) TVDB.IMAGE_ENDPOINT_SHORT else TVDB.IMAGE_ENDPOINT
+    val prefix = if (suffix.startsWith("/person")) TvdbAPI.IMAGE_ENDPOINT_SHORT else TvdbAPI.IMAGE_ENDPOINT
     bindImageFromUrl(imageView, prefix + suffix)
 }
 
@@ -35,7 +35,7 @@ fun bindBottomSheetHeader(imgView: ImageView, imageUrl: String?) {
             outline?.setRoundRect(0, 0, view!!.width, (view.height+ 54F).toInt(), 54F)
         }
     }
-    bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + ImageQuality.HIGH.quality +  imageUrl)
+    bindImageFromUrl(imgView, TmdbAPI.IMAGE_ENDPOINT + ImageQuality.HIGH.quality +  imageUrl)
 }
 
 fun bindImageFromUrl(imageView: ImageView, fullUrl: String?) {
