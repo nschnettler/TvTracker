@@ -27,11 +27,11 @@ buildscript {
         version_eiffel = "4.1.0"
         version_threeten = "1.2.1"
         version_stetho = "1.5.1"
+        version_koin = "2.0.1"
     }
     repositories {
         google()
         jcenter()
-        
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.0-alpha07'

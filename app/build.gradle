@@ -133,4 +133,8 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:$version_okhttp"
 
     implementation "com.ryanjeffreybrooks:indefinitepagerindicator:1.0.10"
+
+    //Koin
+    implementation "org.koin:koin-android:$version_koin"
+    implementation "org.koin:koin-android-viewmodel:$version_koin"
 }
