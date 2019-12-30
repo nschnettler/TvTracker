@@ -4,9 +4,8 @@ import android.app.Application
 import androidx.lifecycle.*
 import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.db.getDatabase
-import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
-import de.schnettler.tvtracker.data.repository.show.ShowRepository
+import de.schnettler.tvtracker.data.repository.show.ShowRepositoryImpl
 import de.schnettler.tvtracker.util.TopListType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,7 +13,7 @@ import kotlinx.coroutines.withContext
 
 
 class DiscoverViewModel(val context: Application) : AndroidViewModel(context) {
-    private val showRepository = ShowRepository(
+    private val showRepository = ShowRepositoryImpl(
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
         getDatabase(context).trendingShowsDao
     )

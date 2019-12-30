@@ -136,7 +136,7 @@ class ShowDataSourceRemote(val traktService: Trakt, val tvdbService: TVDB, val t
         showID: Long,
         seasonNumber: Long
     ): Result<List<EpisodeResponse>> {
-        val response = traktService.getSeasonEpisodes(showID, seasonNumber, "de")
+        val response = traktService.getSeasonEpisodes(showID, seasonNumber)
         if (response.isSuccessful) {
             response.body()?.let {
                 return Result.Success(it)

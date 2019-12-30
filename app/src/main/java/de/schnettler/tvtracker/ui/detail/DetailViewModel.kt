@@ -13,7 +13,7 @@ import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.repository.show.EpisodeRepository
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
-import de.schnettler.tvtracker.data.repository.show.ShowRepository
+import de.schnettler.tvtracker.data.repository.show.ShowRepositoryImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,7 +22,7 @@ import timber.log.Timber
 
 class DetailViewModel(var show: ShowDomain, val context: Application) : StateViewModel<DetailViewState>() {
     override val state = MediatorLiveData<DetailViewState>()
-    private val showRepository = ShowRepository(
+    private val showRepository = ShowRepositoryImpl(
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
         getDatabase(context).trendingShowsDao
     )

@@ -2,8 +2,6 @@ package de.schnettler.tvtracker.data.repository.show
 
 import androidx.paging.PagedList
 import de.schnettler.tvtracker.data.models.EpisodeFullDomain
-import de.schnettler.tvtracker.data.models.SeasonDomain
-import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
