@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import de.schnettler.tvtracker.AuthViewModel
+import de.schnettler.tvtracker.ui.AuthViewModel
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.databinding.DiscoverFragmentBinding
 import dev.chrisbanes.insetter.doOnApplyWindowInsets

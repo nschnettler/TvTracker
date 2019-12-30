@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import de.schnettler.tvtracker.AuthViewModel
+import de.schnettler.tvtracker.ui.AuthViewModel
 import de.schnettler.tvtracker.data.api.Trakt
 import de.schnettler.tvtracker.databinding.AccountFragmentBinding
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull

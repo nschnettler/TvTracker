@@ -1,4 +1,4 @@
-package de.schnettler.tvtracker
+package de.schnettler.tvtracker.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.airbnb.epoxy.Carousel
+import de.schnettler.tvtracker.R
 import de.schnettler.tvtracker.databinding.MainActivityBinding
 import de.schnettler.tvtracker.util.*
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -24,7 +25,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.main_activity)
+        binding = DataBindingUtil.setContentView(this,
+            R.layout.main_activity
+        )
         binding.root.systemUiVisibility = SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or SYSTEM_UI_FLAG_LAYOUT_STABLE
         navController = this.findNavController(R.id.nav_host_fragment)
         NavigationUI.setupWithNavController(binding.bottomNavigation, navController)
@@ -42,7 +45,8 @@ class MainActivity : AppCompatActivity() {
                     if (!isDarkTheme(resources)) {
                         setLightStatusBar(window.decorView)
                     }
-                    setStatusBarColor(resources, R.color.colorBackgroundTransparent, window, theme)
+                    setStatusBarColor(resources,
+                        R.color.colorBackgroundTransparent, window, theme)
                 }
             }
         }

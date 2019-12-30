@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="de.schnettler.tvtracker.AuthViewModel" />
+            type="de.schnettler.tvtracker.ui.AuthViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

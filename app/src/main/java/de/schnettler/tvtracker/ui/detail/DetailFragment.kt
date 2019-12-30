@@ -10,8 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
-import de.schnettler.tvtracker.AuthViewModel
-import de.schnettler.tvtracker.MainActivity
+import de.schnettler.tvtracker.ui.AuthViewModel
+import de.schnettler.tvtracker.ui.MainActivity
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.data.models.ShowDomain

@@ -1,6 +1,5 @@
 package de.schnettler.tvtracker.util
 
-import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -9,12 +8,7 @@ import android.util.AttributeSet
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
@@ -23,8 +17,6 @@ import androidx.transition.ChangeBounds
 import androidx.transition.TransitionManager
 import com.airbnb.epoxy.*
 import com.google.android.material.appbar.AppBarLayout
-import de.schnettler.tvtracker.AuthViewModel
-import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.DateTimeFormatterBuilder

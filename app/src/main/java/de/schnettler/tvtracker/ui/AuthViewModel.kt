@@ -1,4 +1,4 @@
-package de.schnettler.tvtracker
+package de.schnettler.tvtracker.ui
 
 import androidx.lifecycle.*
 import de.schnettler.tvtracker.data.models.AuthTokenType

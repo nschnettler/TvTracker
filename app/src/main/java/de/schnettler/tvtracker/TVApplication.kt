@@ -1,9 +1,9 @@
-package de.schnettler.tvtracker.util
+package de.schnettler.tvtracker
 
 import android.app.Application
 import androidx.room.Room
 import com.facebook.stetho.Stetho
-import de.schnettler.tvtracker.AuthViewModel
+import de.schnettler.tvtracker.ui.AuthViewModel
 import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.db.Database
 import de.schnettler.tvtracker.data.models.EpisodeDomain
@@ -33,33 +33,7 @@ class TVApplication: Application() {
         startKoin{
             androidLogger()
             androidContext(this@TVApplication)
-            modules(appModule)
+            modules(listOf(databaseModule, repositoryModule, viewModelModule))
         }
     }
-}
-
-val appModule = module {
-    //Database
-    single { Room.databaseBuilder(androidContext(), Database::class.java, "shows").fallbackToDestructiveMigration().build() }
-
-    //Dao
-    single {get<Database>().showDao}
-    single {get<Database>().authDao}
-
-    //Show Repository
-    single<IShowRepository> { ShowRepository(
-        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
-        get()) }
-    single { AuthRepository(
-        AuthDataSourceRemote(RetrofitClient.tvdbNetworkService, RetrofitClient.showsNetworkService),
-        get()) }
-    single { EpisodeRepository(
-        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
-        get()) }
-
-    //ViewModels
-    viewModel { DiscoverViewModel(get()) }
-    viewModel { (show : ShowDomain) -> DetailViewModel(show, get(), get()) }
-    viewModel { AuthViewModel(get()) }
-    viewModel { (episode: EpisodeDomain, tmdbId: String) -> EpisodeViewModel(episode, tmdbId, get()) }
 }
