@@ -1,25 +1,16 @@
 package de.schnettler.tvtracker.ui.episode
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.schnettler.tvtracker.data.api.RetrofitClient
-import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.repository.show.EpisodeRepository
-import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class EpisodeViewModel(var episode: EpisodeDomain, var showTmdbId: String, val context: Application) : ViewModel() {
+class EpisodeViewModel(var episode: EpisodeDomain, private var showTmdbId: String, private val episodeRepository: EpisodeRepository) : ViewModel() {
 
-    private val episodeRepository = EpisodeRepository(
-        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
-        getDatabase(context).trendingShowsDao,
-        viewModelScope
-    )
-    val episodeList = episodeRepository.getEpisodes(episode.showId)
+    val episodeList = episodeRepository.getEpisodes(episode.showId, viewModelScope)
 
     init {
         startRefresh(episode.season, episode.number, episode.id)

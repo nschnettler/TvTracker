@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
@@ -19,14 +18,16 @@ import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
 import de.schnettler.tvtracker.util.*
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import timber.log.Timber
+import org.koin.android.viewmodel.ext.android.getViewModel
+import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 
 class DetailFragment : Fragment() {
 
     private lateinit var detailViewModel: DetailViewModel
-    private lateinit var authViewModel: AuthViewModel
     private lateinit var binding: DetailFragmentBinding
+    private val authViewModel: AuthViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,8 +41,7 @@ class DetailFragment : Fragment() {
 
         val args = DetailFragmentArgs.fromBundle(arguments!!)
         val show = args.show
-        detailViewModel = ViewModelProviders.of(this, DetailViewModel.Factory(show, this.activity!!.application)).get(DetailViewModel::class.java)
-        authViewModel = getViewModel {AuthViewModel(activity!!.application)}
+        detailViewModel = getViewModel { parametersOf(show) }
         binding.viewModel = detailViewModel
 
         val controller = DetailController()
@@ -61,7 +61,7 @@ class DetailFragment : Fragment() {
 
         //StatusBar Icon Color
         binding.appbar.addOnOffsetChangedListener(object : AppBarStateChangedListener() {
-            override fun onStateChanged(state: AppBarStateChangedListener.State) {
+            override fun onStateChanged(state: State) {
                 when(state) {
                     State.COLLAPSED -> {
                         if (!isDarkTheme(resources)) {

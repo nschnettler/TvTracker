@@ -12,7 +12,8 @@ import de.schnettler.tvtracker.R
 import de.schnettler.tvtracker.databinding.EpisodeBottomSheetBinding
 import de.schnettler.tvtracker.util.SnapOnScrollListener
 import de.schnettler.tvtracker.util.SnapOnScrollListener.Companion.NOTIFY_ON_SCROLL_STATE_IDLE
-import de.schnettler.tvtracker.util.getViewModel
+import org.koin.android.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
 
 
 class EpisodeFragment : BottomSheetDialogFragment() {
@@ -35,13 +36,7 @@ class EpisodeFragment : BottomSheetDialogFragment() {
 
         //Binding & ViewModel
         binding = EpisodeBottomSheetBinding.inflate(inflater)
-        viewModel = getViewModel {
-            EpisodeViewModel(
-                args.episode,
-                args.show.tmdbId,
-                activity!!.application
-            )
-        }
+        viewModel = getViewModel { parametersOf(args.episode, args.show.tmdbId) }
 
         //Epoxy
         val controller = EpisodeController()

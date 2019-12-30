@@ -1,11 +1,7 @@
 package de.schnettler.tvtracker
 
-import android.app.Application
 import androidx.lifecycle.*
-import de.schnettler.tvtracker.data.api.RetrofitClient
-import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.models.AuthTokenType
-import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceRemote
 import de.schnettler.tvtracker.data.repository.auth.AuthRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,11 +9,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 
-class AuthViewModel(val context: Application) : ViewModel() {
-    private val authRepository = AuthRepository(
-        AuthDataSourceRemote(RetrofitClient.tvdbNetworkService, RetrofitClient.showsNetworkService),
-        getDatabase(context).authDao)
-
+class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
     //State
     private val _startAuthentication = MutableLiveData<Boolean>()
     val startAuthentication: LiveData<Boolean>

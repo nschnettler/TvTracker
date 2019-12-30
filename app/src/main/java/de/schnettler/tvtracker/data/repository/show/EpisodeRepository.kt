@@ -1,26 +1,21 @@
 package de.schnettler.tvtracker.data.repository.show
 
-import androidx.lifecycle.Transformations
 import androidx.paging.toLiveData
 import de.schnettler.tvtracker.data.Result
 import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.mapping.*
-import de.schnettler.tvtracker.data.models.EpisodeDomain
-import de.schnettler.tvtracker.data.models.SeasonDomain
 import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 
 class EpisodeRepository(
     private val remoteService: ShowDataSourceRemote,
-    private val localDao: ShowDao,
-    private val scope: CoroutineScope
-) {
+    private val localDao: ShowDao) {
     private val episodeMapper = ListMapperWithId(EpisodeMapper)
 
     /*
      * Episode Details
      */
-    fun getEpisodes(showID: Long) = localDao.getEpisodes(showID).map {
+    fun getEpisodes(showID: Long, scope: CoroutineScope) = localDao.getEpisodes(showID).map {
         EpisodeFullMapper.mapToDomain(it)
     }.toLiveData(pageSize = 1, boundaryCallback = EpisodeBoundaryCallback(this, scope))
 

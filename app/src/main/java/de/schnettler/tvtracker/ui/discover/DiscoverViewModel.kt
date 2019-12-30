@@ -1,28 +1,21 @@
 package de.schnettler.tvtracker.ui.discover
 
-import android.app.Application
-import androidx.lifecycle.*
-import de.schnettler.tvtracker.data.api.RetrofitClient
-import de.schnettler.tvtracker.data.db.getDatabase
-import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
-import de.schnettler.tvtracker.data.repository.show.ShowRepositoryImpl
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import de.schnettler.tvtracker.util.TopListType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class DiscoverViewModel(val context: Application) : AndroidViewModel(context) {
-    private val showRepository = ShowRepositoryImpl(
-        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
-        getDatabase(context).trendingShowsDao
-    )
-
-    //Trending Shows
-    val trendingShows = showRepository.getTopList(TopListType.TRENDING)
-    val popularShows = showRepository.getTopList(TopListType.POPULAR)
-    val anticipatedShows = showRepository.getTopList(TopListType.ANTICIPATED)
-    val recommendedShows = showRepository.getTopList(TopListType.RECOMMENDED)
+class DiscoverViewModel(private val repo: ShowRepository): ViewModel() {
+    val trendingShows = repo.getTopList(TopListType.TRENDING)
+    val popularShows = repo.getTopList(TopListType.POPULAR)
+    val anticipatedShows = repo.getTopList(TopListType.ANTICIPATED)
+    val recommendedShows = repo.getTopList(TopListType.RECOMMENDED)
 
     private val _loggedIn = MutableLiveData<Boolean>()
     val loggedIn: LiveData<Boolean> get() = _loggedIn
@@ -37,9 +30,9 @@ class DiscoverViewModel(val context: Application) : AndroidViewModel(context) {
      fun onRefresh() {
          _isRefreshing.value = true
          viewModelScope.launch {
-             showRepository.refreshShowList(TopListType.TRENDING)
-             showRepository.refreshShowList(TopListType.POPULAR)
-             showRepository.refreshShowList(TopListType.ANTICIPATED)
+             repo.refreshShowList(TopListType.TRENDING)
+             repo.refreshShowList(TopListType.POPULAR)
+             repo.refreshShowList(TopListType.ANTICIPATED)
          }
          _isRefreshing.value = false
     }
@@ -50,7 +43,7 @@ class DiscoverViewModel(val context: Application) : AndroidViewModel(context) {
         if (newValue) {
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
-                    showRepository.refreshShowList(TopListType.RECOMMENDED, token)
+                    repo.refreshShowList(TopListType.RECOMMENDED, token)
                 }
             }
         }

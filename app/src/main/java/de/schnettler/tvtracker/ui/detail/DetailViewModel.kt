@@ -1,36 +1,25 @@
 package de.schnettler.tvtracker.ui.detail
 
-import android.app.Application
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
-import de.schnettler.tvtracker.data.api.RetrofitClient
-import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.repository.show.EpisodeRepository
-import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
-import de.schnettler.tvtracker.data.repository.show.ShowRepositoryImpl
+import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 
-class DetailViewModel(var show: ShowDomain, val context: Application) : StateViewModel<DetailViewState>() {
+class DetailViewModel(
+    var show: ShowDomain,
+    private val showRepository: ShowRepository,
+    private val episodeRepository: EpisodeRepository
+) : StateViewModel<DetailViewState>() {
     override val state = MediatorLiveData<DetailViewState>()
-    private val showRepository = ShowRepositoryImpl(
-        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
-        getDatabase(context).trendingShowsDao
-    )
-    private val episodeRepository = EpisodeRepository(
-        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
-        getDatabase(context).trendingShowsDao,
-        viewModelScope
-    )
 
     private val showDetails = showRepository.getShowDetails(show.id)
     private val showCast = showRepository.getShowCast(show.tvdbId!!)
@@ -61,7 +50,7 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
         state.addSource(showDetails) {
             //Details Changed
             Timber.i("Show Details Changed")
-            updateState {state ->
+            updateState { state ->
                 state.copy(details = it)
             }
         }
@@ -131,19 +120,6 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
                     it.copy(expandedSeasons = it.expandedSeasons - season.number)
                 }
             }
-        }
-    }
-
-    /**
-     * Factory for constructing DevByteViewModel with parameter
-     */
-    class Factory(val show: ShowDomain, val app: Application ) : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return DetailViewModel(show, app) as T
-            }
-            throw IllegalArgumentException("Unable to construct viewmodel")
         }
     }
 }

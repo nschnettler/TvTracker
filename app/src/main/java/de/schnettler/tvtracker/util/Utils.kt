@@ -60,42 +60,6 @@ class SwipeRefreshLayout(context: Context, attrs: AttributeSet? = null) : SwipeR
     }
 }
 
-/**
- * Factory for constructing DevByteViewModel with parameter
- */
-class ViewModelFactory(val app: Application) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(DiscoverViewModel::class.java)) {
-            return DiscoverViewModel(app) as T
-        }
-        if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
-            return AuthViewModel(app) as T
-        }
-        throw IllegalArgumentException("Unable to construct viewmodel")
-    }
-}
-class BaseViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        @Suppress("UNCHECKED_CAST")
-        return creator() as T
-    }
-}
-
-inline fun <reified T : ViewModel> Fragment.getViewModel(noinline creator: (() -> T)? = null): T {
-    return if (creator == null)
-        ViewModelProviders.of(this).get(T::class.java)
-    else
-        ViewModelProviders.of(this, BaseViewModelFactory(creator)).get(T::class.java)
-}
-
-inline fun <reified T : ViewModel> FragmentActivity.getViewModel(noinline creator: (() -> T)? = null): T {
-    return if (creator == null)
-        ViewModelProviders.of(this).get(T::class.java)
-    else
-        ViewModelProviders.of(this, BaseViewModelFactory(creator)).get(T::class.java)
-}
-
 class MaxLinesToggleClickListener(private val collapsedLines: Int) : View.OnClickListener {
     private val transition = ChangeBounds().apply {
         duration = 200
