@@ -17,7 +17,7 @@ class DataBaseShows {
         CastEntity::class, AuthTokenEntity::class,
         RelationEntity::class, SeasonEntity::class,
         EpisodeEntity::class, EpisodeDetailEntity::class],
-        version = 14)
+        version = 15)
     abstract class ShowsDatabase : RoomDatabase() {
         //abstract val showDao: ShowDao
         abstract val trendingShowsDao: ShowDao

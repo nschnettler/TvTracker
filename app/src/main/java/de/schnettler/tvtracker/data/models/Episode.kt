@@ -1,7 +1,9 @@
 package de.schnettler.tvtracker.data.models
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
 data class EpisodeResponse(
     val season: Long,
@@ -15,21 +17,24 @@ data class EpisodeResponse(
 @Entity(tableName = "table_episode")
 data class EpisodeEntity(
     @PrimaryKey val id: Long,
-    val seasonId: Long,
+    val showId: Long,
+    val seasonId: String,
     val season: Long,
     val number: Long,
     val title: String?,
     val overview: String?
 )
 
+@Parcelize
 data class EpisodeDomain(
     val id: Long,
-    val seasonId: Long,
+    val showId: Long,
+    val seasonId: String,
     val season: Long,
     val number: Long,
     val title: String?,
     val overview: String?
-)
+): Parcelable
 
 data class EpisodeTranslationResponse(
     val title: String?,

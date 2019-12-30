@@ -68,8 +68,7 @@ interface Trakt {
     @GET("shows/{tv_id}/seasons/{season}")
     suspend fun getSeasonEpisodes(
         @Path("tv_id") id: Long,
-        @Path("season") seasonNumber: Long,
-        @Query("translations") language: String
+        @Path("season") seasonNumber: Long
     ): Response<List<EpisodeResponse>>
 
     /*

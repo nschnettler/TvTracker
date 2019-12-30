@@ -1,13 +1,17 @@
 package de.schnettler.tvtracker.ui.detail
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
 import de.schnettler.tvtracker.data.api.RetrofitClient
 import de.schnettler.tvtracker.data.db.getDatabase
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
+import de.schnettler.tvtracker.data.repository.show.EpisodeRepository
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import kotlinx.coroutines.Dispatchers
@@ -22,19 +26,32 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
         getDatabase(context).trendingShowsDao
     )
-
-    private val _episode = MutableLiveData<EpisodeDomain>()
-    val episode: LiveData<EpisodeDomain>
-        get() = _episode
-
-    val episodeDetails = Transformations.switchMap(episode) { it->
-        showRepository.getEpisodeDetails(it.id)
-    };
+    private val episodeRepository = EpisodeRepository(
+        ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
+        getDatabase(context).trendingShowsDao,
+        viewModelScope
+    )
 
     private val showDetails = showRepository.getShowDetails(show.id)
     private val showCast = showRepository.getShowCast(show.tvdbId!!)
     private val relatedShows = showRepository.getRelatedShows(show.id)
     private val seasons = showRepository.getSeasonsWithEpisodes(show.id)
+
+    fun getIndexOfEpisode(episode: EpisodeDomain): Int {
+        Timber.i("Getting Index of Season ${episode.season} Episode ${episode.number}")
+        var result = 0
+
+        //Lower Seasons
+        seasons.value?.forEach {
+            if (it.number < episode.season) {
+                Timber.i("Season ${it.number} Episodes ${it.episodeCount}")
+                result += it.episodeCount?.toInt() ?: 0
+            }
+        }
+        result += episode.number.toInt() - 1
+        Timber.i("Index: $result")
+        return result
+    }
 
     init {
         initState { DetailViewState(show) }
@@ -99,29 +116,20 @@ class DetailViewModel(var show: ShowDomain, val context: Application) : StateVie
         when (expand) {
             true -> {
                 updateState {
-                    it.copy(expandedSeasons = it.expandedSeasons + season.id)
+                    it.copy(expandedSeasons = it.expandedSeasons + season.number)
                 }
 
                 //Refresh Episodes
                 viewModelScope.launch {
                     withContext(Dispatchers.IO) {
-                        showRepository.refreshEpisodes(show.id, season.number, season.id)
+                        episodeRepository.refreshEpisodes(show.id, season.number)
                     }
                 }
             }
             false -> {
                 updateState {
-                    it.copy(expandedSeasons = it.expandedSeasons - season.id)
+                    it.copy(expandedSeasons = it.expandedSeasons - season.number)
                 }
-            }
-        }
-    }
-
-    fun onEpisodeSelected(episode: EpisodeDomain) {
-        _episode.value = episode
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                showRepository.refreshEpisodeDetails(showId = show.tmdbId, seasonNumber = episode.season, episodeNumber = episode.number, episodeId = episode.id)
             }
         }
     }

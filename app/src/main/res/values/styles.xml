@@ -9,22 +9,15 @@
         <item name="colorSurface">@color/colorBackgroundElevated</item>
         <item name="elevationOverlayEnabled">false</item>
         <item name="fontFamily">@font/nunito</item>
-        <!--
-
-
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-        <item name="colorOnPrimarySurface">#0f0</item>
- -->
     </style>
-<!--
-    <style name="TextAppearance.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
 
-    </style> -->
-
-    <style name="TextAppearance.CollapsedToolbar" parent="@style/TextAppearance.Design.CollapsingToolbar.Expanded">
-        <item name="android:textColor">#FFF</item>
+    <style name="Widget.AppTheme.BottomSheet" parent="@style/Theme.MaterialComponents.DayNight.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="colorSecondary">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="android:navigationBarColor">@color/colorBackgroundElevated</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
     </style>
 
     <style name="ChipStyle" parent="Widget.MaterialComponents.Chip.Action">

@@ -1,6 +1,10 @@
 package de.schnettler.tvtracker.data.repository.show
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.paging.Config
+import androidx.paging.PagedList
+import androidx.paging.toLiveData
 import de.schnettler.tvtracker.data.Result
 import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.mapping.*
@@ -15,7 +19,6 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
     private val relatedMapper = ListMapperWithId(ShowRelatedMapper)
     private val listedShowMapper = ListMapper(ListedSHowMapper)
     private val seasonMapper = ListMapperWithId(SeasonSummaryMapper)
-    private val episodeMapper = ListMapperWithId(EpisodeMapper)
     private val seasonWithEpisodeMapper = ListMapper(SeasonWithEpisodeMapper)
 
     /*
@@ -55,7 +58,7 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
         val result = remoteService.getRelated(showId)
         if (result is Result.Success) {
             //Insert in DB
-            val showEntities = relatedMapper.mapToDatabase(result.data, id = showId)
+            val showEntities = relatedMapper.mapToDatabase(result.data, showId)
             showEntities?.let { localDao.insertShowRelations(showEntities) }
 
             //Refresh Poster
@@ -90,52 +93,12 @@ class ShowRepository(private val remoteService: ShowDataSourceRemote, private va
      */
     suspend fun refreshSeasons(showId: Long) {
         when(val result = remoteService.getSeasonsOfShow(showId)) {
-            is Result.Success -> {
-                //Insert in DB
-                seasonMapper.mapToDatabase(result.data, showId)?.let { localDao.insertSeasons(it) }
-            }
-            is Result.Error -> {
-                Timber.e(result.exception)
-            }
+            is Result.Success -> seasonMapper.mapToDatabase(result.data, showId)?.let { localDao.insertSeasons(it) }
+            is Result.Error -> Timber.e(result.exception)
         }
     }
     fun getSeasonsWithEpisodes(showId: Long) = Transformations.map(localDao.getSeasonsWithEpisodes(showId)) {
         seasonWithEpisodeMapper.mapToDomain(it)
-    }
-
-
-    /*
-    * Season Episodes
-    */
-    suspend fun refreshEpisodes(showId: Long, seasonNumber: Long, seasonId: Long) {
-        when(val result = remoteService.getEpisodesOfSeason(showId, seasonNumber)) {
-            is Result.Success -> {
-                //Insert in DB
-                episodeMapper.mapToDatabase(result.data, seasonId)?.let { localDao.insertEpisodes(it) }
-            }
-            is Result.Error -> {
-                Timber.e(result.exception)
-            }
-        }
-    }
-
-    /*
-     * Episode Details
-     */
-    suspend fun refreshEpisodeDetails(showId: String, seasonNumber: Long, episodeNumber: Long, episodeId: Long) {
-        when(val result = remoteService.getEpisodeDetail(showId, seasonNumber, episodeNumber)) {
-            is Result.Success -> {
-                localDao.insertEpisodeDetail(EpisodeDetailMapper.mapToDatabase(result.data, episodeId))
-            }
-            is Result.Error -> {
-                Timber.e(result.exception)
-            }
-        }
-    }
-    fun getEpisodeDetails(episodeId: Long) = Transformations.map(localDao.getEpisodeDetails(episodeId)) {
-        it?.let {entity ->
-            EpisodeDetailMapper.mapToDomain(entity)
-        }
     }
 
     /*

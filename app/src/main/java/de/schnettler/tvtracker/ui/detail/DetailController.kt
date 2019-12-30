@@ -9,11 +9,12 @@ import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.util.getEmoji
+import de.schnettler.tvtracker.util.horizontalCarousel
 import de.schnettler.tvtracker.util.isoToDate
 import de.schnettler.tvtracker.util.withModelsFrom
 import timber.log.Timber
 
-class DetailTypedController: TypedEpoxyController<DetailViewState>() {
+class DetailController: TypedEpoxyController<DetailViewState>() {
     var callbacks: Callbacks? = null
     interface Callbacks {
         fun onShowClicked(view: View, item: ShowDomain)
@@ -56,7 +57,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                 }
 
                 //Genres
-                carousel {
+                horizontalCarousel {
                     id("genres")
                     withModelsFrom(it.genres) {
                         ShowGenreBindingModel_()
@@ -74,7 +75,7 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                     title("Cast")
                     showExpand(false)
                 }
-                carousel {
+                horizontalCarousel {
                     id("cast")
                     withModelsFrom(showCast) {
                         CastBindingModel_()
@@ -98,10 +99,10 @@ class DetailTypedController: TypedEpoxyController<DetailViewState>() {
                         description("${season.episodeCount} Episodes • ${season.rating}% Rating")
                         imageText("${season.number}")
                         onClickListener { _, _, _, _ ->
-                            callbacks?.onSeasonClicked(season, expandedSeasons.contains(season.id))
+                            callbacks?.onSeasonClicked(season, expandedSeasons.contains(season.number))
                         }
                     }
-                    if (expandedSeasons.contains(season.id)) {
+                    if (expandedSeasons.contains(season.number)) {
                         season.episodes?.forEach {episode ->
                             episodeItem {
                                 id(episode.id)

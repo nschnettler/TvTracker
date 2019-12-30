@@ -6,10 +6,10 @@ import java.util.*
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
-object ListedSHowMapper: IndexedMapper<ShowListResponse, TopListWithShow, ShowDomain> {
+object ListedSHowMapper : IndexedMapper<ShowListResponse, TopListWithShow, ShowDomain> {
     override fun mapToDatabase(input: ShowListResponse, index: Int) = TopListWithShow(
         TopListEntity(
-            type = when(input){
+            type = when (input) {
                 is TrendingResponse -> TopListType.TRENDING.name
                 is PopularResponse -> TopListType.POPULAR.name
                 is AnticipatedResponse -> TopListType.ANTICIPATED.name
@@ -82,11 +82,15 @@ object ShowDetailsMapper : Mapper<ShowDetailResponse, ShowDetailEntity, ShowDeta
 }
 
 object ShowRelatedMapper : IndexedMapperWithId<ShowResponse, RelationWithShow, ShowDomain> {
-    override fun mapToDatabase(input: ShowResponse, index: Int, id: Long): RelationWithShow {
+    override fun mapToDatabase(
+        input: ShowResponse,
+        index: Int,
+        vararg ids: Long
+    ): RelationWithShow {
         return RelationWithShow(
             RelationEntity(
                 index = index,
-                sourceId = id,
+                sourceId = ids[0],
                 targetId = input.ids.trakt
             ),
             ShowMapper.mapToDatabase(input)
@@ -99,15 +103,15 @@ object ShowRelatedMapper : IndexedMapperWithId<ShowResponse, RelationWithShow, S
 }
 
 object SeasonSummaryMapper : IndexedMapperWithId<SeasonResponse, SeasonEntity, SeasonDomain> {
-    override fun mapToDatabase(input: SeasonResponse, index: Int, id: Long) =
+    override fun mapToDatabase(input: SeasonResponse, index: Int, vararg ids: Long): SeasonEntity =
         SeasonEntity(
-            id = input.ids.trakt,
+            id = "${ids[0]}_${input.number}",
             rating = input.rating.times(10).roundToLong(),
             firstAired = input.firstAired,
             overview = input.overview,
             title = input.title,
             number = input.number,
-            showId = id,
+            showId = ids[0],
             episodeCount = input.episodeCount
         )
 
@@ -124,13 +128,18 @@ object SeasonSummaryMapper : IndexedMapperWithId<SeasonResponse, SeasonEntity, S
 }
 
 object EpisodeMapper : IndexedMapperWithId<EpisodeResponse, EpisodeEntity, EpisodeDomain> {
-    override fun mapToDatabase(input: EpisodeResponse, index: Int, id: Long): EpisodeEntity {
+    override fun mapToDatabase(
+        input: EpisodeResponse,
+        index: Int,
+        vararg ids: Long
+    ): EpisodeEntity {
         val translation = input.translations.find {
             it.language == Locale.getDefault().language
         }
         return EpisodeEntity(
             id = input.ids.trakt,
-            seasonId = id,
+            showId = ids[0],
+            seasonId = "${ids[0]}_${input.season}",
             number = input.number,
             title = translation?.title ?: input.title,
             overview = translation?.overview ?: input.overview,
@@ -141,6 +150,7 @@ object EpisodeMapper : IndexedMapperWithId<EpisodeResponse, EpisodeEntity, Episo
     override fun mapToDomain(input: EpisodeEntity): EpisodeDomain =
         EpisodeDomain(
             id = input.id,
+            showId = input.showId,
             seasonId = input.seasonId,
             number = input.number,
             title = input.title,
@@ -161,11 +171,12 @@ object SeasonWithEpisodeMapper : IndexedMapper<Any, SeasonWithEpisodes, SeasonDo
     }
 }
 
-object EpisodeDetailMapper: MapperWithId<EpisodeDetailResponse, EpisodeDetailEntity, EpisodeDetailDomain> {
+object EpisodeDetailMapper :
+    MapperWithId<EpisodeDetailResponse, EpisodeDetailEntity, EpisodeDetailDomain> {
     override fun mapToDatabase(
         input: EpisodeDetailResponse,
         id: Long
-    ) =  EpisodeDetailEntity(
+    ) = EpisodeDetailEntity(
         episodeId = id,
         airDate = input.airDate,
         stillPath = input.stillPath,
@@ -177,5 +188,24 @@ object EpisodeDetailMapper: MapperWithId<EpisodeDetailResponse, EpisodeDetailEnt
         airDate = input.airDate,
         stillPath = input.stillPath,
         voteAverage = input.voteAverage
+    )
+}
+
+object EpisodeFullMapper : Mapper<Any, EpisodeWithDetails, EpisodeFullDomain> {
+    override fun mapToDatabase(input: Any): EpisodeWithDetails {
+        TODO("not implemented")
+    }
+
+    override fun mapToDomain(input: EpisodeWithDetails) = EpisodeFullDomain(
+        id = input.episode.id,
+        showId = input.episode.showId,
+        seasonId = input.episode.seasonId,
+        season = input.episode.season,
+        number = input.episode.number,
+        title = input.episode.title,
+        overview = input.episode.overview,
+        airDate = input.details?.airDate,
+        stillPath = input.details?.stillPath,
+        voteAverage = input.details?.voteAverage
     )
 }

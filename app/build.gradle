@@ -39,6 +39,12 @@ android {
     kapt {
         correctErrorTypes = true
     }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
 }
 
 dependencies {
@@ -59,6 +65,7 @@ dependencies {
     //Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$version_lifecycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$version_lifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-rc03"
 
     //Material Components
     implementation "com.google.android.material:material:$version_material"
@@ -124,4 +131,6 @@ dependencies {
 
     //OkHttp
     implementation "com.squareup.okhttp3:okhttp:$version_okhttp"
+
+    implementation "com.ryanjeffreybrooks:indefinitepagerindicator:1.0.10"
 }

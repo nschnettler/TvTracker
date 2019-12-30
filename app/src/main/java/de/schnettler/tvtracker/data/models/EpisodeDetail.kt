@@ -27,11 +27,24 @@ data class EpisodeDetailDomain(
     val voteAverage: Int
 )
 
+data class EpisodeFullDomain(
+    val id: Long,
+    val showId: Long,
+    val seasonId: String,
+    val season: Long,
+    val number: Long,
+    val title: String?,
+    val overview: String?,
+    val airDate: String?,
+    val stillPath: String?,
+    val voteAverage: Int?
+)
+
 class EpisodeWithDetails(
     @Embedded val episode: EpisodeEntity,
     @Relation(
         parentColumn = "id",
         entityColumn = "episodeId"
     )
-    val details: EpisodeDetailEntity
+    val details: EpisodeDetailEntity?
 )

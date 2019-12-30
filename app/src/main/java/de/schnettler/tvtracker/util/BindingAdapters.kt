@@ -6,11 +6,11 @@ import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import coil.api.clear
 import coil.api.load
 import de.schnettler.tvtracker.data.api.ImageQuality
 import de.schnettler.tvtracker.data.api.TMDb
 import de.schnettler.tvtracker.data.api.TVDB
-import timber.log.Timber
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,9 +18,7 @@ import java.util.*
 
 @BindingAdapter(value = ["imageUrl", "imageQuality"], requireAll = true)
 fun bindImage(imgView: ImageView, imageUrl: String?, imageQuality: ImageQuality) {
-    imageUrl?.let {
-        bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + imageQuality.quality +  imageUrl)
-    }
+    bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + imageQuality.quality +  imageUrl)
 }
 
 @BindingAdapter("tvdbUrl")
@@ -37,15 +35,17 @@ fun bindBottomSheetHeader(imgView: ImageView, imageUrl: String?) {
             outline?.setRoundRect(0, 0, view!!.width, (view.height+ 54F).toInt(), 54F)
         }
     }
-    imageUrl?.let {
-        bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + ImageQuality.HIGH.quality +  imageUrl)
-    }
+    bindImageFromUrl(imgView, TMDb.IMAGE_ENDPOINT + ImageQuality.HIGH.quality +  imageUrl)
 }
 
-fun bindImageFromUrl(imageView: ImageView, fullUrl: String) {
+fun bindImageFromUrl(imageView: ImageView, fullUrl: String?) {
     imageView.clipToOutline = true
-    imageView.load(fullUrl) {
-        crossfade(true)
+    if (fullUrl.isNullOrEmpty()) {
+        imageView.clear()
+    } else {
+        imageView.load(fullUrl) {
+            crossfade(true)
+        }
     }
 }
 
@@ -61,9 +61,16 @@ fun maxLinesClickListener(view: TextView, oldCollapsedMaxLines: Int, newCollapse
 
 @BindingAdapter("date")
 fun bindDate(view: TextView, date: String?) {
-    date?.let {dateString ->
-        SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(dateString)?.let {
-            view.text = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(it)
-        }
-    }
+   if (date.isNullOrEmpty()) {
+       view.text = ""
+   } else {
+       val formatIn = SimpleDateFormat("yyyy-mm-dd")
+       val dateIn = formatIn.parse(date)
+       val formatOut = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
+
+       dateIn?.let {
+           val dateOut = formatOut.format(it)
+           view.text = dateOut
+       }
+   }
 }
