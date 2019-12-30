@@ -11,8 +11,8 @@ import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceRemote
 import de.schnettler.tvtracker.data.repository.auth.AuthRepository
 import de.schnettler.tvtracker.data.repository.show.EpisodeRepository
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
+import de.schnettler.tvtracker.data.repository.show.IShowRepository
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
-import de.schnettler.tvtracker.data.repository.show.ShowRepositoryImpl
 import de.schnettler.tvtracker.ui.detail.DetailViewModel
 import de.schnettler.tvtracker.ui.discover.DiscoverViewModel
 import de.schnettler.tvtracker.ui.episode.EpisodeViewModel
@@ -39,7 +39,7 @@ class TVApplication: Application() {
 
 val appModule = module {
     //Show Repository
-    single<ShowRepository> { ShowRepositoryImpl(
+    single<IShowRepository> { ShowRepository(
         ShowDataSourceRemote(RetrofitClient.showsNetworkService, RetrofitClient.tvdbNetworkService, RetrofitClient.imagesNetworkService),
         getDatabase(androidContext()).trendingShowsDao) }
     single { AuthRepository(

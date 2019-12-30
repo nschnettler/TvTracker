@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.schnettler.tvtracker.data.repository.show.ShowRepository
+import de.schnettler.tvtracker.data.repository.show.IShowRepository
 import de.schnettler.tvtracker.util.TopListType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class DiscoverViewModel(private val repo: ShowRepository): ViewModel() {
+class DiscoverViewModel(private val repo: IShowRepository): ViewModel() {
     val trendingShows = repo.getTopList(TopListType.TRENDING)
     val popularShows = repo.getTopList(TopListType.POPULAR)
     val anticipatedShows = repo.getTopList(TopListType.ANTICIPATED)
