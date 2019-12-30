@@ -27,28 +27,13 @@ class DiscoverFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
 
-        controller = DiscoverController(null)
-        //controller.onRestoreInstanceState(savedInstanceState)
+        controller = DiscoverController()
         val recycler = binding.recyclerView
         recycler.adapter = controller.adapter
 
-        //Recyclerviews
-        viewModel.trendingShows.observe(viewLifecycleOwner, Observer{
-            controller.trendingShows = it
-            controller.requestModelBuild()
-        })
-        viewModel.popularShows.observe(viewLifecycleOwner, Observer {
-            controller.popularShows = it
-            controller.requestModelBuild()
-        })
-        viewModel.anticipatedShows.observe(viewLifecycleOwner, Observer {
-            controller.anticipatedShows = it
-            controller.requestModelBuild()
-        })
-        viewModel.recommendedShows.observe(viewLifecycleOwner, Observer {
-            controller.recommendedShows = it
-            controller.requestModelBuild()
-        })
+        viewModel.observeState(viewLifecycleOwner) {
+            controller.setData(it)
+        }
 
         authViewModel.traktLoginStatus.observe(viewLifecycleOwner, Observer {
             if (it) {
