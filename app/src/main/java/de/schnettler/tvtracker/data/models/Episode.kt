@@ -14,11 +14,11 @@ data class EpisodeResponse(
     val translations: List<EpisodeTranslationResponse>
 )
 
-@Entity(tableName = "table_episode")
+@Entity(tableName = "table_episode", primaryKeys = ["showId", "season", "number"])
 data class EpisodeEntity(
-    @PrimaryKey val id: Long,
-    val showId: Long,
     val seasonId: String,
+    val episodeId: String,
+    val showId: Long,
     val season: Long,
     val number: Long,
     val title: String?,
@@ -27,9 +27,7 @@ data class EpisodeEntity(
 
 @Parcelize
 data class EpisodeDomain(
-    val id: Long,
     val showId: Long,
-    val seasonId: String,
     val season: Long,
     val number: Long,
     val title: String?,

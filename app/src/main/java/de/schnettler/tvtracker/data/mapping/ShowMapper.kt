@@ -117,7 +117,6 @@ object SeasonSummaryMapper : IndexedMapperWithId<SeasonResponse, SeasonEntity, S
 
     override fun mapToDomain(input: SeasonEntity) =
         SeasonDomain(
-            id = input.id,
             rating = input.rating,
             firstAired = input.firstAired,
             overview = input.overview,
@@ -137,9 +136,9 @@ object EpisodeMapper : IndexedMapperWithId<EpisodeResponse, EpisodeEntity, Episo
             it.language == Locale.getDefault().language
         }
         return EpisodeEntity(
-            id = input.ids.trakt,
             showId = ids[0],
             seasonId = "${ids[0]}_${input.season}",
+            episodeId = "${ids[0]}_${input.season}_${input.number}",
             number = input.number,
             title = translation?.title ?: input.title,
             overview = translation?.overview ?: input.overview,
@@ -149,9 +148,7 @@ object EpisodeMapper : IndexedMapperWithId<EpisodeResponse, EpisodeEntity, Episo
 
     override fun mapToDomain(input: EpisodeEntity): EpisodeDomain =
         EpisodeDomain(
-            id = input.id,
             showId = input.showId,
-            seasonId = input.seasonId,
             number = input.number,
             title = input.title,
             overview = input.overview,
@@ -175,16 +172,15 @@ object EpisodeDetailMapper :
     MapperWithId<EpisodeDetailResponse, EpisodeDetailEntity, EpisodeDetailDomain> {
     override fun mapToDatabase(
         input: EpisodeDetailResponse,
-        id: Long
-    ) = EpisodeDetailEntity(
-        episodeId = id,
+        vararg ids: Long
+    ): EpisodeDetailEntity = EpisodeDetailEntity(
+        episodeId = "${ids[0]}_${ids[1]}_${ids[2]}",
         airDate = input.airDate,
         stillPath = input.stillPath,
         voteAverage = input.voteAverage.times(10).roundToInt()
     )
 
     override fun mapToDomain(input: EpisodeDetailEntity) = EpisodeDetailDomain(
-        episodeId = input.episodeId,
         airDate = input.airDate,
         stillPath = input.stillPath,
         voteAverage = input.voteAverage
@@ -197,9 +193,7 @@ object EpisodeFullMapper : Mapper<Any, EpisodeWithDetails, EpisodeFullDomain> {
     }
 
     override fun mapToDomain(input: EpisodeWithDetails) = EpisodeFullDomain(
-        id = input.episode.id,
         showId = input.episode.showId,
-        seasonId = input.episode.seasonId,
         season = input.episode.season,
         number = input.episode.number,
         title = input.episode.title,

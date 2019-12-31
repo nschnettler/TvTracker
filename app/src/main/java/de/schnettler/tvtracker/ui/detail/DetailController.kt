@@ -94,7 +94,7 @@ class DetailController: TypedEpoxyController<DetailViewState>() {
                 }
                 seasons.forEach {season ->
                     twoLineList {
-                        id(season.id)
+                        id("s_${season.number}")
                         header(season.title)
                         description("${season.episodeCount} Episodes • ${season.rating}% Rating")
                         imageText("${season.number}")
@@ -105,7 +105,7 @@ class DetailController: TypedEpoxyController<DetailViewState>() {
                     if (expandedSeasons.contains(season.number)) {
                         season.episodes?.forEach {episode ->
                             episodeItem {
-                                id(episode.id)
+                                id("s_${season.number}_e${episode.number}")
                                 header(episode.title)
                                 imageText("#${episode.number}")
                                 onClickListener { _, _, _, _ ->

@@ -19,10 +19,10 @@ class EpisodeRepository(
         EpisodeFullMapper.mapToDomain(it)
     }.toLiveData(pageSize = 1, boundaryCallback = EpisodeBoundaryCallback(this, scope))
 
-    suspend fun refreshEpisodeDetails(showId: String, seasonNumber: Long, episodeNumber: Long, episodeId: Long) {
-        when(val result = remoteService.getEpisodeDetail(showId, seasonNumber, episodeNumber)) {
+    suspend fun refreshEpisodeDetails(id: Long, tmdbId: String, seasonNumber: Long, episodeNumber: Long) {
+        when(val result = remoteService.getEpisodeDetail(tmdbId, seasonNumber, episodeNumber)) {
             is Result.Success -> {
-                localDao.insertEpisodeDetail(EpisodeDetailMapper.mapToDatabase(result.data, episodeId))
+                localDao.insertEpisodeDetail(EpisodeDetailMapper.mapToDatabase(result.data, id, seasonNumber, episodeNumber))
             }
             is Result.Error -> {
                 Timber.e(result.exception)

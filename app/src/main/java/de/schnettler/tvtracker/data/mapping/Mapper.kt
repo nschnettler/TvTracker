@@ -16,7 +16,7 @@ interface IndexedMapperWithId<I, O, P> {
 }
 
 interface MapperWithId<I, O, P> {
-    fun mapToDatabase(input: I, id: Long): O
+    fun mapToDatabase(input: I, vararg ids: Long): O
     fun mapToDomain(input: O): P
 }
 

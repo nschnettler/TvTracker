@@ -14,23 +14,20 @@ data class EpisodeDetailResponse(
 
 @Entity(tableName = "table_episode_details")
 data class EpisodeDetailEntity(
-    @PrimaryKey val episodeId: Long,
+    @PrimaryKey val episodeId: String,
     val airDate: String,
     val stillPath: String?,
     val voteAverage: Int
 )
 
 data class EpisodeDetailDomain(
-    val episodeId: Long,
     val airDate: String,
     val stillPath: String?,
     val voteAverage: Int
 )
 
 data class EpisodeFullDomain(
-    val id: Long,
     val showId: Long,
-    val seasonId: String,
     val season: Long,
     val number: Long,
     val title: String?,
@@ -43,7 +40,7 @@ data class EpisodeFullDomain(
 class EpisodeWithDetails(
     @Embedded val episode: EpisodeEntity,
     @Relation(
-        parentColumn = "id",
+        parentColumn = "episodeId",
         entityColumn = "episodeId"
     )
     val details: EpisodeDetailEntity?

@@ -36,7 +36,7 @@ class EpisodeFragment : BottomSheetDialogFragment() {
 
         //Binding & ViewModel
         binding = EpisodeBottomSheetBinding.inflate(inflater)
-        viewModel = getViewModel { parametersOf(args.episode, args.show.tmdbId) }
+        viewModel = getViewModel { parametersOf(args.episode, args.show) }
 
         //Epoxy
         val controller = EpisodeController()

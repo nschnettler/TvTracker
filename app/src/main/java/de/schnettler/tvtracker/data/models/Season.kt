@@ -23,9 +23,9 @@ data class SeasonIdResponse(
 
 @Entity(tableName = "table_seasons", primaryKeys = ["showId", "number"])
 data class SeasonEntity(
-    val number: Long,
-    val showId: Long,
     val id: String,
+    val showId: Long,
+    val number: Long,
     val rating: Long,
     val title: String,
     val overview: String?,
@@ -45,7 +45,6 @@ data class SeasonWithEpisodes(
 
 data class SeasonDomain(
     val number: Long,
-    val id: String,
     val rating: Long,
     val title: String,
     val overview: String?,

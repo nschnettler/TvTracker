@@ -3,24 +3,25 @@ package de.schnettler.tvtracker.ui.episode
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.schnettler.tvtracker.data.models.EpisodeDomain
+import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.repository.show.EpisodeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class EpisodeViewModel(var episode: EpisodeDomain, private var showTmdbId: String, private val episodeRepository: EpisodeRepository) : ViewModel() {
+class EpisodeViewModel(var episode: EpisodeDomain, private var show: ShowDomain, private val episodeRepository: EpisodeRepository) : ViewModel() {
 
     val episodeList = episodeRepository.getEpisodes(episode.showId, viewModelScope)
 
     init {
-        startRefresh(episode.season, episode.number, episode.id)
+        startRefresh(episode.season, episode.number)
     }
 
     fun refreshDetails(position: Int) {
         val episodes = episodeList.value
         episodes?.let {
             it[position]?.let {episodeAt ->
-                startRefresh(episodeAt.season, episodeAt.number, episodeAt.id)
+                startRefresh(episodeAt.season, episodeAt.number)
             }
 
 //            when (position) {
@@ -35,10 +36,10 @@ class EpisodeViewModel(var episode: EpisodeDomain, private var showTmdbId: Strin
         }
     }
 
-    private fun startRefresh(season: Long, number: Long, id: Long) {
+    private fun startRefresh(season: Long, number: Long) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                episodeRepository.refreshEpisodeDetails(showTmdbId, season, number, id)
+                episodeRepository.refreshEpisodeDetails(show.id, show.tmdbId, season, number)
             }
         }
     }

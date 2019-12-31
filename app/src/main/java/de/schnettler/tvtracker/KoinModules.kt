@@ -45,10 +45,10 @@ val viewModelModule = module {
     viewModel { DiscoverViewModel(get()) }
     viewModel { AuthViewModel(get()) }
     viewModel { (show: ShowDomain) -> DetailViewModel(show, get(), get()) }
-    viewModel { (episode: EpisodeDomain, tmdbId: String) ->
+    viewModel { (episode: EpisodeDomain, show: ShowDomain) ->
         EpisodeViewModel(
             episode,
-            tmdbId,
+            show,
             get()
         )
     }
