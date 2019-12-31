@@ -5,6 +5,7 @@ import de.schnettler.tvtracker.data.Result.Error
 import de.schnettler.tvtracker.data.Result.Success
 import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.mapping.*
+import de.schnettler.tvtracker.data.models.EpisodeEntity
 import de.schnettler.tvtracker.data.models.ShowEntity
 import de.schnettler.tvtracker.data.models.asCastEntryList
 import de.schnettler.tvtracker.util.TopListType
@@ -98,10 +99,29 @@ class ShowRepository(
      */
     override suspend fun refreshSeasons(showId: Long) {
         when (val result = remoteService.getSeasonsOfShow(showId)) {
-            is Success -> seasonMapper.mapToDatabase(
-                result.data,
-                showId
-            )?.let { localDao.insertSeasons(it) }
+            is Success -> {
+                //Insert Seasons
+                seasonMapper.mapToDatabase(result.data, showId)?.let { localDao.insertSeasons(it) }
+                //Insert Dummy Episodes
+                val episodes = mutableListOf<EpisodeEntity>()
+                result.data.forEach { season ->
+                    season.episodeCount?.let { episodeCount ->
+                        for (i in 1..episodeCount) {
+                            episodes.add(
+                                EpisodeEntity(
+                                    seasonId = "${showId}_${season.number}",
+                                    episodeId = "${showId}_${season.number}_$i",
+                                    showId = showId,
+                                    season = season.number,
+                                    number = i,
+                                    title = "Episode $i"
+                                )
+                            )
+                        }
+                    }
+                }
+                localDao.insertDummyEpisodes(episodes)
+            }
             is Error -> Timber.e(result.exception)
         }
     }

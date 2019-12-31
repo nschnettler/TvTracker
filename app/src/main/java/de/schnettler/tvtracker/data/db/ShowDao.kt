@@ -79,6 +79,9 @@ interface ShowDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEpisodes(episodes: List<EpisodeEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertDummyEpisodes(episodes: List<EpisodeEntity>)
+
     /*
      * Season with Episodes
      */

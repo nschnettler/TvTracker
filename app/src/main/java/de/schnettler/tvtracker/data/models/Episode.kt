@@ -21,8 +21,8 @@ data class EpisodeEntity(
     val showId: Long,
     val season: Long,
     val number: Long,
-    val title: String?,
-    val overview: String?
+    val title: String? = null,
+    val overview: String? = null
 )
 
 @Parcelize
