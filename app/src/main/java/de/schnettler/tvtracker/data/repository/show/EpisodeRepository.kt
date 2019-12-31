@@ -17,7 +17,7 @@ class EpisodeRepository(
     /*
      * Episode Details
      */
-    fun getEpisodes(showID: Long, scope: CoroutineScope) = localDao.getEpisodes(showID).map {
+    fun getEpisodes(showID: Long) = localDao.getEpisodes(showID).map {
         EpisodeMapper.mapToDomain(it)
     }.toLiveData(pageSize = 1)
 
@@ -26,7 +26,7 @@ class EpisodeRepository(
             is Success -> {
                 //Update Episode
                 Timber.i("Updating Episode Details $showId - $seasonNumber - $episodeNumber")
-                localDao.updateEpisode(showId, seasonNumber, episodeNumber, result.data.airDate, result.data.stillPath, result.data.voteAverage.times(10).roundToInt())
+                localDao.updateEpisode(showId, seasonNumber, episodeNumber, result.data.airDate, result.data.stillPath, result.data.voteAverage.times(10).roundToInt(), result.data.overview)
             }
             is Error -> Timber.e(result.exception)
         }

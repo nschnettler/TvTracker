@@ -5,7 +5,7 @@ import de.schnettler.tvtracker.util.provideRetrofit
 
 object RetrofitService {
     val traktService: TraktAPI by lazy {
-        provideRetrofit(provideOkHttpClient(TraktAuthInterceptor(), TranslationInterceptor()), TraktAPI.ENDPOINT).create(TraktAPI::class.java)
+        provideRetrofit(provideOkHttpClient(TraktAuthInterceptor()), TraktAPI.ENDPOINT).create(TraktAPI::class.java)
     }
     val tmdbService: TmdbAPI by lazy {
         provideRetrofit(provideOkHttpClient(TmdbAuthInterceptor()), TmdbAPI.ENDPOINT).create(TmdbAPI::class.java)

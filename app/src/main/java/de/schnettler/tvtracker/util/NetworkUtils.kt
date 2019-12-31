@@ -1,5 +1,6 @@
 package de.schnettler.tvtracker.util
 
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.io.IOException
@@ -24,6 +25,7 @@ suspend fun <T : Any> safeApiCall(call: suspend () -> Result<T>, errorMessage: S
 
 fun provideOkHttpClient(vararg interceptor: Interceptor) = OkHttpClient().newBuilder()
     .apply { interceptor.forEach { addInterceptor(it) } }
+    .addNetworkInterceptor(StethoInterceptor())
     .build()
 
 fun provideRetrofit(okHttpClient: OkHttpClient, endpoint: String) = Retrofit.Builder()

@@ -11,13 +11,13 @@ data class EpisodeResponse(
     val number: Long,
     val title: String?,
     val overview: String?,
-    val ids: ShowIdRemote,
-    val translations: List<EpisodeTranslationResponse>
+    val ids: ShowIdRemote
 )
 data class EpisodeDetailResponse(
     @Json(name = "air_date") val airDate: String,
     @Json(name = "still_path") val stillPath: String?,
-    @Json(name = "vote_average") val voteAverage: Float
+    @Json(name = "vote_average") val voteAverage: Float,
+    val overview: String?
 )
 
 @Entity(tableName = "table_episode", primaryKeys = ["showId", "season", "number"])

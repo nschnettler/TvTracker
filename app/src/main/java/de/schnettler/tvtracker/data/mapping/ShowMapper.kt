@@ -132,15 +132,12 @@ object EpisodeMapper : IndexedMapperWithId<EpisodeResponse, EpisodeEntity, Episo
         index: Int,
         vararg ids: Long
     ): EpisodeEntity {
-        val translation = input.translations.find {
-            it.language == Locale.getDefault().language
-        }
         return EpisodeEntity(
             showId = ids[0],
             seasonId = "${ids[0]}_${input.season}",
             number = input.number,
-            title = translation?.title ?: input.title,
-            overview = translation?.overview ?: input.overview,
+            title = input.title,
+            overview = input.overview,
             season = input.season
         )
     }

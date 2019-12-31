@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 
 class EpisodeViewModel(var episode: EpisodeDomain, private var show: ShowDomain, private val episodeRepository: EpisodeRepository) : ViewModel() {
 
-    val episodeList = episodeRepository.getEpisodes(episode.showId, viewModelScope)
+    val episodeList = episodeRepository.getEpisodes(episode.showId)
 
     init {
         startRefresh(episode.season, episode.number)
