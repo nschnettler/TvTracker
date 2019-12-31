@@ -84,7 +84,7 @@ interface ShowDao {
      * Season with Episodes
      */
     @Transaction
-    @Query("SELECT * FROM table_seasons WHERE showId = :showId ORDER BY number ASC")
+    @Query("SELECT * FROM table_seasons WHERE showId = :showId AND number != 0 ORDER BY number ASC")
     fun getSeasonsWithEpisodes(showId: Long): LiveData<List<SeasonWithEpisodes>>
 
     @Transaction

@@ -105,17 +105,19 @@ class ShowRepository(
                 //Insert Dummy Episodes
                 val episodes = mutableListOf<EpisodeEntity>()
                 result.data.forEach { season ->
-                    season.episodeCount?.let { episodeCount ->
-                        for (i in 1..episodeCount) {
-                            episodes.add(
-                                EpisodeEntity(
-                                    seasonId = "${showId}_${season.number}",
-                                    showId = showId,
-                                    season = season.number,
-                                    number = i,
-                                    title = "Episode $i"
+                    if (season.number > 0) {
+                        season.episodeCount?.let { episodeCount ->
+                            for (i in 1..episodeCount) {
+                                episodes.add(
+                                    EpisodeEntity(
+                                        seasonId = "${showId}_${season.number}",
+                                        showId = showId,
+                                        season = season.number,
+                                        number = i,
+                                        title = "Episode $i"
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }
