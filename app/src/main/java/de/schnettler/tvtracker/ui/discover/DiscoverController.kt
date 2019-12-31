@@ -41,13 +41,23 @@ class DiscoverController: TypedEpoxyController<DiscoverViewState>() {
                 }
             }
 
-            data.recommendedShows?.let {shows ->
-                header {
-                    id("header_recommended")
-                    title("For you")
-                    showExpand(true)
+            if (data.trendingShows == null) {
+                carousel {
+                    id("trending_placeholder")
+                    withModelsFrom(listOf(1, 2, 3, 4)) {
+                        ShowSmallBindingModel_()
+                            .id("trending_placeholder_$it")
+                    }
                 }
+            }
 
+
+            header {
+                id("header_recommended")
+                title("For you")
+                showExpand(true)
+            }
+            data.recommendedShows?.let {shows ->
                 carousel {
                     id("recommended")
                     withModelsFrom(shows) {
@@ -60,6 +70,16 @@ class DiscoverController: TypedEpoxyController<DiscoverViewState>() {
                                 Timber.i("Clicked on ${it.title}")
                                 callbacks?.onItemClicked(view, it)
                             }
+                    }
+                }
+            }
+
+            if (data.recommendedShows == null) {
+                carousel {
+                    id("recommendedShows_placeholder")
+                    withModelsFrom(listOf(1, 2, 3, 4)) {
+                        ShowSmallBindingModel_()
+                            .id("recommendedShows_placeholder_$it")
                     }
                 }
             }
@@ -87,6 +107,16 @@ class DiscoverController: TypedEpoxyController<DiscoverViewState>() {
                 }
             }
 
+            if (data.popularShows == null) {
+                carousel {
+                    id("popularShows_placeholder")
+                    withModelsFrom(listOf(1, 2, 3, 4)) {
+                        ShowSmallBindingModel_()
+                            .id("popularShows_placeholder_$it")
+                    }
+                }
+            }
+
             header {
                 id("header_anticipated")
                 title("Most Anticipated")
@@ -105,6 +135,16 @@ class DiscoverController: TypedEpoxyController<DiscoverViewState>() {
                                 Timber.i("Clicked on ${it.title}")
                                 callbacks?.onItemClicked(view, it)
                             }
+                    }
+                }
+            }
+
+            if (data.anticipatedShows == null) {
+                carousel {
+                    id("anticipatedShows_placeholder")
+                    withModelsFrom(listOf(1, 2, 3, 4)) {
+                        ShowSmallBindingModel_()
+                            .id("anticipatedShows_placeholder_$it")
                     }
                 }
             }
