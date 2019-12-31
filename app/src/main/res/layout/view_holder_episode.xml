@@ -8,12 +8,16 @@
             name="episode"
             type="de.schnettler.tvtracker.data.models.EpisodeDomain" />
         <import type="de.schnettler.tvtracker.data.api.ImageQuality"/>
+        <import type="android.view.View"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bottomsheet_background">
+        android:background="@drawable/bottomsheet_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent">
 
 
         <androidx.constraintlayout.widget.Barrier
@@ -24,19 +28,17 @@
 
         <TextView
             android:id="@+id/seasonepisode"
-            tools:text="Season 1 • Episode 1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="@{`Season ` + episode.season + ` •  Episode ` + episode.number}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/imageView4"
+            tools:text="Season 1 • Episode 1" />
 
         <TextView
             android:id="@+id/episodeTitle"
-            tools:text="Episode Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -44,12 +46,12 @@
             android:text="@{episode.title}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/seasonepisode"
-            app:layout_constraintTop_toBottomOf="@+id/seasonepisode" />
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/seasonepisode"
+            tools:text="Episode Title" />
 
         <TextView
             android:id="@+id/summary"
-            tools:text="Summary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -58,7 +60,8 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/episodeTitle"
-            app:layout_constraintTop_toBottomOf="@+id/episodeTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/episodeTitle"
+            tools:text="Summary" />
 
         <ImageView
             android:id="@+id/imageView4"
@@ -96,7 +99,6 @@
         <TextView
             android:id="@+id/date"
             date="@{episode.airDate}"
-            tools:text="12.01.2019"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -104,11 +106,11 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView5"
+            tools:text="12.01.2019" />
 
         <TextView
             android:id="@+id/rating"
-            tools:text="5.5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -116,7 +118,8 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="@+id/date" />
+            app:layout_constraintTop_toTopOf="@+id/date"
+            tools:text="5.5" />
 
         <ImageView
             android:id="@+id/imageView5"
@@ -156,5 +159,23 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_premiere"
+            style="@style/ChipStyle.Overlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Premiere"
+            android:visibility="@{episode.number == 1 ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

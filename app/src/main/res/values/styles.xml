@@ -26,6 +26,13 @@
         <item name="chipBackgroundColor">@color/colorBackground</item>
     </style>
 
+    <style name="ChipStyle.Overlay" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="chipBackgroundColor">@color/colorBackgroundTransparent</item>
+        <item name="chipSurfaceColor">@android:color/transparent</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+    </style>
+
     <style name="TextAppearance.Chip" parent="TextAppearance.MaterialComponents.Chip">
         <item name="fontFamily">@font/nunito</item>
     </style>
