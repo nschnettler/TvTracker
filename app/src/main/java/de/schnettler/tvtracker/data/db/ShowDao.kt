@@ -1,8 +1,6 @@
 package de.schnettler.tvtracker.data.db
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Transformations
 import androidx.paging.DataSource
 import androidx.room.*
 import de.schnettler.tvtracker.data.models.*
@@ -99,18 +97,17 @@ interface ShowDao {
         }
     }
 
-    /*
-     * Episode Details
-     *
-     */
-    @Transaction
-    @Query("SELECT * FROM table_episode_details WHERE episodeId = :episodeId")
-    fun getEpisodeDetails(episodeId: Long): LiveData<EpisodeDetailEntity?>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEpisodeDetail(detail: EpisodeDetailEntity)
-
     @Transaction
     @Query("SELECT * FROM table_episode WHERE showId = :showId ORDER BY season ASC")
-    fun getEpisodes(showId: Long): DataSource.Factory<Int, EpisodeWithDetails>
+    fun getEpisodes(showId: Long): DataSource.Factory<Int, EpisodeEntity>
+
+    @Query("UPDATE table_episode SET airDate= :airDate, stillPath = :stillPath, voteAverage = :voteAverage WHERE showId = :showId AND season = :seasonNumber AND number = :episodeNumber")
+    fun updateEpisode(
+        showId: Long,
+        seasonNumber: Long,
+        episodeNumber: Long,
+        airDate: String,
+        stillPath: String?,
+        voteAverage: Int?
+    )
 }

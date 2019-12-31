@@ -138,7 +138,6 @@ object EpisodeMapper : IndexedMapperWithId<EpisodeResponse, EpisodeEntity, Episo
         return EpisodeEntity(
             showId = ids[0],
             seasonId = "${ids[0]}_${input.season}",
-            episodeId = "${ids[0]}_${input.season}_${input.number}",
             number = input.number,
             title = translation?.title ?: input.title,
             overview = translation?.overview ?: input.overview,
@@ -152,7 +151,10 @@ object EpisodeMapper : IndexedMapperWithId<EpisodeResponse, EpisodeEntity, Episo
             number = input.number,
             title = input.title,
             overview = input.overview,
-            season = input.season
+            season = input.season,
+            voteAverage = input.voteAverage,
+            stillPath = input.stillPath,
+            airDate = input.airDate
         )
 }
 
@@ -166,40 +168,4 @@ object SeasonWithEpisodeMapper : IndexedMapper<Any, SeasonWithEpisodes, SeasonDo
         season.episodes = input.episodes.map { EpisodeMapper.mapToDomain(it) }
         return season
     }
-}
-
-object EpisodeDetailMapper :
-    MapperWithId<EpisodeDetailResponse, EpisodeDetailEntity, EpisodeDetailDomain> {
-    override fun mapToDatabase(
-        input: EpisodeDetailResponse,
-        vararg ids: Long
-    ): EpisodeDetailEntity = EpisodeDetailEntity(
-        episodeId = "${ids[0]}_${ids[1]}_${ids[2]}",
-        airDate = input.airDate,
-        stillPath = input.stillPath,
-        voteAverage = input.voteAverage.times(10).roundToInt()
-    )
-
-    override fun mapToDomain(input: EpisodeDetailEntity) = EpisodeDetailDomain(
-        airDate = input.airDate,
-        stillPath = input.stillPath,
-        voteAverage = input.voteAverage
-    )
-}
-
-object EpisodeFullMapper : Mapper<Any, EpisodeWithDetails, EpisodeFullDomain> {
-    override fun mapToDatabase(input: Any): EpisodeWithDetails {
-        TODO("not implemented")
-    }
-
-    override fun mapToDomain(input: EpisodeWithDetails) = EpisodeFullDomain(
-        showId = input.episode.showId,
-        season = input.episode.season,
-        number = input.episode.number,
-        title = input.episode.title,
-        overview = input.episode.overview,
-        airDate = input.details?.airDate,
-        stillPath = input.details?.stillPath,
-        voteAverage = input.details?.voteAverage
-    )
 }

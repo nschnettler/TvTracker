@@ -110,7 +110,6 @@ class ShowRepository(
                             episodes.add(
                                 EpisodeEntity(
                                     seasonId = "${showId}_${season.number}",
-                                    episodeId = "${showId}_${season.number}_$i",
                                     showId = showId,
                                     season = season.number,
                                     number = i,

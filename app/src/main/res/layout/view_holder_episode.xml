@@ -6,7 +6,7 @@
     <data>
         <variable
             name="episode"
-            type="de.schnettler.tvtracker.data.models.EpisodeFullDomain" />
+            type="de.schnettler.tvtracker.data.models.EpisodeDomain" />
         <import type="de.schnettler.tvtracker.data.api.ImageQuality"/>
     </data>
 

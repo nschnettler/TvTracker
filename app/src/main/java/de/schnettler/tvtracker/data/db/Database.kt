@@ -12,7 +12,7 @@ import de.schnettler.tvtracker.util.TypeConverter
         ShowEntity::class, ShowDetailEntity::class,
         CastEntity::class, AuthTokenEntity::class,
         RelationEntity::class, SeasonEntity::class,
-        EpisodeEntity::class, EpisodeDetailEntity::class],
+        EpisodeEntity::class],
     version = 15
 )
 abstract class Database : RoomDatabase() {

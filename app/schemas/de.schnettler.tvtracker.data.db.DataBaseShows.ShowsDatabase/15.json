@@ -1,13 +1,19 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 10,
-    "identityHash": "e72f7c40fe50c05f06d40676464bef0c",
+    "version": 15,
+    "identityHash": "e27db5b3d13023ffca71928333c5be0c",
     "entities": [
       {
-        "tableName": "table_trending",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`index` INTEGER NOT NULL, `showId` INTEGER NOT NULL, `watcher` INTEGER NOT NULL, PRIMARY KEY(`index`))",
+        "tableName": "table_discover",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`type` TEXT NOT NULL, `index` INTEGER NOT NULL, `showId` INTEGER NOT NULL, `ranking` INTEGER, PRIMARY KEY(`type`, `index`))",
         "fields": [
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
           {
             "fieldPath": "index",
             "columnName": "index",
@@ -21,40 +27,15 @@
             "notNull": true
           },
           {
-            "fieldPath": "watcher",
-            "columnName": "watcher",
+            "fieldPath": "ranking",
+            "columnName": "ranking",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "index"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "table_popular",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`showId` INTEGER NOT NULL, `index` INTEGER NOT NULL, PRIMARY KEY(`index`))",
-        "fields": [
-          {
-            "fieldPath": "showId",
-            "columnName": "showId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "index",
-            "columnName": "index",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
+            "type",
             "index"
           ],
           "autoGenerate": false
@@ -227,7 +208,7 @@
       },
       {
         "tableName": "table_auth",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tokenName` TEXT NOT NULL, `token` TEXT NOT NULL, `createdAtMillis` INTEGER NOT NULL, PRIMARY KEY(`tokenName`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tokenName` TEXT NOT NULL, `token` TEXT NOT NULL, `refreshToken` TEXT, `createdAtMillis` INTEGER NOT NULL, PRIMARY KEY(`tokenName`))",
         "fields": [
           {
             "fieldPath": "tokenName",
@@ -240,6 +221,12 @@
             "columnName": "token",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "refreshToken",
+            "columnName": "refreshToken",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "createdAtMillis",
@@ -291,40 +278,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "table_anticipated",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`showId` INTEGER NOT NULL, `index` INTEGER NOT NULL, `lists` INTEGER NOT NULL, PRIMARY KEY(`index`))",
-        "fields": [
-          {
-            "fieldPath": "showId",
-            "columnName": "showId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "index",
-            "columnName": "index",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "lists",
-            "columnName": "lists",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "index"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
         "tableName": "table_seasons",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`number` INTEGER NOT NULL, `showId` INTEGER NOT NULL, `id` INTEGER NOT NULL, `rating` INTEGER NOT NULL, `title` TEXT NOT NULL, `overview` TEXT, `firstAired` TEXT, `episodeCount` INTEGER, PRIMARY KEY(`showId`, `number`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`number` INTEGER NOT NULL, `showId` INTEGER NOT NULL, `id` TEXT NOT NULL, `rating` INTEGER NOT NULL, `title` TEXT NOT NULL, `overview` TEXT, `firstAired` TEXT, `episodeCount` INTEGER, PRIMARY KEY(`showId`, `number`))",
         "fields": [
           {
             "fieldPath": "number",
@@ -341,7 +296,7 @@
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -387,7 +342,7 @@
       },
       {
         "tableName": "table_episode",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `seasonId` INTEGER NOT NULL, `season` INTEGER NOT NULL, `number` INTEGER NOT NULL, `title` TEXT, `overview` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `showId` INTEGER NOT NULL, `seasonId` TEXT NOT NULL, `season` INTEGER NOT NULL, `number` INTEGER NOT NULL, `title` TEXT, `overview` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -396,9 +351,15 @@
             "notNull": true
           },
           {
+            "fieldPath": "showId",
+            "columnName": "showId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "seasonId",
             "columnName": "seasonId",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -437,7 +398,7 @@
       },
       {
         "tableName": "table_episode_details",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`episodeId` INTEGER NOT NULL, `firstAired` TEXT NOT NULL, `rating` INTEGER NOT NULL, PRIMARY KEY(`episodeId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`episodeId` INTEGER NOT NULL, `airDate` TEXT NOT NULL, `stillPath` TEXT, `voteAverage` INTEGER NOT NULL, PRIMARY KEY(`episodeId`))",
         "fields": [
           {
             "fieldPath": "episodeId",
@@ -446,14 +407,20 @@
             "notNull": true
           },
           {
-            "fieldPath": "firstAired",
-            "columnName": "firstAired",
+            "fieldPath": "airDate",
+            "columnName": "airDate",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "rating",
-            "columnName": "rating",
+            "fieldPath": "stillPath",
+            "columnName": "stillPath",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "voteAverage",
+            "columnName": "voteAverage",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -471,7 +438,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e72f7c40fe50c05f06d40676464bef0c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e27db5b3d13023ffca71928333c5be0c')"
     ]
   }
 }

@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 10,
-    "identityHash": "e72f7c40fe50c05f06d40676464bef0c",
+    "version": 11,
+    "identityHash": "b8b9e9208d063a9ede3a7cbf7a0ae146",
     "entities": [
       {
         "tableName": "table_trending",
@@ -437,7 +437,7 @@
       },
       {
         "tableName": "table_episode_details",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`episodeId` INTEGER NOT NULL, `firstAired` TEXT NOT NULL, `rating` INTEGER NOT NULL, PRIMARY KEY(`episodeId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`episodeId` INTEGER NOT NULL, `airDate` TEXT NOT NULL, `stillPath` TEXT, `voteAverage` INTEGER NOT NULL, PRIMARY KEY(`episodeId`))",
         "fields": [
           {
             "fieldPath": "episodeId",
@@ -446,14 +446,20 @@
             "notNull": true
           },
           {
-            "fieldPath": "firstAired",
-            "columnName": "firstAired",
+            "fieldPath": "airDate",
+            "columnName": "airDate",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "rating",
-            "columnName": "rating",
+            "fieldPath": "stillPath",
+            "columnName": "stillPath",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "voteAverage",
+            "columnName": "voteAverage",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -471,7 +477,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e72f7c40fe50c05f06d40676464bef0c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b8b9e9208d063a9ede3a7cbf7a0ae146')"
     ]
   }
 }
