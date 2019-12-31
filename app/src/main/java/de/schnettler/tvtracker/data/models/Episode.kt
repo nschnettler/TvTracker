@@ -17,7 +17,8 @@ data class EpisodeDetailResponse(
     @Json(name = "air_date") val airDate: String,
     @Json(name = "still_path") val stillPath: String?,
     @Json(name = "vote_average") val voteAverage: Float,
-    val overview: String?
+    val overview: String?,
+    val name: String?
 )
 
 @Entity(tableName = "table_episode", primaryKeys = ["showId", "season", "number"])

@@ -32,6 +32,7 @@ interface TmdbAPI {
         @Path("tv_id") showId: String,
         @Path("season_number") seasonNumber: Long,
         @Path("episode_number") episodeNumber: Long,
-        @Query("api_key") apiKey: String
+        @Query("api_key") apiKey: String,
+        @Query("language") language: String
     ): Response<EpisodeDetailResponse>
 }

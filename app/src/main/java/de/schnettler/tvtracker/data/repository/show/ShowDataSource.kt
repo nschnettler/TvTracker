@@ -9,6 +9,7 @@ import de.schnettler.tvtracker.util.TopListType
 import de.schnettler.tvtracker.util.safeApiCall
 import timber.log.Timber
 import java.io.IOException
+import java.util.*
 
 /**
  * Work with the Trakt API to get shows. The class knows how to construct the requests.
@@ -153,7 +154,7 @@ class ShowDataSourceRemote(val traktService: TraktAPI, val tvdbService: TvdbAPI,
     )
 
     private suspend fun requestEpisodeDetails(showID: String, seasonNumber: Long, episodeNumber: Long): Result<EpisodeDetailResponse> {
-        val response = tmdbService.getEpisodeDetail(showID, seasonNumber, episodeNumber, TmdbAPI.API_KEY)
+        val response = tmdbService.getEpisodeDetail(showID, seasonNumber, episodeNumber, TmdbAPI.API_KEY, Locale.getDefault().language)
         if (response.isSuccessful) {
             response.body()?.let {
                 return Result.Success(it)

@@ -101,7 +101,7 @@ interface ShowDao {
     @Query("SELECT * FROM table_episode WHERE showId = :showId ORDER BY season ASC")
     fun getEpisodes(showId: Long): DataSource.Factory<Int, EpisodeEntity>
 
-    @Query("UPDATE table_episode SET airDate= :airDate, stillPath = :stillPath, voteAverage = :voteAverage, overview = :overview WHERE showId = :showId AND season = :seasonNumber AND number = :episodeNumber")
+    @Query("UPDATE table_episode SET airDate= :airDate, stillPath = :stillPath, voteAverage = :voteAverage, overview = :overview, title = :title WHERE showId = :showId AND season = :seasonNumber AND number = :episodeNumber")
     fun updateEpisode(
         showId: Long,
         seasonNumber: Long,
@@ -109,6 +109,7 @@ interface ShowDao {
         airDate: String,
         stillPath: String?,
         voteAverage: Int?,
-        overview: String?
+        overview: String?,
+        title: String?
     )
 }

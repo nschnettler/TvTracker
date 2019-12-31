@@ -6,7 +6,6 @@ import de.schnettler.tvtracker.data.Result.Success
 import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.mapping.EpisodeMapper
 import de.schnettler.tvtracker.data.mapping.ListMapperWithId
-import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 import kotlin.math.roundToInt
 
@@ -26,7 +25,7 @@ class EpisodeRepository(
             is Success -> {
                 //Update Episode
                 Timber.i("Updating Episode Details $showId - $seasonNumber - $episodeNumber")
-                localDao.updateEpisode(showId, seasonNumber, episodeNumber, result.data.airDate, result.data.stillPath, result.data.voteAverage.times(10).roundToInt(), result.data.overview)
+                localDao.updateEpisode(showId, seasonNumber, episodeNumber, result.data.airDate, result.data.stillPath, result.data.voteAverage.times(10).roundToInt(), result.data.overview, result.data.name)
             }
             is Error -> Timber.e(result.exception)
         }
