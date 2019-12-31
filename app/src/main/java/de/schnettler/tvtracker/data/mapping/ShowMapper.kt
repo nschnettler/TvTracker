@@ -107,7 +107,7 @@ object SeasonSummaryMapper : IndexedMapperWithId<SeasonResponse, SeasonEntity, S
         SeasonEntity(
             id = "${ids[0]}_${input.number}",
             rating = input.rating.times(10).roundToLong(),
-            firstAired = input.firstAired,
+            firstAired = input.firstAired?.substring(0,4),
             overview = input.overview,
             title = input.title,
             number = input.number,

@@ -96,7 +96,7 @@ class DetailController: TypedEpoxyController<DetailViewState>() {
                     twoLineList {
                         id("s_${season.number}")
                         header(season.title)
-                        description("${season.episodeCount} Episodes • ${season.rating}% Rating")
+                        description("${season.firstAired} • ${season.episodeCount} • ${season.rating}%")
                         imageText("${season.number}")
                         onClickListener { _, _, _, _ ->
                             callbacks?.onSeasonClicked(season, expandedSeasons.contains(season.number))
