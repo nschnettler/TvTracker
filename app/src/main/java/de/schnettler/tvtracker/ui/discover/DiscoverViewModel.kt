@@ -36,6 +36,9 @@ class DiscoverViewModel(private val repo: IShowRepository): StateViewModel<Disco
         state.addSource(repo.getTopList(TopListType.RECOMMENDED)) {
             updateState { state -> state.copy(recommendedShows = it) }
         }
+        state.addSource(loggedIn) {
+            updateState { state -> state.copy(loggedIn = it) }
+        }
         onRefresh()
     }
 

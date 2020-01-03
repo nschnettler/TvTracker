@@ -1,6 +1,7 @@
 package de.schnettler.tvtracker.data.models
 
 import android.os.Parcelable
+import androidx.constraintlayout.widget.Placeholder
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
@@ -32,10 +33,10 @@ data class ShowEntity(
 @Parcelize
 data class ShowDomain(
     val id: Long,
-    val tvdbId: Long?,
-    val tmdbId: String,
-    val title: String,
+    val placeholder: Boolean = false,
+    val tvdbId: Long? = null,
+    val tmdbId: String? = null,
+    val title: String? = null,
     var posterUrl: String = "",
     var backdropUrl: String = ""
 ): Parcelable
-

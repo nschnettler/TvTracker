@@ -25,7 +25,8 @@ import kotlin.math.abs
 
 fun Context.makeToast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
-class SwipeRefreshLayout(context: Context, attrs: AttributeSet? = null) : SwipeRefreshLayout(context, attrs) {
+class SwipeRefreshLayout(context: Context, attrs: AttributeSet? = null) :
+    SwipeRefreshLayout(context, attrs) {
 
     private val touchSlop: Int = ViewConfiguration.get(context).scaledTouchSlop
     private var previousX = 0F
@@ -61,7 +62,8 @@ class MaxLinesToggleClickListener(private val collapsedLines: Int) : View.OnClic
     override fun onClick(view: View) {
         TransitionManager.beginDelayedTransition(view.parent as ViewGroup, transition)
         val textView = view as TextView
-        textView.maxLines = if (textView.maxLines > collapsedLines) collapsedLines else Int.MAX_VALUE
+        textView.maxLines =
+            if (textView.maxLines > collapsedLines) collapsedLines else Int.MAX_VALUE
     }
 }
 
@@ -90,7 +92,8 @@ fun setStatusBarColor(resources: Resources, color: Int, window: Window, theme: R
 
 abstract class AppBarStateChangedListener : AppBarLayout.OnOffsetChangedListener {
     private var mCurrentState = State.EXPANDED
-    enum class State {EXPANDED, COLLAPSED}
+
+    enum class State { EXPANDED, COLLAPSED }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
         when (verticalOffset) {
@@ -109,7 +112,8 @@ abstract class AppBarStateChangedListener : AppBarLayout.OnOffsetChangedListener
     abstract fun onStateChanged(state: State)
 }
 
-fun isDarkTheme(res: Resources) = ((res.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)
+fun isDarkTheme(res: Resources) =
+    ((res.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES)
 
 fun getEmoji(genre: String): String = when (genre) {
     "drama" -> "\uD83D\uDE28"
@@ -137,23 +141,24 @@ fun getEmoji(genre: String): String = when (genre) {
  * @param modelBuilder A function that take an item and returns a new EpoxyModel for that item.
  */
 inline fun <T> CarouselModelBuilder.withModelsFrom(
-    items: List<T>,
+    items: List<T>?,
     modelBuilder: (T) -> EpoxyModel<*>
 ) {
-    models(items.map { modelBuilder(it) })
+    items?.map { modelBuilder(it) }?.let { models(it) }
 }
+
 inline fun <T> HorizontalCarouselModelBuilder.withModelsFrom(
-    items: List<T>,
+    items: List<T>?,
     modelBuilder: (T) -> EpoxyModel<*>
 ) {
-    models(items.map { modelBuilder(it) })
+    items?.map { modelBuilder(it) }?.let { models(it) }
 }
 
 fun isoToDate(iso: String): String? {
-    val formatter =  DateTimeFormatterBuilder()
-            .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-            .appendPattern("XX")
-            .toFormatter();
+    val formatter = DateTimeFormatterBuilder()
+        .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        .appendPattern("XX")
+        .toFormatter();
     val date = OffsetDateTime.parse(iso, formatter)
     val formaterNice = DateTimeFormatter.ofPattern("MMMM dd.")
 
@@ -196,7 +201,8 @@ class SnapOnScrollListener(
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         if (behavior == NOTIFY_ON_SCROLL_STATE_IDLE
-            && newState == RecyclerView.SCROLL_STATE_IDLE) {
+            && newState == RecyclerView.SCROLL_STATE_IDLE
+        ) {
             dispatchSnapPositionChange(recyclerView)
         }
     }

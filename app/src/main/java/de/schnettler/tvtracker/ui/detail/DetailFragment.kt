@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -35,6 +36,8 @@ class DetailFragment : Fragment() {
     ): View? {
         //Shared Element Enter
         sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        sharedElementReturnTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
+        //postponeEnterTransition()
 
         binding = DetailFragmentBinding.inflate(inflater)
         binding.lifecycleOwner = this
@@ -51,6 +54,9 @@ class DetailFragment : Fragment() {
 
         detailViewModel.observeState(viewLifecycleOwner) {
             controller.setData(it)
+            binding.recyclerView.doOnPreDraw {
+                //startPostponedEnterTransition()
+            }
         }
         authViewModel.tvdbLoginStatus.observe(viewLifecycleOwner, Observer {
             if (it) {

@@ -39,7 +39,7 @@ class EpisodeViewModel(var episode: EpisodeDomain, private var show: ShowDomain,
     private fun startRefresh(season: Long, number: Long) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                episodeRepository.refreshEpisodeDetails(show.id, show.tmdbId, season, number)
+                episodeRepository.refreshEpisodeDetails(show.id, show.tmdbId ?: return@withContext, season, number)
             }
         }
     }
