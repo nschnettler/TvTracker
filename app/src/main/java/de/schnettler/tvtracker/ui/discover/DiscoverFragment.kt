@@ -37,10 +37,6 @@ class DiscoverFragment : Fragment() {
 
         viewModel.observeState(viewLifecycleOwner) {
             controller.setData(it)
-
-            binding.recyclerView.doOnPreDraw {
-                startPostponedEnterTransition()
-            }
         }
 
         authViewModel.traktLoginStatus.observe(viewLifecycleOwner, Observer {
@@ -68,10 +64,6 @@ class DiscoverFragment : Fragment() {
 
         }
         return binding.root
-    }
-    override fun onResume() {
-        super.onResume()
-        postponeEnterTransition()
     }
 
     //Only gets called on Configuration Change (Activity Recreation)
