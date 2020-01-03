@@ -30,11 +30,6 @@ fun bindTvdbImage(imageView: ImageView, url: String?) {
 
 @BindingAdapter("headerUrl")
 fun bindBottomSheetHeader(imgView: ImageView, imageUrl: String?) {
-    imgView.outlineProvider = object : ViewOutlineProvider() {
-        override fun getOutline(view: View?, outline: Outline?) {
-            outline?.setRoundRect(0, 0, view!!.width, (view.height+ 54F).toInt(), 54F)
-        }
-    }
     bindImageFromUrl(imgView, TmdbAPI.IMAGE_ENDPOINT + ImageQuality.HIGH.quality +  imageUrl)
 }
 
