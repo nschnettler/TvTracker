@@ -8,8 +8,9 @@ import de.schnettler.tvtracker.data.repository.show.EpisodeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
-class EpisodeViewModel(var episode: EpisodeDomain, private var show: ShowDomain, private val episodeRepository: EpisodeRepository) : ViewModel() {
+class EpisodeViewModel(private val episode: EpisodeDomain,private var show: ShowDomain, private val episodeRepository: EpisodeRepository) : ViewModel() {
 
     val episodeList = episodeRepository.getEpisodes(episode.showId)
 
@@ -17,22 +18,22 @@ class EpisodeViewModel(var episode: EpisodeDomain, private var show: ShowDomain,
         startRefresh(episode.season, episode.number)
     }
 
-    fun refreshDetails(position: Int) {
+    fun refreshNeighborEpisodes(position: Int) {
         val episodes = episodeList.value
         episodes?.let {
-            it[position]?.let {episodeAt ->
-                startRefresh(episodeAt.season, episodeAt.number)
-            }
+            refreshNeighbor(position)
+            refreshNeighbor(position+1)
+            refreshNeighbor(position-1)
+        }
+    }
 
-//            when (position) {
-//                0 -> startRefresh(it[position + 1])//Refresh next
-//                it.size - 2 -> startRefresh(it[position - 1])//Refresh previous
-//                it.size - 1 -> return@let
-//                else -> {
-//                    startRefresh(it[position + 1])
-//                    startRefresh(it[position - 1])
-//                }
-//            }
+    private fun refreshNeighbor(position: Int) {
+        episodeList.value?.let {
+            it.getOrNull(position)?.let {current ->
+                if(current.stillPath.isNullOrEmpty()) {
+                    startRefresh(current.season, current.number)
+                }
+            }
         }
     }
 

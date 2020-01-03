@@ -54,7 +54,7 @@ class EpisodeFragment : BottomSheetDialogFragment() {
         val snapHelper: SnapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(recycler)
         recycler.addOnScrollListener(SnapOnScrollListener(snapHelper, NOTIFY_ON_SCROLL_STATE_IDLE) {position ->
-            viewModel.refreshDetails(position)
+            viewModel.refreshNeighborEpisodes(position)
         })
 
         //Indicator
