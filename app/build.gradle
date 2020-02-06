@@ -64,8 +64,9 @@ dependencies {
 
     //Lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$version_lifecycle"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$version_lifecycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$version_lifecycle"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:1.0.0-rc03"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.2.0'
 
     //Material Components
     implementation "com.google.android.material:material:$version_material"
@@ -137,4 +138,7 @@ dependencies {
     //Koin
     implementation "org.koin:koin-android:$version_koin"
     implementation "org.koin:koin-android-viewmodel:$version_koin"
+
+    //Store
+    implementation "com.dropbox.mobile.store:store4:$version_store"
 }
