@@ -8,7 +8,6 @@ import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.repository.auth.AuthDataSourceRemote
 import de.schnettler.tvtracker.data.repository.auth.AuthRepository
 import de.schnettler.tvtracker.data.repository.show.EpisodeRepository
-import de.schnettler.tvtracker.data.repository.show.IShowRepository
 import de.schnettler.tvtracker.data.repository.show.ShowDataSourceRemote
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import de.schnettler.tvtracker.ui.AuthViewModel
@@ -35,7 +34,7 @@ val databaseModule = module {
 val repositoryModule = module {
     single { ShowDataSourceRemote(RetrofitService.traktService, RetrofitService.tvdbService, RetrofitService.tmdbService) }
     single { AuthDataSourceRemote(RetrofitService.tvdbService, RetrofitService.traktService) }
-    single<IShowRepository> { ShowRepository(get(), get()) }
+    single { ShowRepository(get(), get()) }
     single { AuthRepository(get(), get()) }
     single { EpisodeRepository(get(), get()) }
 }

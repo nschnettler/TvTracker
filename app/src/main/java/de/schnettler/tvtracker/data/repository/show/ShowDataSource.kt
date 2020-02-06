@@ -15,25 +15,6 @@ import java.util.*
  * Work with the Trakt API to get shows. The class knows how to construct the requests.
  */
 class ShowDataSourceRemote(val traktService: TraktAPI, val tvdbService: TvdbAPI, val tmdbService: TmdbAPI) {
-    //Show Details
-    suspend fun getShowDetails(showID: Long) = safeApiCall(
-        call = { requestShowDetails(showID) },
-        errorMessage = "Error getting Show Details"
-    )
-
-    private suspend fun requestShowDetails(showID: Long): Result<ShowDetailResponse> {
-        val response = traktService.getShowSummary(showID)
-        if (response.isSuccessful) {
-            response.body()?.let {
-                return Result.Success(it)
-            }
-        }
-        return Result.Error(
-            IOException("Error getting show details: ${response.code()} ${response.message()}")
-        )
-    }
-
-
     //Cast
     suspend fun getCast(showID: Long, token: String) = safeApiCall(
         call = { requestCast(showID, token) },
@@ -51,25 +32,6 @@ class ShowDataSourceRemote(val traktService: TraktAPI, val tvdbService: TvdbAPI,
         }
         return Result.Error(IOException("Error getting cast: ${response.code()} ${response.message()}"))
     }
-
-
-    //Related Shows
-    suspend fun getRelated(showID: Long) = safeApiCall(
-        call = { requestRelatedShows(showID) },
-        errorMessage = "Error getting Related Shows"
-    )
-
-    private suspend fun requestRelatedShows(showID: Long): Result<List<ShowResponse>> {
-        val response = traktService.getRelatedShows(showID)
-
-        if (response.isSuccessful) {
-            response.body()?.let {
-                return Result.Success(it)
-            }
-        }
-        return Result.Error(IOException("Error getting related shows: ${response.code()} ${response.message()}"))
-    }
-
 
     //Poster
     suspend fun getImages(tmdbId: String) = safeApiCall(
@@ -107,24 +69,6 @@ class ShowDataSourceRemote(val traktService: TraktAPI, val tvdbService: TvdbAPI,
         }
         return Result.Error(IOException("Error getting ${type.name} shows: ${response.code()} ${response.message()}"))
     }
-
-
-    //Seasons
-    suspend fun getSeasonsOfShow(showID: Long) = safeApiCall(
-        call = { refreshSeasonsOfShow(showID) },
-        errorMessage = "Error loading Seasons"
-    )
-
-    private suspend fun refreshSeasonsOfShow(showID: Long): Result<List<SeasonResponse>> {
-        val response = traktService.getShowSeasons(showID)
-        if (response.isSuccessful) {
-            response.body()?.let {
-                return Result.Success(it)
-            }
-        }
-        return Result.Error(IOException("Error getting seasons: ${response.code()} ${response.message()}"))
-    }
-
 
     //Episodes
     suspend fun getEpisodesOfSeason(showID: Long, seasonNumber: Long) = safeApiCall(

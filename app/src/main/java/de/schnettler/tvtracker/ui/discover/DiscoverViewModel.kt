@@ -5,14 +5,13 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
-import de.schnettler.tvtracker.data.repository.show.IShowRepository
+import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import de.schnettler.tvtracker.util.TopListType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
-
-class DiscoverViewModel(private val repo: IShowRepository): StateViewModel<DiscoverViewState>() {
+@ExperimentalCoroutinesApi
+@FlowPreview
+class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<DiscoverViewState>() {
     override val state = MediatorLiveData<DiscoverViewState>()
     private val _loggedIn = MutableLiveData<Boolean>()
     val loggedIn: LiveData<Boolean> get() = _loggedIn

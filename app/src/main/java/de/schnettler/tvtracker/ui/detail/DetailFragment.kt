@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
@@ -58,6 +59,12 @@ class DetailFragment : Fragment() {
                 //startPostponedEnterTransition()
             }
         }
+        detailViewModel.status.observe(viewLifecycleOwner, Observer { status ->
+            status?.let {
+                detailViewModel.resetStatus()
+                Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
+            }
+        })
         authViewModel.tvdbLoginStatus.observe(viewLifecycleOwner, Observer {
             if (it) {
                 authViewModel.tvdbAuthToken.value?.let {authToken ->

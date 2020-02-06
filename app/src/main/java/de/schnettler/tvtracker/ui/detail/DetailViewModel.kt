@@ -1,42 +1,50 @@
 package de.schnettler.tvtracker.ui.detail
 
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.dropbox.android.external.store4.StoreResponse
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.data.repository.show.EpisodeRepository
-import de.schnettler.tvtracker.data.repository.show.IShowRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import de.schnettler.tvtracker.data.repository.show.ShowRepository
+import kotlinx.coroutines.*
 import timber.log.Timber
 
-
+@ExperimentalCoroutinesApi
+@FlowPreview
 class DetailViewModel(
     var show: ShowDomain,
-    private val showRepository: IShowRepository,
+    private val showRepository: ShowRepository,
     private val episodeRepository: EpisodeRepository
 ) : StateViewModel<DetailViewState>() {
     override val state = MediatorLiveData<DetailViewState>()
 
-    private val showDetails = showRepository.getShowDetails(show.id)
+    private val showDetails
+            = showRepository.getShowDetails(show.id).asLiveData(viewModelScope.coroutineContext)
     private val showCast = showRepository.getShowCast(show.tvdbId!!)
-    private val relatedShows = showRepository.getRelatedShows(show.id)
-    private val seasons = showRepository.getSeasonsWithEpisodes(show.id)
+    private val relatedShows
+            = showRepository.getRelated(show.id).asLiveData(viewModelScope.coroutineContext)
+    private val seasons
+            = showRepository.getSeasons(show.id).asLiveData(viewModelScope.coroutineContext)
+
+    private val _status = MutableLiveData<String?>()
+    val status: LiveData<String?> get() = _status
 
     fun getIndexOfEpisode(episode: EpisodeDomain): Int {
         Timber.i("Getting Index of Season ${episode.season} Episode ${episode.number}")
         var result = 0
 
         //Lower Seasons
-        seasons.value?.forEach {
-            if (it.number < episode.season) {
-                Timber.i("Season ${it.number} Episodes ${it.episodeCount}")
-                result += it.episodeCount?.toInt() ?: 0
+        if (seasons.value is StoreResponse.Data) {
+            (seasons.value as StoreResponse.Data<List<SeasonDomain>>).value.forEach {
+                if (it.number < episode.season) {
+                    Timber.i("Season ${it.number} Episodes ${it.episodeCount}")
+                    result += it.episodeCount?.toInt() ?: 0
+                }
             }
         }
+
         result += episode.number.toInt() - 1
         Timber.i("Index: $result")
         return result
@@ -48,10 +56,10 @@ class DetailViewModel(
 
         //Observe Details
         state.addSource(showDetails) {
-            //Details Changed
-            Timber.i("Show Details Changed")
-            updateState { state ->
-                state.copy(details = it)
+            when (it) {
+                is StoreResponse.Loading -> Timber.i("Loading Details")//Show Spinner
+                is StoreResponse.Data -> updateState { state -> state.copy(details = it.value) }
+                is StoreResponse.Error -> showErrorMessage("Error loading details", it.error)
             }
         }
 
@@ -65,26 +73,21 @@ class DetailViewModel(
 
         //Observe Related Shows
         state.addSource(relatedShows) {
-            Timber.i("Related Shows Changed")
-            updateState { state ->
-                state.copy(relatedShows = it)
+            when (it) {
+                is StoreResponse.Loading -> Timber.i("Loading Related")//Show Spinner
+                is StoreResponse.Data -> updateState { state -> state.copy(relatedShows = it.value) }
+                is StoreResponse.Error -> showErrorMessage("Error loading related", it.error)
             }
         }
 
         //Observe Seasons
         state.addSource(seasons) {
-            Timber.i("Seasons Changed")
-            updateState { state ->
-                state.copy(seasons = it)
-            }
-        }
-
-        //Refresh Data
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                showRepository.refreshShowDetails(show.id)
-                showRepository.refreshRelatedShows(show.id)
-                showRepository.refreshSeasons(show.id)
+            when (it) {
+                is StoreResponse.Loading -> Timber.i("Loading Seasons")//Show Spinner
+                is StoreResponse.Data -> updateState { state -> state.copy(seasons = it.value) }
+                is StoreResponse.Error -> {
+                    showErrorMessage("Error loading seasons", it.error)
+                }
             }
         }
     }
@@ -121,5 +124,14 @@ class DetailViewModel(
                 }
             }
         }
+    }
+
+    fun resetStatus() {
+        _status.value = null;
+    }
+
+    private fun showErrorMessage(newStatus: String, error: Throwable) {
+        _status.value = newStatus
+        Timber.e(error)
     }
 }

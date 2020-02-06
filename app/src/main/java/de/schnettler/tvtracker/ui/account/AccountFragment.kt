@@ -41,9 +41,9 @@ class AccountFragment : Fragment() {
 
                 val builder = CustomTabsIntent.Builder()
                 val customTabsIntent = builder.build()
-                customTabsIntent.launchUrl(
-                    context, Uri.parse(authorizeUrl?.toUri().toString())
-                )
+                context?.let {ctx -> customTabsIntent.launchUrl(
+                    ctx, Uri.parse(authorizeUrl?.toUri().toString())
+                ) }
                 authViewModel.onLoginHandled()
             }
 

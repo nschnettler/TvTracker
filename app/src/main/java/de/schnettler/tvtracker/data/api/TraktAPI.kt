@@ -48,19 +48,19 @@ interface TraktAPI {
      * Show Details
      */
     @GET("shows/{tv_id}?extended=full")
-    suspend fun getShowSummary(@Path("tv_id") id: Long): Response<ShowDetailResponse>
+    suspend fun getShowSummary(@Path("tv_id") id: Long): ShowDetailResponse
 
     /*
      * Related Shows
      */
     @GET("shows/{tv_id}/related")
-    suspend fun getRelatedShows(@Path("tv_id") id: Long): Response<List<ShowResponse>>
+    suspend fun getRelatedShows(@Path("tv_id") id: Long): List<ShowResponse>
 
     /*
      * Seasons
      */
     @GET("/shows/{tv_id}/seasons?extended=full")
-    suspend fun getShowSeasons(@Path("tv_id") id: Long): Response<List<SeasonResponse>>
+    suspend fun getShowSeasons(@Path("tv_id") id: Long): List<SeasonResponse>
 
     /*
      * Episodes

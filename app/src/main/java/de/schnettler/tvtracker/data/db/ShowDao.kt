@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.*
 import de.schnettler.tvtracker.data.models.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ShowDao {
@@ -22,7 +23,7 @@ interface ShowDao {
      * Show Details
      */
     @Query("SELECT * FROM table_show_details WHERE showId = :id")
-    fun getShowDetails(id: Long): LiveData<ShowDetailEntity?>
+    fun getShowDetails(id: Long): Flow<ShowDetailEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertShowDetails(showDetails: ShowDetailEntity)
@@ -65,7 +66,7 @@ interface ShowDao {
 
     @Transaction
     @Query("SELECT * FROM table_relations WHERE sourceId = :showId ORDER BY `index` ASC")
-    fun getShowRelations(showId: Long): LiveData<List<RelationWithShow>?>
+    fun getShowRelations(showId: Long): Flow<List<RelationWithShow>>
 
 
     /*
@@ -85,7 +86,7 @@ interface ShowDao {
      */
     @Transaction
     @Query("SELECT * FROM table_seasons WHERE showId = :showId AND number != 0 ORDER BY number ASC")
-    fun getSeasonsWithEpisodes(showId: Long): LiveData<List<SeasonWithEpisodes>>
+    fun getSeasonsWithEpisodes(showId: Long): Flow<List<SeasonWithEpisodes>>
 
     @Transaction
     suspend fun insertSeasonWithEpisodes(seasons: List<SeasonWithEpisodes>) {
