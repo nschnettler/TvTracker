@@ -5,15 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionInflater
 import de.schnettler.tvtracker.ui.AuthViewModel
-import de.schnettler.tvtracker.ui.MainActivity
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
@@ -94,10 +95,10 @@ class DetailFragment : Fragment() {
             )
         }
 
-        if(activity is MainActivity){
-            val ac = activity as MainActivity
-            ac.setSupportActionBar(binding.toolbar)
-            ac.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setNavigationOnClickListener { view ->
+            view.findNavController().navigateUp()
         }
 
         //Click Listener Callback
