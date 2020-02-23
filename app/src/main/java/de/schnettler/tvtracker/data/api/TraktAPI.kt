@@ -18,25 +18,19 @@ interface TraktAPI {
      * Trending Shows
      */
     @GET("shows/trending")
-    suspend fun getTrendingShows(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int
-    ): Response<List<TrendingResponse>>
+    suspend fun getTrendingShows(): List<TrendingResponse>
 
     /*
      * Popular Shows
      */
     @GET("shows/popular")
-    suspend fun getPopularShows(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int
-    ): Response<List<PopularResponse>>
+    suspend fun getPopularShows(): List<PopularResponse>
 
     /*
      * Anticipated Shows
      */
     @GET("shows/anticipated")
-    suspend fun getAnticipated(): Response<List<AnticipatedResponse>>
+    suspend fun getAnticipated(): List<AnticipatedResponse>
 
     /*
      * Recommended Shows

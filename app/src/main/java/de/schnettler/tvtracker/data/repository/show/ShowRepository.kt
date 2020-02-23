@@ -1,10 +1,13 @@
 package de.schnettler.tvtracker.data.repository.show
 
 import androidx.lifecycle.Transformations
+import com.dropbox.android.external.store4.Store
 import com.dropbox.android.external.store4.StoreBuilder
 import com.dropbox.android.external.store4.StoreRequest
+import com.dropbox.android.external.store4.get
 import de.schnettler.tvtracker.data.Result.Error
 import de.schnettler.tvtracker.data.Result.Success
+import de.schnettler.tvtracker.data.api.TraktAPI
 import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.mapping.*
 import de.schnettler.tvtracker.data.models.*
@@ -90,10 +93,35 @@ class ShowRepository(
             }
         ).build()
 
+    private val topListStore= StoreBuilder
+        .fromNonFlow { type: TopListType ->
+            listedShowMapper.mapToDatabase(
+                when (type) {
+                    TopListType.TRENDING -> remoteService.traktService.getTrendingShows()
+                    TopListType.POPULAR -> remoteService.traktService.getPopularShows()
+                    TopListType.ANTICIPATED -> remoteService.traktService.getAnticipated()
+                    TopListType.RECOMMENDED -> remoteService.traktService.getAnticipated()
+                }
+            )
+        }
+        .persister(
+            reader = { type ->
+                localDao.getTopList(type.name).mapLatest { listedShowMapper.mapToDomain(it) }
+            },
+            writer = { type, list ->
+                run {
+                    localDao.insertShows(list.map { it.show })
+                    localDao.insertTopList(list.map { it.listing })
+                    refreshPosters(list.map { it.show })
+                }
+            }
+        ).build()
+
 
     fun getShowDetails(showId: Long) = detailsStore.stream(StoreRequest.cached(showId, true))
     fun getRelated(showId: Long) = relatedStore.stream(StoreRequest.cached(showId, true))
     fun getSeasons(showId: Long) = seasonStore.stream(StoreRequest.cached(showId, true))
+    fun getTopList(type: TopListType) = topListStore.stream(StoreRequest.cached(type, true))
 
     /*
     * Show Cast
@@ -107,24 +135,6 @@ class ShowRepository(
 
     fun getShowCast(showId: Long) = localDao.getCast(showId)
 
-
-    suspend fun refreshShowList(type: TopListType, token: String = "") {
-        when (val result = remoteService.getTopList(type, token)) {
-            is Success -> {
-                val entities = listedShowMapper.mapToDatabase(result.data)
-                entities?.let {
-                    localDao.insertShows(entities.map { it.show })
-                    localDao.insertTopList(entities.map { it.listing })
-                    refreshPosters(entities.map { it.show })
-                }
-            }
-        }
-    }
-
-    fun getTopList(type: TopListType) =
-        Transformations.map(localDao.getTopList(type.name)) {
-            listedShowMapper.mapToDomain(it)
-        }
     /*
      * Show Poster
      */

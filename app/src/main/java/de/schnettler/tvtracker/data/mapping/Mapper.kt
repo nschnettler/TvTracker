@@ -21,7 +21,7 @@ interface MapperWithId<I, O, P> {
 }
 
 class ListMapper<I, O, P>(private val mapper: IndexedMapper<I, O, P>) {
-    fun mapToDatabase(input: List<I>?)= input?.mapIndexed { index, it ->
+    fun mapToDatabase(input: List<I>)= input.mapIndexed { index, it ->
             mapper.mapToDatabase(it, index)
     }
 

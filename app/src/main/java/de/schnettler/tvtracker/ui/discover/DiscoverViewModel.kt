@@ -1,13 +1,12 @@
 package de.schnettler.tvtracker.ui.discover
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.dropbox.android.external.store4.StoreResponse
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import de.schnettler.tvtracker.util.TopListType
 import kotlinx.coroutines.*
+import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -15,39 +14,49 @@ class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<Discov
     override val state = MediatorLiveData<DiscoverViewState>()
     private val _loggedIn = MutableLiveData<Boolean>()
     val loggedIn: LiveData<Boolean> get() = _loggedIn
+    private val _status = MutableLiveData<String?>()
+    val status: LiveData<String?> get() = _status
 
     private val _isRefreshing = MutableLiveData<Boolean>()
     val isRefreshing: LiveData<Boolean> get() = _isRefreshing
+
+    private val trending = repo.getTopList(TopListType.TRENDING).asLiveData(viewModelScope.coroutineContext)
+    private val popular = repo.getTopList(TopListType.POPULAR).asLiveData(viewModelScope.coroutineContext)
+    private val anticipated = repo.getTopList(TopListType.ANTICIPATED).asLiveData(viewModelScope.coroutineContext)
 
     init {
         initState { DiscoverViewState() }
         stateInitialized
 
-        state.addSource(repo.getTopList(TopListType.TRENDING)) {
-            updateState { state -> state.copy(trendingShows = it) }
+        state.addSource(trending) {
+            when (it) {
+                is StoreResponse.Loading -> Timber.i("Loading Trending")
+                is StoreResponse.Data -> updateState { state -> state.copy(trendingShows = it.value) }
+                is StoreResponse.Error -> showErrorMessage("Error loading trending", it.error)
+            }
         }
-        state.addSource(repo.getTopList(TopListType.POPULAR)) {
-            updateState { state -> state.copy(popularShows = it) }
+        state.addSource(popular) {
+            when (it) {
+                is StoreResponse.Loading -> Timber.i("Loading Popular")
+                is StoreResponse.Data -> updateState { state -> state.copy(popularShows = it.value) }
+                is StoreResponse.Error -> showErrorMessage("Error loading popular", it.error)
+            }
         }
-        state.addSource(repo.getTopList(TopListType.ANTICIPATED)) {
-            updateState { state -> state.copy(anticipatedShows = it) }
-        }
-        state.addSource(repo.getTopList(TopListType.RECOMMENDED)) {
-            updateState { state -> state.copy(recommendedShows = it) }
+        state.addSource(anticipated) {
+            when (it) {
+                is StoreResponse.Loading -> Timber.i("Loading Anticipated")
+                is StoreResponse.Data -> updateState { state -> state.copy(anticipatedShows = it.value) }
+                is StoreResponse.Error -> showErrorMessage("Error loading popular", it.error)
+            }
         }
         state.addSource(loggedIn) {
             updateState { state -> state.copy(loggedIn = it) }
         }
-        onRefresh()
+
     }
 
      fun onRefresh() {
          _isRefreshing.value = true
-         viewModelScope.launch {
-             repo.refreshShowList(TopListType.TRENDING)
-             repo.refreshShowList(TopListType.POPULAR)
-             repo.refreshShowList(TopListType.ANTICIPATED)
-         }
          _isRefreshing.value = false
     }
 
@@ -57,9 +66,14 @@ class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<Discov
         if (newValue) {
             viewModelScope.launch {
                 withContext(Dispatchers.IO) {
-                    repo.refreshShowList(TopListType.RECOMMENDED, token)
+//                    repo.refreshShowList(TopListType.RECOMMENDED, token)
                 }
             }
         }
+    }
+
+    private fun showErrorMessage(newStatus: String, error: Throwable) {
+        _status.value = newStatus
+        Timber.e(error)
     }
 }

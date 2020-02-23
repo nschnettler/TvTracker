@@ -13,7 +13,7 @@ interface ShowDao {
      */
     @Transaction
     @Query("SELECT * FROM table_discover WHERE type = :type ORDER BY `index` ASC")
-    fun getTopList(type: String): LiveData<List<TopListWithShow>?>
+    fun getTopList(type: String): Flow<List<TopListWithShow>?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTopList(shows: List<TopListEntity>)

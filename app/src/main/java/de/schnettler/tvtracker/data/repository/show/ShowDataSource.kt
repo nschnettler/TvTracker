@@ -49,27 +49,6 @@ class ShowDataSourceRemote(val traktService: TraktAPI, val tvdbService: TvdbAPI,
         return Result.Error(IOException("Error getting show images: ${response.code()} ${response.message()}"))
     }
 
-
-    suspend fun getTopList(type: TopListType, token: String) = safeApiCall(
-        call = { refreshTopList(type, token) },
-        errorMessage = "Error requesting TopList"
-    )
-
-    private suspend fun refreshTopList(type: TopListType, token: String): Result<List<ShowListResponse>> {
-        val response = when(type) {
-            TopListType.TRENDING -> traktService.getTrendingShows(0, TraktAPI.DISCOVER_AMOUNT)
-            TopListType.POPULAR -> traktService.getPopularShows(0, TraktAPI.DISCOVER_AMOUNT)
-            TopListType.ANTICIPATED -> traktService.getAnticipated()
-            TopListType.RECOMMENDED -> traktService.getRecommended("Bearer $token")
-        }
-        if (response.isSuccessful) {
-            response.body()?.let {
-                return Result.Success(it)
-            }
-        }
-        return Result.Error(IOException("Error getting ${type.name} shows: ${response.code()} ${response.message()}"))
-    }
-
     //Episodes
     suspend fun getEpisodesOfSeason(showID: Long, seasonNumber: Long) = safeApiCall(
         call = { refreshEpisodesOfSeason(showID, seasonNumber) },
