@@ -108,7 +108,9 @@ class DetailViewModel(
         when (expand) {
             true -> {
                 updateState {
-                    it.copy(expandedSeasons = it.expandedSeasons + season.number)
+                    val expanded = it.expandedSeasons
+                    expanded.add(season.number)
+                    it.copy(expandedSeasons = expanded)
                 }
 
                 //Refresh Episodes
@@ -120,7 +122,9 @@ class DetailViewModel(
             }
             false -> {
                 updateState {
-                    it.copy(expandedSeasons = it.expandedSeasons - season.number)
+                    val expanded = it.expandedSeasons
+                    expanded.remove(season.number)
+                    it.copy(expandedSeasons = expanded)
                 }
             }
         }

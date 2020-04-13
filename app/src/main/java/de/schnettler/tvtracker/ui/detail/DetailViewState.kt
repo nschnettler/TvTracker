@@ -12,5 +12,5 @@ data class DetailViewState(
     val cast: List<CastEntity>? = null,
     val relatedShows: List<ShowDomain>? = null,
     val seasons: List<SeasonDomain>? = null,
-    val expandedSeasons: Set<Long> = setOf()
+    val expandedSeasons: HashSet<Long> = hashSetOf()
 ): ViewState
