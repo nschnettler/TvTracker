@@ -72,7 +72,7 @@ object ShowDetailsMapper : Mapper<ShowDetailResponse, ShowDetailEntity, ShowDeta
             overview = input.overview,
             firstAired = input.firstAired,
             runtime = input.runtime,
-            network = input.network,
+            network = input.network ?: "",
             trailer = input.trailer,
             status = input.status,
             rating = input.rating,
