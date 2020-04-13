@@ -19,7 +19,7 @@ interface TvdbAPI {
     suspend fun getActors(
         @Header("Authorization") token: String,
         @Path("id") showId: Long
-    ): Response<CastListResponse>
+    ): CastListResponse
 
     @POST("/login")
     suspend fun login(@Body body: TvdbLoginData): Response<TvdbAuthTokenResponse>

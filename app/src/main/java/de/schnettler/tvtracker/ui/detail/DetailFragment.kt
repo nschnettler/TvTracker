@@ -69,7 +69,7 @@ class DetailFragment : Fragment() {
         authViewModel.tvdbLoginStatus.observe(viewLifecycleOwner, Observer {
             if (it) {
                 authViewModel.tvdbAuthToken.value?.let {authToken ->
-                    detailViewModel.refreshCast(authToken.token)
+                    detailViewModel.onLogin(authToken.token)
                 }
             }
         })

@@ -49,7 +49,7 @@ interface ShowDao {
     suspend fun insertCast(castEntry: List<CastEntity>)
 
     @Query("SELECT * FROM table_cast WHERE showId = :id ORDER BY id ASC LIMIT 10")
-    fun getCast(id: Long): LiveData<List<CastEntity>?>
+    fun getCast(id: Long): Flow<List<CastEntity>?>
 
 
     /*

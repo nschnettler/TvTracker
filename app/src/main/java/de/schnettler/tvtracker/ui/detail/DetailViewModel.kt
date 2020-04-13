@@ -19,14 +19,17 @@ class DetailViewModel(
     private val episodeRepository: EpisodeRepository
 ) : StateViewModel<DetailViewState>() {
     override val state = MediatorLiveData<DetailViewState>()
+    private val authToken = MutableLiveData<String>()
 
     private val showDetails
             = showRepository.getShowDetails(show.id).asLiveData(viewModelScope.coroutineContext)
-    private val showCast = showRepository.getShowCast(show.tvdbId!!)
     private val relatedShows
             = showRepository.getRelated(show.id).asLiveData(viewModelScope.coroutineContext)
     private val seasons
             = showRepository.getSeasons(show.id).asLiveData(viewModelScope.coroutineContext)
+    private val showCast = Transformations.switchMap(authToken) {
+        showRepository.getCast(show.tvdbId!!, it).asLiveData()
+    }
 
     private val _status = MutableLiveData<String?>()
     val status: LiveData<String?> get() = _status
@@ -65,9 +68,10 @@ class DetailViewModel(
 
         //Observe Cast
         state.addSource(showCast) {
-            Timber.i("Show Cast Changed")
-            updateState { state ->
-                state.copy(cast = it)
+            when (it) {
+                is StoreResponse.Loading -> Timber.i("Loading Cast")//Show Spinner
+                is StoreResponse.Data -> updateState { state -> state.copy(cast = it.value) }
+                is StoreResponse.Error -> showErrorMessage("Error loading cast", it.error)
             }
         }
 
@@ -87,17 +91,6 @@ class DetailViewModel(
                 is StoreResponse.Data -> updateState { state -> state.copy(seasons = it.value) }
                 is StoreResponse.Error -> {
                     showErrorMessage("Error loading seasons", it.error)
-                }
-            }
-        }
-    }
-
-    fun refreshCast(token: String) {
-        Timber.i("Refreshing Cast with $token")
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                show.tvdbId?.let {
-                    showRepository.refreshCast(it, token)
                 }
             }
         }
@@ -134,8 +127,12 @@ class DetailViewModel(
         _status.value = null;
     }
 
+    fun onLogin(token: String) {
+        authToken.value = token
+    }
+
     private fun showErrorMessage(newStatus: String, error: Throwable) {
-        _status.value = newStatus
+        _status.value = "$newStatus: ${error.message}"
         Timber.e(error)
     }
 }

@@ -127,17 +127,18 @@ class ShowRepository(
             }
         ).build().stream(StoreRequest.cached(listType, true))
 
-    /*
-    * Show Cast
-    */
-    suspend fun refreshCast(showId: Long, token: String) {
-        when (val result = getCast(showId, token)) {
-            is Success -> localDao.insertCast(result.data.data.asCastEntryList())
-            is Error -> Timber.e(result.exception)
+    fun getCast(showId: Long, token: String?) = StoreBuilder
+        .fromNonFlow { id: Long ->
+            tvdb.getActors(TvdbAPI.AUTH_PREFIX + token, id)
         }
-    }
-
-    fun getShowCast(showId: Long) = localDao.getCast(showId)
+        .persister(
+            reader = { id ->
+                localDao.getCast(id)
+            },
+            writer = { _, cast ->
+                localDao.insertCast(cast.data.asCastEntryList())
+            }
+        ).build().stream(StoreRequest.cached(showId, true))
 
     /*
      * Show Poster
@@ -170,24 +171,6 @@ class ShowRepository(
     /**
      * OLD WAY
      */
-
-    //Cast
-    private suspend fun getCast(showID: Long, token: String) = safeApiCall(
-        call = { requestCast(showID, token) },
-        errorMessage = "Error getting Cast"
-    )
-
-    private suspend fun requestCast(showID: Long, token: String): Result<CastListResponse> {
-        val response = tvdb.getActors(TvdbAPI.AUTH_PREFIX + token, showID)
-        Timber.i("RESPONSE $response.toString()")
-
-        if (response.isSuccessful) {
-            response.body()?.let {
-                return Result.Success(it)
-            }
-        }
-        return Result.Error(IOException("Error getting cast: ${response.code()} ${response.message()}"))
-    }
 
     //Poster
     private suspend fun getImages(tmdbId: String) = safeApiCall(
