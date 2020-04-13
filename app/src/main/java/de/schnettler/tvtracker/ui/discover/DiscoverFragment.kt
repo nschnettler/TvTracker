@@ -42,7 +42,7 @@ class DiscoverFragment : Fragment() {
 
         authViewModel.traktLoginStatus.observe(viewLifecycleOwner, Observer {
             if (it) {
-                viewModel.onLoginChanged(it, authViewModel.traktAuthToken.value?.token)
+                viewModel.onLogin(authViewModel.traktAuthToken.value?.token)
             }
 
         })

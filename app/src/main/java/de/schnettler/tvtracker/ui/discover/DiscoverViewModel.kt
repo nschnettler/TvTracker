@@ -5,14 +5,15 @@ import com.dropbox.android.external.store4.StoreResponse
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import de.schnettler.tvtracker.util.TopListType
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 @FlowPreview
 class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<DiscoverViewState>() {
     override val state = MediatorLiveData<DiscoverViewState>()
-    private val loginStatus = MutableLiveData<Pair<Boolean, String?>>()
+    private val loginStatus = MutableLiveData<String?>()
     private val _status = MutableLiveData<String?>()
     val status: LiveData<String?> get() = _status
 
@@ -23,7 +24,7 @@ class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<Discov
     private val popular = repo.getTopList(TopListType.POPULAR).asLiveData(viewModelScope.coroutineContext)
     private val anticipated = repo.getTopList(TopListType.ANTICIPATED).asLiveData(viewModelScope.coroutineContext)
     private val recommended = Transformations.switchMap(loginStatus) {
-        repo.getTopList(TopListType.RECOMMENDED, it.second).asLiveData()
+        repo.getTopList(TopListType.RECOMMENDED, it).asLiveData(viewModelScope.coroutineContext)
     }
 
     init {
@@ -59,7 +60,7 @@ class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<Discov
             }
         }
         state.addSource(loginStatus) {
-            updateState { state -> state.copy(loggedIn = it.first) }
+            updateState { state -> state.copy(loggedIn = !it.isNullOrBlank()) }
         }
 
     }
@@ -69,8 +70,8 @@ class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<Discov
          _isRefreshing.value = false
     }
 
-    fun onLoginChanged(newValue: Boolean, token: String?) {
-        loginStatus.value = Pair(newValue, token)
+    fun onLogin(token: String?) {
+        if (loginStatus.value != token) loginStatus.value = token
     }
 
     private fun showErrorMessage(newStatus: String, error: Throwable) {
