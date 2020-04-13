@@ -1,22 +1,24 @@
 package de.schnettler.tvtracker.data.repository.show
 
-import androidx.lifecycle.Transformations
-import com.dropbox.android.external.store4.Store
 import com.dropbox.android.external.store4.StoreBuilder
 import com.dropbox.android.external.store4.StoreRequest
-import com.dropbox.android.external.store4.get
+import de.schnettler.tvtracker.data.Result
 import de.schnettler.tvtracker.data.Result.Error
 import de.schnettler.tvtracker.data.Result.Success
+import de.schnettler.tvtracker.data.api.TmdbAPI
 import de.schnettler.tvtracker.data.api.TraktAPI
+import de.schnettler.tvtracker.data.api.TvdbAPI
 import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.mapping.*
 import de.schnettler.tvtracker.data.models.*
 import de.schnettler.tvtracker.util.TopListType
+import de.schnettler.tvtracker.util.safeApiCall
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import timber.log.Timber
+import java.io.IOException
 
 /**
  * Class that knows how to get and store Shows
@@ -25,6 +27,9 @@ import timber.log.Timber
 @FlowPreview
 class ShowRepository(
     private val remoteService: ShowDataSourceRemote,
+    private val trakt: TraktAPI,
+    private val tvdb: TvdbAPI,
+    private val tmdb: TmdbAPI,
     private val localDao: ShowDao
 ) {
     private val relatedMapper = ListMapperWithId(ShowRelatedMapper)
@@ -35,7 +40,7 @@ class ShowRepository(
 
     private val detailsStore = StoreBuilder
         .fromNonFlow { showId: Long ->
-            ShowDetailsMapper.mapToDatabase(remoteService.traktService.getShowSummary(showId)) }
+            ShowDetailsMapper.mapToDatabase(trakt.getShowSummary(showId)) }
         .persister(
             reader = { showId ->
                 localDao.getShowDetails(showId).map { detail -> detail?.let { ShowDetailsMapper.mapToDomain(it) } } },
@@ -46,7 +51,7 @@ class ShowRepository(
 
     private val relatedStore = StoreBuilder
         .fromNonFlow { showId: Long ->
-            relatedMapper.mapToDatabase(remoteService.traktService.getRelatedShows(showId), showId) }
+            relatedMapper.mapToDatabase(trakt.getRelatedShows(showId), showId) }
         .persister(
             reader = { showId ->
                 localDao.getShowRelations(showId).mapLatest { relatedMapper.mapToDomain(it) } },
@@ -60,7 +65,7 @@ class ShowRepository(
 
     private val seasonStore = StoreBuilder
         .fromNonFlow { showId: Long ->
-            seasonMapper.mapToDatabase(remoteService.traktService.getShowSeasons(showId), showId)
+            seasonMapper.mapToDatabase(trakt.getShowSeasons(showId), showId)
         }
         .persister(
             reader = { showId ->
@@ -97,10 +102,10 @@ class ShowRepository(
         .fromNonFlow { type: TopListType ->
             listedShowMapper.mapToDatabase(
                 when (type) {
-                    TopListType.TRENDING -> remoteService.traktService.getTrendingShows()
-                    TopListType.POPULAR -> remoteService.traktService.getPopularShows()
-                    TopListType.ANTICIPATED -> remoteService.traktService.getAnticipated()
-                    TopListType.RECOMMENDED -> remoteService.traktService.getAnticipated()
+                    TopListType.TRENDING -> trakt.getTrendingShows()
+                    TopListType.POPULAR -> trakt.getPopularShows()
+                    TopListType.ANTICIPATED -> trakt.getAnticipated()
+                    TopListType.RECOMMENDED -> trakt.getAnticipated()
                 }
             )
         }
@@ -127,7 +132,7 @@ class ShowRepository(
     * Show Cast
     */
     suspend fun refreshCast(showId: Long, token: String) {
-        when (val result = remoteService.getCast(showId, token)) {
+        when (val result = getCast(showId, token)) {
             is Success -> localDao.insertCast(result.data.data.asCastEntryList())
             is Error -> Timber.e(result.exception)
         }
@@ -143,7 +148,7 @@ class ShowRepository(
             //Check if Show already in DB
             localDao.getShow(it.id)?.let { entity ->
                 if (entity.posterUrl.isBlank()) {
-                    val result = remoteService.getImages(entity.tmdbId)
+                    val result = getImages(entity.tmdbId)
                     if (result is Success) {
                         var changed = false
                         result.data.poster_path?.let { url ->
@@ -161,5 +166,43 @@ class ShowRepository(
                 }
             }
         }
+    }
+
+    /**
+     * OLD WAY
+     */
+
+    //Cast
+    suspend fun getCast(showID: Long, token: String) = safeApiCall(
+        call = { requestCast(showID, token) },
+        errorMessage = "Error getting Cast"
+    )
+
+    private suspend fun requestCast(showID: Long, token: String): Result<CastListResponse> {
+        val response = tvdb.getActors(TvdbAPI.AUTH_PREFIX + token, showID)
+        Timber.i("RESPONSE $response.toString()")
+
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return Result.Success(it)
+            }
+        }
+        return Result.Error(IOException("Error getting cast: ${response.code()} ${response.message()}"))
+    }
+
+    //Poster
+    suspend fun getImages(tmdbId: String) = safeApiCall(
+        call = { requestShowImages(tmdbId) },
+        errorMessage = "Error loading Poster for $tmdbId"
+    )
+
+    private suspend fun requestShowImages(tmdbId: String): Result<ShowImageResponse> {
+        val response = tmdb.getShowPoster(tmdbId, TmdbAPI.API_KEY)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                return Result.Success(it)
+            }
+        }
+        return Result.Error(IOException("Error getting show images: ${response.code()} ${response.message()}"))
     }
 }
