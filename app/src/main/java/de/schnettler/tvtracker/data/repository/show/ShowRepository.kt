@@ -5,6 +5,7 @@ import com.dropbox.android.external.store4.StoreRequest
 import de.schnettler.tvtracker.data.Result
 import de.schnettler.tvtracker.data.Result.Error
 import de.schnettler.tvtracker.data.Result.Success
+import de.schnettler.tvtracker.data.api.HeaderProvider
 import de.schnettler.tvtracker.data.api.TmdbAPI
 import de.schnettler.tvtracker.data.api.TraktAPI
 import de.schnettler.tvtracker.data.api.TvdbAPI
@@ -26,10 +27,10 @@ import java.io.IOException
 @ExperimentalCoroutinesApi
 @FlowPreview
 class ShowRepository(
-    private val remoteService: ShowDataSourceRemote,
     private val trakt: TraktAPI,
     private val tvdb: TvdbAPI,
     private val tmdb: TmdbAPI,
+    private val headerProvider: HeaderProvider,
     private val localDao: ShowDao
 ) {
     private val relatedMapper = ListMapperWithId(ShowRelatedMapper)
@@ -98,14 +99,18 @@ class ShowRepository(
             }
         ).build()
 
-    private val topListStore= StoreBuilder
+
+    fun getShowDetails(showId: Long) = detailsStore.stream(StoreRequest.cached(showId, true))
+    fun getRelated(showId: Long) = relatedStore.stream(StoreRequest.cached(showId, true))
+    fun getSeasons(showId: Long) = seasonStore.stream(StoreRequest.cached(showId, true))
+    fun getTopList(listType: TopListType, accessToken: String? = null) = StoreBuilder
         .fromNonFlow { type: TopListType ->
             listedShowMapper.mapToDatabase(
                 when (type) {
                     TopListType.TRENDING -> trakt.getTrendingShows()
                     TopListType.POPULAR -> trakt.getPopularShows()
                     TopListType.ANTICIPATED -> trakt.getAnticipated()
-                    TopListType.RECOMMENDED -> trakt.getAnticipated()
+                    TopListType.RECOMMENDED -> trakt.getRecommended(headerProvider.getAuthenticatedHeaders(accessToken ?: ""))
                 }
             )
         }
@@ -113,20 +118,14 @@ class ShowRepository(
             reader = { type ->
                 localDao.getTopList(type.name).mapLatest { listedShowMapper.mapToDomain(it) }
             },
-            writer = { type, list ->
+            writer = { _, list ->
                 run {
                     localDao.insertShows(list.map { it.show })
                     localDao.insertTopList(list.map { it.listing })
                     refreshPosters(list.map { it.show })
                 }
             }
-        ).build()
-
-
-    fun getShowDetails(showId: Long) = detailsStore.stream(StoreRequest.cached(showId, true))
-    fun getRelated(showId: Long) = relatedStore.stream(StoreRequest.cached(showId, true))
-    fun getSeasons(showId: Long) = seasonStore.stream(StoreRequest.cached(showId, true))
-    fun getTopList(type: TopListType) = topListStore.stream(StoreRequest.cached(type, true))
+        ).build().stream(StoreRequest.cached(listType, true))
 
     /*
     * Show Cast
@@ -173,7 +172,7 @@ class ShowRepository(
      */
 
     //Cast
-    suspend fun getCast(showID: Long, token: String) = safeApiCall(
+    private suspend fun getCast(showID: Long, token: String) = safeApiCall(
         call = { requestCast(showID, token) },
         errorMessage = "Error getting Cast"
     )
@@ -191,7 +190,7 @@ class ShowRepository(
     }
 
     //Poster
-    suspend fun getImages(tmdbId: String) = safeApiCall(
+    private suspend fun getImages(tmdbId: String) = safeApiCall(
         call = { requestShowImages(tmdbId) },
         errorMessage = "Error loading Poster for $tmdbId"
     )

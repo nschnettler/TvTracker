@@ -36,7 +36,7 @@ interface TraktAPI {
      * Recommended Shows
      */
     @GET("recommendations/shows?ignore_collected=true")
-    suspend fun getRecommended(@Header("Authorization") authToken: String): Response<List<RecommendedResponse>>
+    suspend fun getRecommended(@HeaderMap headers: AuthHeaders): List<RecommendedResponse>
 
     /*
      * Show Details

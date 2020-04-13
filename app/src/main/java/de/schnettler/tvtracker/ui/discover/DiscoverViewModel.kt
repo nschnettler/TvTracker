@@ -12,8 +12,7 @@ import timber.log.Timber
 @FlowPreview
 class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<DiscoverViewState>() {
     override val state = MediatorLiveData<DiscoverViewState>()
-    private val _loggedIn = MutableLiveData<Boolean>()
-    val loggedIn: LiveData<Boolean> get() = _loggedIn
+    private val loginStatus = MutableLiveData<Pair<Boolean, String?>>()
     private val _status = MutableLiveData<String?>()
     val status: LiveData<String?> get() = _status
 
@@ -23,6 +22,9 @@ class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<Discov
     private val trending = repo.getTopList(TopListType.TRENDING).asLiveData(viewModelScope.coroutineContext)
     private val popular = repo.getTopList(TopListType.POPULAR).asLiveData(viewModelScope.coroutineContext)
     private val anticipated = repo.getTopList(TopListType.ANTICIPATED).asLiveData(viewModelScope.coroutineContext)
+    private val recommended = Transformations.switchMap(loginStatus) {
+        repo.getTopList(TopListType.RECOMMENDED, it.second).asLiveData()
+    }
 
     init {
         initState { DiscoverViewState() }
@@ -49,8 +51,15 @@ class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<Discov
                 is StoreResponse.Error -> showErrorMessage("Error loading popular", it.error)
             }
         }
-        state.addSource(loggedIn) {
-            updateState { state -> state.copy(loggedIn = it) }
+        state.addSource(recommended) {
+            when (it) {
+                is StoreResponse.Loading -> Timber.i("Loading Recommended")
+                is StoreResponse.Data -> updateState { state -> state.copy(recommendedShows = it.value) }
+                is StoreResponse.Error -> showErrorMessage("Error loading recommended", it.error)
+            }
+        }
+        state.addSource(loginStatus) {
+            updateState { state -> state.copy(loggedIn = it.first) }
         }
 
     }
@@ -60,16 +69,8 @@ class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<Discov
          _isRefreshing.value = false
     }
 
-    fun onLoginChanged(newValue: Boolean, token: String) {
-        _loggedIn.value = newValue
-
-        if (newValue) {
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-//                    repo.refreshShowList(TopListType.RECOMMENDED, token)
-                }
-            }
-        }
+    fun onLoginChanged(newValue: Boolean, token: String?) {
+        loginStatus.value = Pair(newValue, token)
     }
 
     private fun showErrorMessage(newStatus: String, error: Throwable) {

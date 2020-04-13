@@ -1,6 +1,7 @@
 package de.schnettler.tvtracker
 
 import androidx.room.Room
+import de.schnettler.tvtracker.data.api.HeaderProvider
 import de.schnettler.tvtracker.data.api.RetrofitService
 import de.schnettler.tvtracker.data.db.Database
 import de.schnettler.tvtracker.data.models.EpisodeDomain
@@ -34,7 +35,13 @@ val databaseModule = module {
 val repositoryModule = module {
     single { ShowDataSourceRemote(RetrofitService.traktService, RetrofitService.tvdbService, RetrofitService.tmdbService) }
     single { AuthDataSourceRemote(RetrofitService.tvdbService, RetrofitService.traktService) }
-    single { ShowRepository(get(), RetrofitService.traktService, RetrofitService.tvdbService, RetrofitService.tmdbService, get()) }
+    single { ShowRepository(
+        RetrofitService.traktService,
+        RetrofitService.tvdbService,
+        RetrofitService.tmdbService,
+        HeaderProvider(),
+        get()
+    ) }
     single { AuthRepository(get(), get()) }
     single { EpisodeRepository(get(), get()) }
 }
