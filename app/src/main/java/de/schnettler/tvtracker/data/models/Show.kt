@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 
 data class ShowResponse(
     val title: String,
-    val year: Long,
+    val year: Long?,
     val ids: ShowIdRemote
 )
 
