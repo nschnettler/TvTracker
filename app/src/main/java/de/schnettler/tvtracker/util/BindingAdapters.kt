@@ -11,6 +11,7 @@ import coil.api.load
 import de.schnettler.tvtracker.data.api.ImageQuality
 import de.schnettler.tvtracker.data.api.TmdbAPI
 import de.schnettler.tvtracker.data.api.TvdbAPI
+import timber.log.Timber
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,13 +60,8 @@ fun bindDate(view: TextView, date: String?) {
    if (date.isNullOrEmpty()) {
        view.text = ""
    } else {
-       val formatIn = SimpleDateFormat("yyyy-mm-dd")
-       val dateIn = formatIn.parse(date)
-       val formatOut = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
-
-       dateIn?.let {
-           val dateOut = formatOut.format(it)
-           view.text = dateOut
+       SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(date)?.let {
+           view.text = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(it)
        }
    }
 }
