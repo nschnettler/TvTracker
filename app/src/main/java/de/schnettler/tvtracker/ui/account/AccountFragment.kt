@@ -7,17 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.tvtracker.ui.AuthViewModel
 import de.schnettler.tvtracker.data.api.TraktAPI
 import de.schnettler.tvtracker.databinding.AccountFragmentBinding
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 
+@AndroidEntryPoint
 class AccountFragment : Fragment() {
 
-    private val authViewModel: AuthViewModel by sharedViewModel()
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

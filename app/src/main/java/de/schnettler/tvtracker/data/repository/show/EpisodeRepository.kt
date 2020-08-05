@@ -7,9 +7,10 @@ import de.schnettler.tvtracker.data.db.ShowDao
 import de.schnettler.tvtracker.data.mapping.EpisodeMapper
 import de.schnettler.tvtracker.data.mapping.ListMapperWithId
 import timber.log.Timber
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class EpisodeRepository(
+class EpisodeRepository @Inject constructor(
     private val remoteService: ShowDataSourceRemote,
     private val localDao: ShowDao
 ) {

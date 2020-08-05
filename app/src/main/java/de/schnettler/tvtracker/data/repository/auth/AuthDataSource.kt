@@ -7,10 +7,12 @@ import de.schnettler.tvtracker.data.models.*
 import de.schnettler.tvtracker.util.safeApiCall
 import java.io.IOException
 import org.json.JSONObject
+import javax.inject.Inject
 
-
-
-class AuthDataSourceRemote(private val tvdbService: TvdbAPI, private val traktService: TraktAPI) {
+class AuthDataSourceRemote @Inject constructor(
+    private val tvdbService: TvdbAPI,
+    private val traktService: TraktAPI
+) {
     /*
      * TVDB Authentication Token
      */

@@ -5,8 +5,12 @@ import de.schnettler.tvtracker.data.db.AuthDao
 import de.schnettler.tvtracker.data.mapping.AuthMapper
 import de.schnettler.tvtracker.data.models.AuthTokenType
 import timber.log.Timber
+import javax.inject.Inject
 
-class AuthRepository(private val remoteService: AuthDataSourceRemote, private val authDao: AuthDao) {
+class AuthRepository @Inject constructor(
+    private val remoteService: AuthDataSourceRemote,
+    private val authDao: AuthDao
+) {
 
     /*
      * Get the [ShowDetailsRemote] corresponding to [showId]

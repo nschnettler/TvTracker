@@ -1,17 +1,16 @@
 package de.schnettler.tvtracker.ui.discover
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.dropbox.android.external.store4.StoreResponse
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
 import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import de.schnettler.tvtracker.util.TopListType
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 
-@ExperimentalCoroutinesApi
-@FlowPreview
-class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<DiscoverViewState>() {
+class DiscoverViewModel  @ViewModelInject constructor(
+    private val repo: ShowRepository
+): StateViewModel<DiscoverViewState>() {
     override val state = MediatorLiveData<DiscoverViewState>()
     private val loginStatus = MutableLiveData<String?>()
     private val _status = MutableLiveData<String?>()

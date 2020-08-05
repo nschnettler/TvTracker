@@ -17,13 +17,14 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import java.io.IOException
+import javax.inject.Inject
 
 /**
  * Class that knows how to get and store Shows
  */
 @ExperimentalCoroutinesApi
 @FlowPreview
-class ShowRepository(
+class ShowRepository @Inject constructor(
     private val trakt: TraktAPI,
     private val tvdb: TvdbAPI,
     private val tmdb: TmdbAPI,

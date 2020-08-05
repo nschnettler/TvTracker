@@ -1,10 +1,12 @@
 package de.schnettler.tvtracker.data.api
 
+import javax.inject.Inject
+
 open class ApiHeaders : HashMap<String, String>()
 class AuthHeaders : ApiHeaders()
 class PublicHeaders : ApiHeaders()
 
-open class HeaderProvider {
+open class HeaderProvider @Inject constructor() {
     companion object {
         private const val AUTHORIZATION = "Authorization"
         const val CONTENT_TYPE = "Content-type"

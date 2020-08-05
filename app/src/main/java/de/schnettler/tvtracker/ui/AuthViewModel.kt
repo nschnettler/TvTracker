@@ -1,5 +1,6 @@
 package de.schnettler.tvtracker.ui
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import de.schnettler.tvtracker.data.models.AuthTokenType
 import de.schnettler.tvtracker.data.repository.auth.AuthRepository
@@ -9,7 +10,9 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 
-class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
+class AuthViewModel @ViewModelInject constructor(
+    private val authRepository: AuthRepository
+) : ViewModel() {
     //State
     private val _startAuthentication = MutableLiveData<Boolean>()
     val startAuthentication: LiveData<Boolean>

@@ -5,25 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.app.SharedElementCallback
-import androidx.core.view.doOnPreDraw
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import com.facebook.stetho.common.android.FragmentCompat
-import de.schnettler.tvtracker.ui.AuthViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.databinding.DiscoverFragmentBinding
+import de.schnettler.tvtracker.ui.AuthViewModel
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import org.koin.android.viewmodel.ext.android.viewModel
 
+@AndroidEntryPoint
 class DiscoverFragment : Fragment() {
 
-    private val viewModel: DiscoverViewModel by viewModel()
-    private val authViewModel: AuthViewModel by viewModel()
+    private val viewModel: DiscoverViewModel by viewModels()
+    private val authViewModel: AuthViewModel by activityViewModels()
     private lateinit var controller: DiscoverController
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

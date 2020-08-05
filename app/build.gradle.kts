@@ -4,6 +4,7 @@ plugins {
     kotlin("android.extensions")
     kotlin("kapt")
     id("androidx.navigation.safeargs.kotlin")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -15,6 +16,12 @@ android {
         targetSdkVersion(29)
         versionCode = 1
         versionName = "1.0"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
+            }
+        }
     }
 
     buildTypes {
@@ -76,7 +83,7 @@ dependencies {
     implementation(JakeWharton.timber)
     kapt(AndroidX.room.compiler)
 
-    //Insetter
+    // Other
     implementation("dev.chrisbanes", "insetter-dbx", "_")
     implementation("dev.chrisbanes", "insetter-ktx", "_")
     implementation("com.squareup.moshi", "moshi-kotlin", "_")
@@ -89,9 +96,13 @@ dependencies {
     implementation("com.facebook.stetho", "stetho", "_")
     implementation("com.facebook.stetho", "stetho-okhttp3", "_")
     implementation("com.ryanjeffreybrooks", "indefinitepagerindicator", "_")
-    implementation("org.koin", "koin-android", "_")
-    implementation("org.koin", "koin-android-viewmodel", "_")
     implementation("com.dropbox.mobile.store", "store4", "_")
     debugImplementation("com.amitshekhar.android", "debug-db", "_")
+    implementation("com.google.dagger", "hilt-android", "_")
+    implementation("androidx.hilt", "hilt-lifecycle-viewmodel", "_")
+    compileOnly ("com.squareup.inject", "assisted-inject-annotations-dagger2", "_")
+    kapt("com.squareup.inject", "assisted-inject-processor-dagger2", "_")
+    kapt("androidx.hilt", "hilt-compiler", "_")
+    kapt("com.google.dagger", "hilt-android-compiler", "_")
     kapt("com.airbnb.android", "epoxy-processor", "_")
 }

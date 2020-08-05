@@ -3,6 +3,8 @@ package de.schnettler.tvtracker.ui.detail
 import androidx.lifecycle.*
 import com.dropbox.android.external.store4.StoreResponse
 import com.etiennelenhart.eiffel.viewmodel.StateViewModel
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
 import de.schnettler.tvtracker.data.models.ShowDomain
@@ -11,12 +13,10 @@ import de.schnettler.tvtracker.data.repository.show.ShowRepository
 import kotlinx.coroutines.*
 import timber.log.Timber
 
-@ExperimentalCoroutinesApi
-@FlowPreview
-class DetailViewModel(
-    var show: ShowDomain,
+class DetailViewModel @AssistedInject constructor(
     private val showRepository: ShowRepository,
-    private val episodeRepository: EpisodeRepository
+    private val episodeRepository: EpisodeRepository,
+    @Assisted var show: ShowDomain
 ) : StateViewModel<DetailViewState>() {
     override val state = MediatorLiveData<DetailViewState>()
     private val authToken = MutableLiveData<String>()
@@ -134,5 +134,21 @@ class DetailViewModel(
     private fun showErrorMessage(newStatus: String, error: Throwable) {
         _status.value = "$newStatus: ${error.message}"
         Timber.e(error)
+    }
+
+    @AssistedInject.Factory
+    interface AssistedFactory {
+        fun create(show: ShowDomain): DetailViewModel
+    }
+
+    companion object {
+        fun provideFactory(
+            assistedFactory: AssistedFactory,
+            show: ShowDomain
+        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return assistedFactory.create(show) as T
+            }
+        }
     }
 }

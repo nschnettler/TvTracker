@@ -3,18 +3,19 @@ package de.schnettler.tvtracker.data.repository.show
 import de.schnettler.tvtracker.data.Result
 import de.schnettler.tvtracker.data.api.TmdbAPI
 import de.schnettler.tvtracker.data.api.TraktAPI
-import de.schnettler.tvtracker.data.api.TvdbAPI
 import de.schnettler.tvtracker.data.models.*
-import de.schnettler.tvtracker.util.TopListType
 import de.schnettler.tvtracker.util.safeApiCall
-import timber.log.Timber
 import java.io.IOException
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Work with the Trakt API to get shows. The class knows how to construct the requests.
  */
-class ShowDataSourceRemote(val traktService: TraktAPI, val tvdbService: TvdbAPI, val tmdbService: TmdbAPI) {
+class ShowDataSourceRemote @Inject constructor(
+    val traktService: TraktAPI,
+    val tmdbService: TmdbAPI
+) {
     //Episodes
     suspend fun getEpisodesOfSeason(showID: Long, seasonNumber: Long) = safeApiCall(
         call = { refreshEpisodesOfSeason(showID, seasonNumber) },

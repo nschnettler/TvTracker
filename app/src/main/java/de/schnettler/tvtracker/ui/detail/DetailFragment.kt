@@ -9,11 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.transition.TransitionInflater
+import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.tvtracker.ui.AuthViewModel
 import de.schnettler.tvtracker.data.models.EpisodeDomain
 import de.schnettler.tvtracker.data.models.SeasonDomain
@@ -21,16 +25,20 @@ import de.schnettler.tvtracker.data.models.ShowDomain
 import de.schnettler.tvtracker.databinding.DetailFragmentBinding
 import de.schnettler.tvtracker.util.*
 import dev.chrisbanes.insetter.doOnApplyWindowInsets
-import org.koin.android.viewmodel.ext.android.getViewModel
-import org.koin.android.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class DetailFragment : Fragment() {
 
-    private lateinit var detailViewModel: DetailViewModel
+    private val args: DetailFragmentArgs by navArgs()
+    @Inject lateinit var detailViewModelAssistedFactory: DetailViewModel.AssistedFactory
+    private val detailViewModel: DetailViewModel by viewModels {
+        DetailViewModel.provideFactory(
+            detailViewModelAssistedFactory, args.show
+        )
+    }
     private lateinit var binding: DetailFragmentBinding
-    private val authViewModel: AuthViewModel by viewModel()
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +54,6 @@ class DetailFragment : Fragment() {
 
         val args = DetailFragmentArgs.fromBundle(arguments!!)
         val show = args.show
-        detailViewModel = getViewModel { parametersOf(show) }
         binding.viewModel = detailViewModel
         binding.toolbar.title = detailViewModel.show.title
 

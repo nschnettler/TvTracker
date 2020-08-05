@@ -4,22 +4,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.tvtracker.R
 import de.schnettler.tvtracker.databinding.EpisodeBottomSheetBinding
+import de.schnettler.tvtracker.ui.detail.DetailViewModel
 import de.schnettler.tvtracker.util.SnapOnScrollListener
 import de.schnettler.tvtracker.util.SnapOnScrollListener.Companion.NOTIFY_ON_SCROLL_STATE_IDLE
-import org.koin.android.viewmodel.ext.android.getViewModel
-import org.koin.core.parameter.parametersOf
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class EpisodeFragment : BottomSheetDialogFragment() {
 
+    @Inject lateinit var assistedFactory: EpisodeViewModel.AssistedFactory
+    private val args : EpisodeFragmentArgs by navArgs()
     private lateinit var binding: EpisodeBottomSheetBinding
-    private lateinit var viewModel: EpisodeViewModel
+
+    private val viewModel: EpisodeViewModel by viewModels {
+        EpisodeViewModel.provideFactory(
+            assistedFactory, args.show, args.episode
+        )
+    }
 
     override fun getTheme(): Int = R.style.Widget_AppTheme_BottomSheet
 
@@ -28,15 +38,8 @@ class EpisodeFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //Args
-        val args =
-            EpisodeFragmentArgs.fromBundle(
-                arguments!!
-            )
-
         //Binding & ViewModel
         binding = EpisodeBottomSheetBinding.inflate(inflater)
-        viewModel = getViewModel { parametersOf(args.episode, args.show) }
 
         //Epoxy
         val controller = EpisodeController()
