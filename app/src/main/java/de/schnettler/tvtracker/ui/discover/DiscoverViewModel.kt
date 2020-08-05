@@ -35,28 +35,28 @@ class DiscoverViewModel(private val repo: ShowRepository): StateViewModel<Discov
             when (it) {
                 is StoreResponse.Loading -> Timber.i("Loading Trending")
                 is StoreResponse.Data -> updateState { state -> state.copy(trendingShows = it.value) }
-                is StoreResponse.Error -> showErrorMessage("Error loading trending", it.error)
+                is StoreResponse.Error.Exception -> showErrorMessage("Error loading trending", it.error)
             }
         }
         state.addSource(popular) {
             when (it) {
                 is StoreResponse.Loading -> Timber.i("Loading Popular")
                 is StoreResponse.Data -> updateState { state -> state.copy(popularShows = it.value) }
-                is StoreResponse.Error -> showErrorMessage("Error loading popular", it.error)
+                is StoreResponse.Error.Exception -> showErrorMessage("Error loading popular", it.error)
             }
         }
         state.addSource(anticipated) {
             when (it) {
                 is StoreResponse.Loading -> Timber.i("Loading Anticipated")
                 is StoreResponse.Data -> updateState { state -> state.copy(anticipatedShows = it.value) }
-                is StoreResponse.Error -> showErrorMessage("Error loading popular", it.error)
+                is StoreResponse.Error.Exception -> showErrorMessage("Error loading popular", it.error)
             }
         }
         state.addSource(recommended) {
             when (it) {
                 is StoreResponse.Loading -> Timber.i("Loading Recommended")
                 is StoreResponse.Data -> updateState { state -> state.copy(recommendedShows = it.value) }
-                is StoreResponse.Error -> showErrorMessage("Error loading recommended", it.error)
+                is StoreResponse.Error.Exception -> showErrorMessage("Error loading recommended", it.error)
             }
         }
         state.addSource(loginStatus) {

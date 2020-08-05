@@ -62,7 +62,7 @@ class DetailViewModel(
             when (it) {
                 is StoreResponse.Loading -> Timber.i("Loading Details")//Show Spinner
                 is StoreResponse.Data -> updateState { state -> state.copy(details = it.value) }
-                is StoreResponse.Error -> showErrorMessage("Error loading details", it.error)
+                is StoreResponse.Error.Exception -> showErrorMessage("Error loading details", it.error)
             }
         }
 
@@ -71,7 +71,7 @@ class DetailViewModel(
             when (it) {
                 is StoreResponse.Loading -> Timber.i("Loading Cast")//Show Spinner
                 is StoreResponse.Data -> updateState { state -> state.copy(cast = it.value) }
-                is StoreResponse.Error -> showErrorMessage("Error loading cast", it.error)
+                is StoreResponse.Error.Exception -> showErrorMessage("Error loading cast", it.error)
             }
         }
 
@@ -80,7 +80,7 @@ class DetailViewModel(
             when (it) {
                 is StoreResponse.Loading -> Timber.i("Loading Related")//Show Spinner
                 is StoreResponse.Data -> updateState { state -> state.copy(relatedShows = it.value) }
-                is StoreResponse.Error -> showErrorMessage("Error loading related", it.error)
+                is StoreResponse.Error.Exception -> showErrorMessage("Error loading related", it.error)
             }
         }
 
@@ -89,7 +89,7 @@ class DetailViewModel(
             when (it) {
                 is StoreResponse.Loading -> Timber.i("Loading Seasons")//Show Spinner
                 is StoreResponse.Data -> updateState { state -> state.copy(seasons = it.value) }
-                is StoreResponse.Error -> {
+                is StoreResponse.Error.Exception -> {
                     showErrorMessage("Error loading seasons", it.error)
                 }
             }

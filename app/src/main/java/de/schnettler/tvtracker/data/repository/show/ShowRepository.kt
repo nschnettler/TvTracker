@@ -1,9 +1,7 @@
 package de.schnettler.tvtracker.data.repository.show
 
-import com.dropbox.android.external.store4.StoreBuilder
-import com.dropbox.android.external.store4.StoreRequest
+import com.dropbox.android.external.store4.*
 import de.schnettler.tvtracker.data.Result
-import de.schnettler.tvtracker.data.Result.Error
 import de.schnettler.tvtracker.data.Result.Success
 import de.schnettler.tvtracker.data.api.HeaderProvider
 import de.schnettler.tvtracker.data.api.TmdbAPI
@@ -18,7 +16,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import timber.log.Timber
 import java.io.IOException
 
 /**
@@ -39,40 +36,48 @@ class ShowRepository(
     private val seasonWithEpisodeMapper = ListMapper(SeasonWithEpisodeMapper)
 
 
-    private val detailsStore = StoreBuilder
-        .fromNonFlow { showId: Long ->
-            ShowDetailsMapper.mapToDatabase(trakt.getShowSummary(showId)) }
-        .persister(
+    private val detailsStore = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher { showId: Long ->
+            ShowDetailsMapper.mapToDatabase(trakt.getShowSummary(showId))
+        },
+        sourceOfTruth = SourceOfTruth.from(
             reader = { showId ->
-                localDao.getShowDetails(showId).map { detail -> detail?.let { ShowDetailsMapper.mapToDomain(it) } } },
-            writer = { _, showDetails ->
-                localDao.insertShowDetails(showDetails)}
+                localDao.getShowDetails(showId)
+                    .map { detail -> detail?.let { ShowDetailsMapper.mapToDomain(it) } }
+            },
+            writer = { _: Long, showDetails ->
+                localDao.insertShowDetails(showDetails)
+            }
         )
-        .build()
+    ).build()
 
-    private val relatedStore = StoreBuilder
-        .fromNonFlow { showId: Long ->
-            relatedMapper.mapToDatabase(trakt.getRelatedShows(showId), showId) }
-        .persister(
+    private val relatedStore = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher { showId: Long ->
+            relatedMapper.mapToDatabase(trakt.getRelatedShows(showId), showId)
+        },
+        sourceOfTruth = SourceOfTruth.from(
             reader = { showId ->
-                localDao.getShowRelations(showId).mapLatest { relatedMapper.mapToDomain(it) } },
-            writer = { _, related->
+                localDao.getShowRelations(showId).mapLatest { relatedMapper.mapToDomain(it) }
+            },
+            writer = { _: Long, related ->
                 run {
                     localDao.insertShowRelations(related)
                     refreshPosters(related.map { it.relatedShow })
                 }
             }
-        ).build()
+        )
+    ).build()
 
-    private val seasonStore = StoreBuilder
-        .fromNonFlow { showId: Long ->
+    private val seasonStore = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher { showId: Long ->
             seasonMapper.mapToDatabase(trakt.getShowSeasons(showId), showId)
-        }
-        .persister(
+        },
+        sourceOfTruth = SourceOfTruth.from(
             reader = { showId ->
-                localDao.getSeasonsWithEpisodes(showId).mapLatest { seasonWithEpisodeMapper.mapToDomain(it) }
+                localDao.getSeasonsWithEpisodes(showId)
+                    .mapLatest { seasonWithEpisodeMapper.mapToDomain(it) }
             },
-            writer = { showId, seasons->
+            writer = { showId: Long, seasons ->
                 kotlin.run {
                     localDao.insertSeasons(seasons)
                     //Insert Dummy Episodes
@@ -97,48 +102,56 @@ class ShowRepository(
                     localDao.insertDummyEpisodes(episodes)
                 }
             }
-        ).build()
+        )
+    ).build()
 
-
-    fun getShowDetails(showId: Long) = detailsStore.stream(StoreRequest.cached(showId, true))
-    fun getRelated(showId: Long) = relatedStore.stream(StoreRequest.cached(showId, true))
-    fun getSeasons(showId: Long) = seasonStore.stream(StoreRequest.cached(showId, true))
-    fun getTopList(listType: TopListType, accessToken: String? = null) = StoreBuilder
-        .fromNonFlow { type: TopListType ->
+    private val toplistStore = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher { key: Pair<TopListType, String?> ->
             listedShowMapper.mapToDatabase(
-                when (type) {
+                when (key.first) {
                     TopListType.TRENDING -> trakt.getTrendingShows()
                     TopListType.POPULAR -> trakt.getPopularShows()
                     TopListType.ANTICIPATED -> trakt.getAnticipated()
-                    TopListType.RECOMMENDED -> trakt.getRecommended(headerProvider.getAuthenticatedHeaders(accessToken ?: ""))
+                    TopListType.RECOMMENDED -> trakt.getRecommended(
+                        headerProvider.getAuthenticatedHeaders(
+                            key.second ?: ""
+                        )
+                    )
                 }
             )
-        }
-        .persister(
+        },
+        sourceOfTruth = SourceOfTruth.from(
             reader = { type ->
-                localDao.getTopList(type.name).mapLatest { listedShowMapper.mapToDomain(it) }
+                localDao.getTopList(type.first.name).mapLatest { listedShowMapper.mapToDomain(it) }
             },
-            writer = { _, list ->
+            writer = { _: Pair<TopListType, String?>, list ->
                 run {
                     localDao.insertShows(list.map { it.show })
                     localDao.insertTopList(list.map { it.listing })
                     refreshPosters(list.map { it.show })
                 }
             }
-        ).build().stream(StoreRequest.cached(listType, true))
+        )
+    ).build()
 
-    fun getCast(showId: Long, token: String?) = StoreBuilder
-        .fromNonFlow { id: Long ->
-            tvdb.getActors(TvdbAPI.AUTH_PREFIX + token, id)
-        }
-        .persister(
-            reader = { id ->
-                localDao.getCast(id)
-            },
-            writer = { _, cast ->
-                localDao.insertCast(cast.data.asCastEntryList())
-            }
-        ).build().stream(StoreRequest.cached(showId, true))
+    private val castStore = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher { key: Pair<Long, String?> ->
+            tvdb.getActors(TvdbAPI.AUTH_PREFIX + key.second, key.first)
+        },
+        sourceOfTruth = SourceOfTruth.from(
+            reader = { key -> localDao.getCast(key.first) },
+            writer = { _: Pair<Long, String?>, cast -> localDao.insertCast(cast.data.asCastEntryList()) }
+        )
+    ).build()
+
+
+    fun getShowDetails(showId: Long) = detailsStore.stream(StoreRequest.cached(showId, true))
+    fun getRelated(showId: Long) = relatedStore.stream(StoreRequest.cached(showId, true))
+    fun getSeasons(showId: Long) = seasonStore.stream(StoreRequest.cached(showId, true))
+    fun getTopList(listType: TopListType, accessToken: String? = null) =
+        toplistStore.stream(StoreRequest.cached(listType to accessToken, true))
+    fun getCast(showId: Long, token: String?) =
+        castStore.stream(StoreRequest.cached(showId to token, true))
 
     /*
      * Show Poster
