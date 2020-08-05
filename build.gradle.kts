@@ -18,6 +18,12 @@ allprojects {
         maven { url = uri("https://dl.bintray.com/kotlin/kotlin-eap") }
         maven { url = uri("https://jitpack.io") }
     }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
+        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 tasks {
