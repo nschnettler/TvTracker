@@ -1,5 +1,6 @@
 package de.schnettler.tvtracker.data.api
 
+import de.schnettler.tvtracker.BuildConfig
 import de.schnettler.tvtracker.data.models.EpisodeDetailResponse
 import de.schnettler.tvtracker.data.models.PersonImageResponse
 import de.schnettler.tvtracker.data.models.ShowImageResponse
@@ -11,7 +12,7 @@ import retrofit2.http.Query
 interface TmdbAPI {
     companion object {
         const val ENDPOINT = "https://api.themoviedb.org/"
-        const val API_KEY = "***TMDB_API_KEY***"
+        const val API_KEY = BuildConfig.TMDB_API_KEY
         const val IMAGE_ENDPOINT = "https://image.tmdb.org/t/p/"
     }
 

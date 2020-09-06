@@ -1,5 +1,6 @@
 package de.schnettler.tvtracker.data.api
 
+import de.schnettler.tvtracker.BuildConfig
 import de.schnettler.tvtracker.data.models.TvdbAuthTokenResponse
 import de.schnettler.tvtracker.data.models.TvdbLoginData
 import de.schnettler.tvtracker.data.models.CastListResponse
@@ -11,7 +12,7 @@ interface TvdbAPI {
         const val ENDPOINT = "https://api.thetvdb.com/"
         const val IMAGE_ENDPOINT = "https://artworks.thetvdb.com/banners/"
         const val IMAGE_ENDPOINT_SHORT ="https://artworks.thetvdb.com"
-        const val API_KEY = "***TVDB_API_KEY***"
+        const val API_KEY = BuildConfig.TVDB_API_KEY
         const val AUTH_PREFIX = "Bearer "
     }
 

@@ -10,6 +10,11 @@ plugins {
 android {
     compileSdkVersion(29)
 
+    val tmdbKey: String? by project
+    val traktClientId: String? by project
+    val traktClientSecret: String? by project
+    val tvdbKey: String? by project
+
     defaultConfig {
         applicationId = "de.schnettler.tvtracker"
         minSdkVersion(21)
@@ -22,6 +27,11 @@ android {
                 arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
             }
         }
+
+        buildConfigField("String", "TMDB_API_KEY", tmdbKey ?: "\"\"")
+        buildConfigField("String", "TRAKT_CLIENT_ID", traktClientId ?: "\"\"")
+        buildConfigField("String", "TRAKT_CLIENT_SECRET", traktClientSecret ?: "\"\"")
+        buildConfigField("String", "TVDB_API_KEY", tvdbKey ?: "\"\"")
     }
 
     buildTypes {

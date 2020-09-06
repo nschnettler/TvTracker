@@ -1,5 +1,6 @@
 package de.schnettler.tvtracker.data.api
 
+import de.schnettler.tvtracker.BuildConfig
 import de.schnettler.tvtracker.data.models.*
 import retrofit2.Response
 import retrofit2.http.*
@@ -9,9 +10,9 @@ interface TraktAPI {
         const val ENDPOINT = "https://api.trakt.tv/"
         const val DISCOVER_AMOUNT = 15
         const val BASE_URL = "https://trakt.tv/"
-        const val CLIENT_ID = "***TRAKT_CLIENT_ID***"
+        const val CLIENT_ID = BuildConfig.TRAKT_CLIENT_ID
         const val REDIRECT_URI = "de.schnettler.tvtrack://auth"
-        const val SECRET = "***TRAKT_CLIENT_SECRET***"
+        const val SECRET = BuildConfig.TRAKT_CLIENT_SECRET
     }
 
     /*
