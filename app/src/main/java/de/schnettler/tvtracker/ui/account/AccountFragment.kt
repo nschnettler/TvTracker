@@ -35,7 +35,7 @@ class AccountFragment : Fragment() {
                     ?.newBuilder()
                     ?.addQueryParameter(
                         "client_id",
-                        "***TRAKT_CLIENT_ID***"
+                        TraktAPI.CLIENT_ID
                     )
                     ?.addQueryParameter("redirect_uri", "de.schnettler.tvtrack://auth")
                     ?.addQueryParameter("response_type", "code")
