@@ -4,6 +4,7 @@ TVTracker is a wip tv show browsing app. It uses the [Trakt](https://trakt.tv/) 
 [The Movie Database](https://www.themoviedb.org/) API for additional images and detailed information and the [The TVDB](https://thetvdb.com/) API for 
 Actor information and pictures.
 
+<img src="https://raw.githubusercontent.com/Sh4dowSoul/TvTracker/epoxy/art/discover.png" width=25% height=25%> <img src="https://raw.githubusercontent.com/Sh4dowSoul/TvTracker/epoxy/art/details.png" width=25% height=25%> <img src="https://raw.githubusercontent.com/Sh4dowSoul/TvTracker/epoxy/art/episode.png" width=25% height=25%>
 ## Development Setup
 The project should work with any recent version of Android Studio.
 
